@@ -10,7 +10,7 @@ public /*with sharing*/ class CustomerCommunityCaseDetailController {
     public List<case> relatedcases {get;set;}
     public List<Attachment> caseAttachments {get;set;}
     //public List<CaseArticle> caseArticles {get;set;}
-    public List<Question_Answer__kav> relatedArticles {get;set;}
+   // public List<Question_Answer__kav> relatedArticles {get;set;}
     public List<SelectOption> allSelectOptions {get; set;}
      
     public boolean showpage {get;set;}
@@ -117,7 +117,7 @@ public /*with sharing*/ class CustomerCommunityCaseDetailController {
                 
             }
             
-            relatedArticles = [SELECT Id, KnowledgeArticleId, Title, UrlName, Summary, ArticleNumber, Question__c, Answers__c FROM Question_Answer__kav WHERE PublishStatus='Online' AND KnowledgeArticleId IN :knowledgeArticleIds];
+            // relatedArticles = [SELECT Id, KnowledgeArticleId, Title, UrlName, Summary, ArticleNumber, Question__c, Answers__c FROM Question_Answer__kav WHERE PublishStatus='Online' AND KnowledgeArticleId IN :knowledgeArticleIds];
         
             // get the describe field result for the user timezone field
             /*Schema.DescribeFieldResult userCountryDescribe = Schema.sObjectType.Account.fields.BillingCountryCode;

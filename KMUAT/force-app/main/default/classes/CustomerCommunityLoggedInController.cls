@@ -6,7 +6,7 @@ public /*with sharing*/ class CustomerCommunityLoggedInController {
 
     public String name{get;set;}
     public String caseStatus{get;set;}
-    public List<Question_Answer__kav> qa{get;set;}
+    // public List<Question_Answer__kav> qa{get;set;}
     //public List<Case> caseResult{get;set;}
     //public Account account{get;set;}
     //public Contact contact{get;set;}
@@ -128,11 +128,11 @@ public /*with sharing*/ class CustomerCommunityLoggedInController {
     
         
         try{
-            qa = [SELECT Id, KnowledgeArticleId, PublishStatus, VersionNumber, IsLatestVersion, IsVisibleInCsp, 
+           /* qa = [SELECT Id, KnowledgeArticleId, PublishStatus, VersionNumber, IsLatestVersion, IsVisibleInCsp, 
                     IsVisibleInPrm, IsVisibleInApp, IsVisibleInPkb, Language, Title, UrlName, Summary, ArticleNumber, 
                     IsOutOfDate, ArticleType, Question__c, Answers__c FROM Question_Answer__kav 
                     WHERE PublishStatus='Online' AND Language = 'en_US' LIMIT 5] ;//AND (IsVisibleInPkb = true OR IsVisibleInCsp = true) AND IsVisibleInApp = true];
-            system.debug('query result:::->' + qa.size());
+            system.debug('query result:::->' + qa.size()); */
             // Getting Case Info
           
             user = [SELECT Id, AccountId, ContactId from user where Id =: UserInfo.getUserId()];

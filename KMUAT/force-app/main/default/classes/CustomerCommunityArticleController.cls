@@ -1,5 +1,5 @@
 public /*with sharing*/ class CustomerCommunityArticleController {
-  public Question_Answer__kav article{get;set;} 
+  // public Question_Answer__kav article{get;set;} 
   public boolean showpage {get;set;}
   public boolean showattach1{get;set;}
   public boolean showattach2{get;set;}
@@ -22,7 +22,7 @@ public /*with sharing*/ class CustomerCommunityArticleController {
       showattach4 = false; 
       showattach5 = false; 
       showattachSection = false;
-       
+      /* 
       article = [SELECT Id, KnowledgeArticleId, Language, Title, UrlName, Summary, ArticleNumber, 
             Question__c, Answers__c,
             Attachment1__Length__s,Attachment2__Length__s,Attachment3__Length__s,Attachment4__Length__s,Attachment5__Length__s, 
@@ -42,7 +42,7 @@ public /*with sharing*/ class CustomerCommunityArticleController {
            showattach5 = true;
        
        showattachSection = showattach1 || showattach2 || showattach3 || showattach4 || showattach5;  
-            
+         */  
     } 
     catch(Exception e) 
     {

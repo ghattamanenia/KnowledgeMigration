@@ -5,7 +5,7 @@ public with sharing class CustomerCommunityHomeController {
 
     public String username{get;set;}
     public String password{get;set;}
-    public List<Question_Answer__kav> qa{get;set;}
+    // public List<Question_Answer__kav> qa{get;set;}
     public String searchTerm {get;set;}
     public String error{get;set;}
 
@@ -54,9 +54,9 @@ public with sharing class CustomerCommunityHomeController {
     public CustomerCommunityHomeController() {
         error = '';        
         try{
-            qa = [SELECT Id, KnowledgeArticleId, Language, Title, UrlName, Summary, ArticleNumber,  
+           /* qa = [SELECT Id, KnowledgeArticleId, Language, Title, UrlName, Summary, ArticleNumber,  
                     Question__c, Answers__c FROM Question_Answer__kav 
-                    WHERE PublishStatus='Online' AND Language = 'en_US' LIMIT 5];// AND IsVisibleInPkb = true  AND IsVisibleInApp = true];
+                    WHERE PublishStatus='Online' AND Language = 'en_US' LIMIT 5];// AND IsVisibleInPkb = true  AND IsVisibleInApp = true]; */
         }
         catch (Exception ex) {
             error = ex.getMessage();

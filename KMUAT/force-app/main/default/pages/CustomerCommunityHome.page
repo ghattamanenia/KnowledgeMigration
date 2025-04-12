@@ -1,5 +1,6 @@
 <apex:page showHeader="false" sidebar="false" controller="CustomerCommunityHomeController" action="{!forwardToCustomAuthPage}">
-    <apex:composition template="CustomerSupportTemplate">
+<!--    
+<apex:composition template="CustomerSupportTemplate">
         <apex:define name="body">
 <style type="text/css">
     .hidden-login, .hidden-signup, .hidden-search-submit {
@@ -105,7 +106,7 @@
     });
 </script>
             
-            <!-- Login Area -->
+            
             <div class="row" id="login-area">
                 <div class="twelve columns">
                     <div class="panel radius inset">
@@ -115,8 +116,7 @@
                             </div>
                             <div class="eight columns">
                                 <h1>Support Portal</h1>
-                               <!-- <p>Our interactive support center is your direct link to answers you need. Search our knowledge base, check support tickets, learn about RMAs and contact Allied Telesis technical experts.</p>-->
-
+                               
                                 <apex:form forceSSL="true">
                                     <apex:pageMessages id="error"/>
                                     <div class="row">
@@ -154,9 +154,9 @@
                     </div>
                 </div>
             </div>
-            <!-- End of Login Area -->
+            
 
-            <!-- KB Area -->
+            
             <div class="row">
 
                 <div class="six columns">
@@ -179,16 +179,14 @@
                         <h2>Knowledge Base</h2><br/>
                         <h5>Top Articles</h5>
                         <ul class="kb-articles-container">
-                           <!-- <apex:repeat value="{!publicArticle}" var="article"> -->
+                           
                            <apex:repeat value="{!qa}" var="article">
                                 <li>
                                     <a href="/Support/CustomerCommunityArticle?articleId={!article.Id}" target="_blank">{!article.title}</a>
                                 </li>
                             </apex:repeat>
                         </ul>
-                        <!-- <div style="text-align:right;">
-                            <a href="/Support/CustomerCommunityArticlesList">Full List</a>
-                        </div> -->
+                        
                         <apex:form >
                             <div class="twelve">
                                 <apex:inputText id="search-input" value="{!searchTerm}" styleClass="nine searchInput" html-placeholder="Enter search keyword"/> 
@@ -199,11 +197,12 @@
                     </div>
                 </div>
             </div>
-            <!-- End of KB Area -->
+            
         </apex:define>
     </apex:composition>
     <script type = "text/javascript" src = 'https://home-c36.nice-incontact.com/inContact/ChatClient/js/embed.min.js'></script>
 <script type ="text/javascript">
 icPatronChat.init({serverHost:'https://home-c36.nice-incontact.com',bus_no:4599697,poc:'84008f40-cb38-4243-a2a9-5e256809209d',params:['FirstName','Last Name','first.last@company.com',555-555-5555]});
 </script>
+-->
 </apex:page>

@@ -1,7 +1,8 @@
 <apex:page showHeader="false" sidebar="false" controller="CustomerCommunityArticleController" >
+    <!--
     <apex:composition template="CustomerSupportTemplate">
         <apex:define name="body">
-            <!-- Case Area -->
+            
             <div id="case-area" class="row">
                 <div class="twelve columns">
                     <h1 class="container" style="margin-top: 20px; display: inline-block; width: 100%">{!article.Title}</h1>
@@ -80,5 +81,5 @@
 <script type ="text/javascript">
 icPatronChat.init({serverHost:'https://home-c36.nice-incontact.com',bus_no:4599697,poc:'84008f40-cb38-4243-a2a9-5e256809209d',params:['FirstName','Last Name','first.last@company.com',555-555-5555]});
 </script>
-
+-->
 </apex:page>

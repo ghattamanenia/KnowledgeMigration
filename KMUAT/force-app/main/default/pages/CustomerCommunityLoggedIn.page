@@ -154,11 +154,11 @@
                             </ul>
                             -->
                             <ul class="kb-articles-container">
-                                <apex:repeat value="{!qa}" var="article">
+                               <!-- <apex:repeat value="{!qa}" var="article">
                                     <li>
                                         <a href="/Support/CustomerCommunityArticle?articleId={!article.Id}" target="_blank">{!article.title}</a>
                                     </li>
-                                </apex:repeat>
+                                </apex:repeat> -->
                             </ul>
                             <!-- <div style="text-align:right;">
                                 <a href="/Support/CustomerCommunityArticlesList">Full List</a>
