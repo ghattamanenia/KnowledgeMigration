@@ -1,0 +1,391 @@
+<apex:page showHeader="false" sidebar="false" controller="CustomerCommunityCaseDetailController" action="{!forwardToCustomAuthPage}" >
+    <apex:composition template="CustomerSupportTemplate">
+        <apex:define name="body">
+            <div class="row">
+                <div class="twelve columns">
+                    <div class="panel radius inset">
+                        <apex:pageMessages id="error" escape="false"/> 
+                        <div class="row container">
+                            <div class="twelve columns">
+                                <apex:form > 
+                                    <table class="twelve">
+                                        <tr>
+                                            <td>
+                                                <h1>My Support Case Detail:&nbsp;{!caseDetail.CaseNumber}</h1> 
+                                            </td>
+                                            <td style="text-align: right;">
+                                                <apex:commandButton action="{!EditCase}" id="EditCase" styleClass="large green button" value="Edit Case" />&nbsp;&nbsp;&nbsp;<apex:commandButton action="{!BackPage}" id="BackPage" styleClass="large green button" value="Back" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </apex:form>
+                                <apex:pageMessage rendered="false" severity="ERROR" />
+                                <table class="twelve">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="4">Request Details</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="three">Case Title</td>
+                                            <td class="three">{!caseDetail.Request_Title__c}</td>
+                                            <td class="three">How may we help you?</td>
+                                            <td class="three">{!caseDetail.Description}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="three">Case Status</td>
+                                            <td class="three">{!IF(caseDetail.Status == "New" || caseDetail.Status == "Closed" , caseDetail.Status, "Open")}
+                                            </td>
+                                            <td class="three">Case Status Comments</td>
+                                            <td class="three">{!caseDetail.ATFE_status_comments__c}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="three">Impact</td>
+                                            <td class="three">{!caseImpact}</td>
+                                            <td class="three">Urgency</td>
+                                            <td class="three">{!caseUrgency}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="three">Case Opened Date</td>
+                                            <td class="three">{!caseDetail.CreatedDate}</td>
+                                            <td class="three">Case Closed Date</td>
+                                            <td class="three">{!caseDetail.closeddate}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="three">Case First Response Date</td>
+                                            <td class="three">{!caseDetail.first_response__c}</td>
+                                            <td class="three">Case Resolution</td>
+                                            <td class="three">{!caseDetail.caseResolution__c}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table class="twelve">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="4">General Details</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="three">New or Existing Installation?</td>
+                                            <td class="three">{!caseDetail.New_or_Existing_Installation__c}</td>
+                                            <td class="three">Is it reproducible?</td>
+                                            <td class="three">{!caseDetail.Is_it_reproducible__c}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="three">Any recent changes?</td>
+                                            <td class="three">{!caseDetail.If_existing_were_there_recent_changes__c}</td>
+                                            <td class="three">Steps to reproduce the issue</td>
+                                            <td class="three">{!caseDetail.What_are_the_steps_to_reproduce_it__c}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="three">Specific Circumstances</td>
+                                            <td class="three">{!caseDetail.specific_circumstances__c}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table class="twelve">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="4">Severity Information</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="three">Is the network down?</td>
+                                            <td class="three">{!caseDetail.Is_your_network_down__c}</td>
+                                            <td class="three">Is there a workaround?</td>
+                                            <td class="three">{!caseDetail.Is_there_a_workaround_in_place__c}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="three">Have services degraded?</td>
+                                            <td class="three">{!caseDetail.Have_services_degraded__c}</td>
+                                            <td class="three">&nbsp;</td>
+                                            <td class="three">&nbsp;</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table class="twelve" style="display: {!showproductinfo}; ">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="4">Product Information</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="three">Hardware</td>
+                                            <td class="three">{!caseDetail.Hw_Asset_Name__r.Name}</td>
+                                            <td class="three">Serial Number</td>
+                                            <td class="three">{!caseDetail.H_W_Serial_Number__c}</td>
+                                        </tr>
+                                       <!-- <tr>
+                                            <td class="three">RMA Number</td>
+                                            <td class="three">{!caseDetail.RMA_Number__c}</td>
+                                            <td class="three">RMA Status</td>
+                                            <td class="three">{!caseDetail.RMA_Status__c}</td>
+                                        </tr> -->
+                                        <tr>
+                                           <!-- <td class="three">Warranty</td>
+                                            <td class="three">{!caseDetail.warranty__c}</td> -->
+                                            <td class="three">Entitlement</td>
+                                            <td class="three">{!caseDetail.Entitlement.Name}</td>
+                                            <td class="three"/> <!-- Remove this when enable warranty -->
+                                            <td class="three"/> <!-- Remove this when enable warranty -->
+                                        </tr>
+                                         
+                                    </tbody>
+                                </table>
+                                <!-- 
+                                Below code is added by Neha on 28th May 2020  -->
+                                
+                                <table class="twelve">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="4">Billing Information </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="three">Billing Address Company Name</td>
+                                            <td class="three">{!caseDetail.Billing_Address_Company_Name__c}</td>
+                                            <td class="three">Billing Street</td>
+                                            <td class="three">{!caseDetail.Billing_Street__c}</td>
+                                        </tr>
+                                         <tr>
+                                            <td class="three">Billing City</td>
+                                            <td class="three">{!caseDetail.Billing_City__c}</td>
+                                            <td class="three">Billing State/ Province</td>
+                                            <td class="three">{!caseDetail.Billing_State__c}</td>
+                                        </tr> 
+                                        <tr>
+                                            <td class="three">Billing Country</td>
+                                            <td class="three">{!caseDetail.Billing_Country1__c}</td>
+                                            <td class="three">Billing Zip/Postal Code</td>
+                                            <td class="three">{!caseDetail.Billing_Zip_Code__c}</td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td class="three">VAT Number (Required in EMEA only)</td>
+                                            <td class="three">{!caseDetail.VAT_Number__c}</td> 
+                                            <td>
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <!-- <td class="three">Please check if Shipping address is different from Billing Address</td>
+                                            <td class="three">{!caseDetail.Is_billing_address_different__c}</td> -->
+                                            
+                                        </tr>
+                                        
+                                        
+                                         
+                                    </tbody>
+                                </table>
+                                
+                                <table class="twelve" onload="showOrHideTable();" style="display:'';" id="shiptable">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="4">Shipping Information </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="three">Shipping Address Company Name</td>
+                                            <td class="three">{!caseDetail.Shipping_Address_Company_Name__c}</td>
+                                            <td class="three">Shipping Street</td>
+                                            <td class="three">{!caseDetail.Shipping_Street__c}</td>
+                                        </tr>
+                                         <tr>
+                                            <td class="three">Shipping City</td>
+                                            <td class="three">{!caseDetail.Shipping_City__c}</td>
+                                            <td class="three">Shipping State/ Province</td>
+                                            <td class="three">{!caseDetail.Shipping_State__c}</td>
+                                        </tr> 
+                                        <tr>
+                                            <td class="three">Shipping Country</td>
+                                            <td class="three">{!caseDetail.Shipping_Country__c}</td>
+                                            <td class="three">Shipping Zip/Postal Code</td>
+                                            <td class="three">{!caseDetail.Shipping_Zip_Code__c}</td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td class="three">VAT Number (Required in EMEA only)</td>
+                                            <td class="three">{!caseDetail.VAT_Number__c}</td>
+                                            <td class="three">Shipping Contact Name</td>
+                                            <td class="three">{!caseDetail.Name__c}</td>
+                                            
+                                            
+                                        </tr>
+                                        
+                                         <tr>
+                                            
+                                            <td class="three">Shipping Contact Phone Number</td>
+                                            <td class="three">{!caseDetail.Phone_Number__c}</td>
+                                            <td>
+                                            </td>
+                                            <td>
+                                            </td>
+                                        </tr> 
+                                         
+                                    </tbody> 
+                                </table>
+                                
+                                
+                                 <!-- End of Neha's code changes -->
+                                
+                                
+                                
+
+                                <div class="twelve">                                
+                                    <h1>Comments</h1>
+                                    <a class="btn button large right" href="/Support/CustomerCummunityCreateComment?caseID={!caseDetail.ID}">New Comment</a>
+                                </div> 
+                                <table class="twelve" style="margin-top: 10px;">
+                                    <thead>
+                                        <tr>
+                                            <th class="two">Name</th>
+                                            <th class="eight">Comment</th>
+                                            <th class="two">Created By</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <!-- Comments Repeater (Newest at the top) -->
+                                        <apex:repeat value="{!caseComments}" var="comment">
+                                            <tr>
+                                                <td class="two title">{!comment.Name}</td>
+                                                <td class="eight"><apex:outputField value="{!comment.Comment__c}"/></td>
+                                                <td class="two">{!comment.CreatedBy.Name}</td>
+                                            </tr>
+                                        </apex:repeat>
+                                        <!-- End Comments Repeater -->
+
+                                    </tbody>
+                                </table>   
+                                <div class="twelve">
+                                    <h1 style="display: {!showrelatedcases};">Related RMA details </h1>
+                                </div>
+                                <table class="twelve" style="margin-top: 10px; display: {!showrelatedcases}; ">
+                                    <thead>
+                                        <tr>
+                                            <th class="three">RMA number</th>
+                                            <th class="three">Tracking number</th>
+                                            <th class="three">Hardware Serial Number</th>
+                                            <th class="three">Product Model</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <!-- Article Repeater  -->
+                                        <apex:repeat value="{!relatedcases}" var="relcases">
+                                            <tr>
+                                                <td class="three">{!relcases.RMA_Number__c}</td>
+                                                <td class="three">{!relcases.RMA_Tracking_Number__c}</td>
+                                                <td class="three">{!relcases.H_W_Serial_Number__c}</td>
+                                                <td class="three">{!relcases.Hw_Asset_Name__r.Name}</td>
+                                            </tr>
+                                        </apex:repeat>
+                                       <!--  End Article Repeater -->
+
+                                    </tbody>
+                                </table>
+                                <div class="twelve">
+                                    <h1>Attachments</h1>
+                                    <a class="btn button large right" href="/Support/CustomerCommunityAddAttachment?caseId={!caseDetail.Id}">Attach File</a>
+                                </div>
+                                <table class="twelve" style="margin-top: 10px;">
+                                    <thead>
+                                        <tr>
+                                            <th class="three">File Name</th>
+                                            <th class="three">Size</th>
+                                            <th class="three">Created By</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <!-- Attachment Repeater -->
+                                        <apex:repeat value="{!caseAttachments}" var="caseAttachment"> 
+                                            <tr>
+                                                <td class="three title">                                            
+                                                    <a href="/Support/servlet/servlet.FileDownload?file={!caseAttachment.Id}" download="{!caseAttachment.Name}">{!caseAttachment.Name}</a>
+                                                </td>
+                                                <td class="three">{!ROUND(caseAttachment.BodyLength/1024, 2)} KB</td>
+                                                <td class="three">{!caseAttachment.CreatedBy.Name}</td>
+                                            </tr>
+                                         </apex:repeat>
+                                        <!-- End Attachment Repeater -->
+
+                                    </tbody>
+                                </table>
+                                <div class="twelve">
+                                    <h1>Articles</h1>
+                                </div>
+                                <table class="twelve" style="margin-top: 10px;">
+                                    <thead>
+                                        <tr>
+                                            <th class="three">Title</th>
+                                            <th class="three">Summary</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <!-- Article Repeater  -->
+                                        <apex:repeat value="{!relatedArticles}" var="caseArticle">
+                                            <tr>
+                                                <td class="three title">
+                                                    <apex:form >
+                                                        <a href="/Support/CustomerCommunityArticle?articleId={!caseArticle.Id}">{!caseArticle.title}</a>
+                                                        <!-- <apex:commandLink action="/Support/CustomerCommunityArticle?articleId={!caseArticle.Id}" value="{!caseArticle.title}">
+                                                            <apex:param assignTo="{!prevPage}" name="prevPage" value="caseDetailPage"/>
+                                                            <apex:param assignTo="{!caseDetailId}" name="caseDetaiId" value="{!caseDetail.Id}"/>
+                                                        </apex:commandLink> -->
+                                                    </apex:form>
+                                                </td>
+                                                <td class="three"></td>
+                                            </tr>
+                                        </apex:repeat>
+                                       <!--  End Article Repeater -->
+
+                                    </tbody>
+                                </table>    
+                                <apex:form > 
+                                    <div class="twelve">
+                                        <div class="right">
+                                            <apex:commandButton action="{!EditCase}" styleClass="large btn button" value="Edit Case"/>&nbsp;&nbsp;&nbsp;<apex:commandButton action="{!BackPage}" styleClass="large btn button" value="Back"/>
+                                        </div>
+                                    </div>
+                                </apex:form>                                                                    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:define>
+    </apex:composition>
+    <script type="text/javascript">
+        /* An user attempts enternig an invalid case id or account id */
+        if(!{!showpage}) {
+            $('.container').remove(); /* Remove the container for the contents */
+            $('<a/>').attr({
+                href: "{!$Site.Prefix}/CustomerCommunityLoggedin",
+                class: "btn button large topRight"
+            }).text("Home").appendTo('.panel.radius.inset');
+            $('.message.errorM3').addClass('eleven');
+        }
+        
+        function showOrHideTable(){
+        
+        var stringvalue='{!caseDetail.Is_billing_address_different__c}';
+           if(stringvalue){
+           document.getElementById('shiptable').style.display = 'none';
+               showOrHide = true;
+               
+               }
+           else{
+           document.getElementById('shiptable').style.display = '';
+               showOrHide = false;
+               
+           }
+        }
+    </script>      
+</apex:page>

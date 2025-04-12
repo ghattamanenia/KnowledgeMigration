@@ -1,0 +1,18 @@
+<apex:page standardController="JP_QuoationChangesEexpirationDate__c" extensions="JP_QuoationChangesEexpirationController" >
+
+    <apex:form id="theForm" >
+        <apex:pagemessages />
+        <apex:pageBlock id="pgBlock"  >
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton id="checkSave" value="{!$Label.JP_CheckSave}" action="{!CheckSave}" />
+                <apex:commandButton id="btnCancel" value="{!$Label.JP_Cancel}" action="{!cancel}" />
+                <apex:commandButton id="btnSave" value="{!$Label.JP_Save}" action="{!doSave}" rendered="{!saveOKFlg}"/>
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection id="pgBlockSection">
+                <apex:inputField id="JP_QuotationExpireDate" value="{!record.JP_QuotationExpireDate__c}"  />
+                <script>document.getElementById('{!$Component.JP_QuotationExpireDate}').disabled = {!isSalesUser};</script>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

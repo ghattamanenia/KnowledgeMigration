@@ -1,0 +1,14 @@
+<apex:page showHeader="false" sidebar="false">
+    <apex:composition template="CustomerSupportTemplate">
+        <apex:define name="body">
+          <div class="row">
+            <div class="twelve columns">
+              <div class="panel inset radius confirmMsg">
+                <apex:outputText styleClass="title" value="{!$Label.site.temp_password_sent}"/>
+                <a href="{!$Site.Prefix}" class="btn button large">Home</a>
+              </div>
+            </div>
+          </div>
+        </apex:define>
+    </apex:composition>
+</apex:page>

@@ -1,0 +1,105 @@
+<apex:page standardController="Milestone1_Project__c" extensions="PublisherActionOnProject_desktopfile" showHeader="false">
+
+    <script type='text/javascript' src='/canvas/sdk/js/publisher.js'/> 
+    <style>
+        .requiredInput .requiredBlock, .requiredBlock {background-color: white;} 
+        .custompubblock div {display: inline-block;} 
+        .custompublabel {width:54px;} 
+    </style>
+    <script> 
+        function refreshFeed() { 
+            Sfdc.canvas.publisher.publish({name : 'publisher.refresh', payload : {feed:true}}); 
+            location.reload();
+        }
+    </script>  
+
+    <div>
+        <apex:form id="theForm">
+        
+       <!-- <apex:actionFunction action="{!createpost}" name="createpost" rerender="AllfilesSection" oncomplete="refreshFeed();"/> -->
+        <apex:actionFunction action="{!createpost}" name="createpost" />
+         
+        
+        
+        <apex:outputPanel id="AllfilesSection" >  
+        <apex:pageBlock >
+           
+            <apex:pageBlockSection title="Browse File and Add Comments" columns="1">
+                <apex:inputfile title="Select a file" value="{!attach.body}" filename="{!attach.name}" ></apex:inputfile>
+                <apex:inputtext label="comments" value="{!post.Body}" style="width:400px;height:50px;margin-top:0px;" onchange="updatepostdata();" /> 
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+            
+        <apex:pageBlock >
+             <apex:pageBlockSection title="Tag this file" columns="1">
+                 <apex:pageBlockSectionitem >
+                     <apex:outputLabel value="Select tags from Existing Tags"></apex:outputLabel>
+                      <apex:selectList title="Select tags from Existing Tags" value="{!TagSelected}" size="5" multiselect="true" >
+                               <apex:selectOptions value="{!AllTags}"/>
+                     </apex:selectList> 
+                     
+                    <!-- <apex:panelGrid columns="3" id="sel2RM">
+                        <apex:selectList id="sel1" value="{!leftselected}" multiselect="true" style="width:100px" size="5">
+                            <apex:selectOptions value="{!unselectedvalues}" />
+                        </apex:selectList>
+                            <apex:panelGroup >
+                                <br/>
+                                <apex:image value="{!$Resource.multiselected}">
+                                    <apex:actionSupport event="onclick" action="{!selectclick}" reRender="RemoveTags"/>
+                                </apex:image>
+                                <br/><br/>
+                                <apex:image value="{!$Resource.multiunselected}">
+                                    <apex:actionSupport event="onclick" action="{!unselectclick}" reRender="RemoveTags"/>
+                                </apex:image>
+                            </apex:panelGroup>
+                        <apex:selectList id="sel2" value="{!rightselected}" multiselect="true" style="width:100px" size="5">
+                            <apex:selectOptions value="{!SelectedValues}" />
+                        </apex:selectList>
+                    </apex:panelGrid> -->
+                 </apex:pageBlockSectionitem>
+           
+                 <apex:pageBlockSectionitem >
+                     <apex:outputLabel value="Add New Tags(separate tags with comma)"></apex:outputLabel>
+                     <apex:inputtext label="Add New Tags(separate tags with comma)" value="{!AdditionalTags}" style="width:250px;height:20px;margin-top:0px;" />
+                 </apex:pageBlockSectionitem>
+              </apex:pageBlockSection>
+             
+            <!--  <apex:commandButton action="{!createpost}" id="createpost"  value="Post" /> 
+              <apex:commandButton onclick="refreshFeed();"  id="refreshThisFeed"  value="Refresh" /> -->
+          
+              <!-- <button type="button" onclick="createpost();" 
+                style="position:fixed;bottom:0px;Right:0px;padding:5px 10px; 
+                font-size:13px; font-weight:bold; line-height: 
+                18px;background-color:#0271BF;background-image:-moz-linear-gradient(#2DADDC, #0271BF);background-repeat:repeat-x;border-color:#096EB3;" 
+                id="addcasebutton">Post</button> -->
+           
+        
+        </apex:pageBlock>
+        
+        
+        
+        </apex:outputPanel>
+        
+        </apex:form>
+        <apex:pageMessages />
+        
+        <button type="button" onclick="createpost();" 
+        style="position:fixed;bottom:0px;left:0px;padding:5px 10px; 
+        font-size:13px; font-weight:bold; line-height: 
+        18px;background-color:#0271BF;background-image:-moz-linear-gradient(#2DADDC, #0271BF);background-repeat:repeat-x;border-color:#096EB3;" 
+        id="addcasebutton">Post</button>
+        
+        <button type="button" onclick="refreshFeed();" 
+        style="position:fixed;bottom:0px;Right:0px;padding:5px 10px; 
+        font-size:13px; font-weight:bold; line-height: 
+        18px;background-color:#0271BF;background-image:-moz-linear-gradient(#2DADDC, #0271BF);background-repeat:repeat-x;border-color:#096EB3;" 
+        id="addcasebutton">Refresh Feed</button>
+        
+        
+                
+             
+                
+         
+    </div>
+    
+</apex:page>

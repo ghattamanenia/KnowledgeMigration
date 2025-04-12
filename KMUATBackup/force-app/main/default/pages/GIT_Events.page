@@ -1,0 +1,12 @@
+<apex:page standardcontroller="Milestone1_Project__c" extensions="GIT_Events_Controller" tabStyle="Global_IT_Events__c">
+
+<apex:form >
+<apex:pageBlock title="Global IT Information">
+    <apex:pageBlockSection title="Upcoming Events" columns="2">
+    <apex:outputField value="{!GIT_Events.Global_Business_Owner_Prioritization__c}"  label="Global Business Owner Prioritization Meeting" title="Global Business Owner Prioritization Meeting Date"/> 
+    <apex:outputField value="{!GIT_Events.Global_SFDC_Board__c}" label="Global SFDC Board Meeting" title="Global SFDC Board Meeting Date"/> 
+    <apex:outputField value="{!GIT_Events.Technical_Review_Board__c}" label="Technical Review Board Meeting" title="Technical Review Board Meeting Date" />  
+    </apex:pageBlockSection>   
+</apex:pageBlock>           
+</apex:form>
+</apex:page>

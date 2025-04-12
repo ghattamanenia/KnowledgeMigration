@@ -1,0 +1,60 @@
+<template>
+    <lightning-card>
+        <div class="slds-p-around_medium">
+            <!-- Two-Column Layout -->
+            <div class="slds-grid slds-grid_pull-push">
+                <!-- Left Column -->
+                <div class="slds-col slds-size_1-of-2">
+                    <!-- Serial Number Input with reduced width -->
+                    <lightning-input 
+                        label="Serial Number" 
+                        value={serialNumber} 
+                        onchange={handleInputChange} 
+                        data-id="serialNumber" 
+                        class="input-width-small">
+                    </lightning-input>
+                    
+                    <!-- License Server ID Input with reduced width -->
+                    <lightning-input 
+                        label="License Server ID" 
+                        value={licenseServerId} 
+                        onchange={handleInputChange} 
+                        data-id="licenseServerId" 
+                        class="input-width-small">
+                    </lightning-input>
+                </div>
+                <br>
+
+                <!-- Right Column -->
+                <div class="slds-col slds-size_1-of-2">
+                    <!-- Device Description Input with reduced width -->
+                    <lightning-input 
+                        label="Device Description" 
+                        value={deviceDescription} 
+                        onchange={handleInputChange} 
+                        data-id="deviceDescription" 
+                        class="input-width-small">
+                    </lightning-input>
+                    <br>
+                    
+                    <!-- Feature Name Input with reduced width -->
+                    <lightning-input 
+                        label="Feature Name" 
+                        value={featureName} 
+                        onchange={handleInputChange} 
+                        data-id="featureName" 
+                        class="input-width-small">
+                      
+                    </lightning-input>
+                </div>
+            </div>
+              <br>
+            <!-- Filter Button with custom background -->
+            <lightning-button 
+                label="Filter"
+                variant="brand" 
+                onclick={handleFilterClick}>
+            </lightning-button>
+        </div>
+    </lightning-card>
+</template>

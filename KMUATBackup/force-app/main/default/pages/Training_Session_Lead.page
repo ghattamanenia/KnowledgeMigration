@@ -1,0 +1,31 @@
+<apex:page showHeader="false" standardController="Session__c" >
+
+  <!-- Begin Default Content 
+  <h1>Training Courses Available</h1> -->
+
+
+<apex:form >
+ 
+  <!-- Form here -->
+ <apex:pageBlock mode="New">
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!save}" value="Submit"/>
+            </apex:pageBlockButtons>
+           
+            <apex:pageBlockSection title="Something here" columns="1" >
+            
+            <apex:inputField value="{!Session__c.atfe_Country__c}"/>
+            <apex:inputField value="{!Session__c.atfe_Available_Sessions__c}"/>
+
+            
+            </apex:pageBlockSection>
+           
+            <apex:pageBlockSection title="Select Session Details" columns="1">
+            </apex:pageBlockSection>
+            
+ </apex:pageBlock>
+   
+</apex:form>
+
+  <!-- End Default Content -->
+</apex:page>

@@ -1,0 +1,31 @@
+<apex:page standardController="SBQQ__Quote__c" extensions="QuoteLineItemsAgreegationsController">
+    
+    <apex:pageBlock rendered="{!show}">
+    <apex:pageBlockTable value="{!QLWrap}" var="q">
+    <apex:column value="{!q.Name}" headerValue="Product Name"/>
+    <apex:column value="{!q.ProductCode}" headerValue="Product Code"/>
+    <apex:column value="{!q.Minprice}" headerValue="Min Price"/>
+   
+    <apex:column headerValue="Quote with Min Price">
+     <apex:outputLink value="/{!q.MinpriceQuoteId}" target="_blank">{!q.MinpriceQuoteName}</apex:outputLink>
+    </apex:column>
+    
+    <apex:column value="{!q.Maxprice}" headerValue="Max Price"/>
+    
+    
+    <apex:column headerValue="Quote with Max Price">
+     <apex:outputLink value="/{!q.MaxpriceQuoteId}" target="_blank">{!q.MaxpriceQuoteName}</apex:outputLink>
+    </apex:column>
+    
+  <!--  <apex:column value="{!q.avgPrice}" headerValue="Average Price"/>  -->
+    
+    </apex:pageBlockTable>
+    
+    </apex:pageBlock>
+    <apex:pageBlock rendered="{!showmsg}">
+    
+    This section is visible only to General Managers.
+    
+    </apex:pageBlock>
+    
+</apex:page>

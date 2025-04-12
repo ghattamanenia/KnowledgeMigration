@@ -1,0 +1,156 @@
+<apex:page >
+    <style>
+        .chartHidden{
+            display: none;
+        }
+        .chartShown{
+            display: block;
+        }
+    </style>
+    <apex:includeScript value="{!$Resource.cometd}" />
+    <apex:includeScript value="{!$Resource.JQuery}" />
+    <apex:includeScript value="{!$Resource.forceTK}" />
+    <apex:includeScript value="{!$Resource.jquery_cometd}" />
+    <apex:includeScript value="https://www.google.com/jsapi" />
+
+    <script>
+    function renderPieChart(report, column) {
+        // Default to first column
+        column = column || 0;
+        
+        google.load("visualization", "1", {packages:["corechart"], 'callback' : function() {
+            // Metadata for the aggregate column
+            var columnInfo = report.reportExtendedMetadata.aggregateColumnInfo[report.reportMetadata.aggregates[column]];
+            
+            // Legends (not shown on pie chart)
+            var dataArray = [[
+                report.reportExtendedMetadata.groupingColumnInfo[report.reportMetadata.groupingsDown[0].name].label,
+                columnInfo.label
+            ]];
+            
+            // Iterate through summary data
+            $.each(report.groupingsDown.groupings, function(index, grouping) {
+                dataArray.push([grouping.label, report.factMap[index.toString()+"!T"].aggregates[column].value]);
+            });
+            
+            var data = google.visualization.arrayToDataTable(dataArray);
+            
+            var options = {
+                title: report.attributes.reportName + ": " + columnInfo.label,
+                is3D: true,
+            };
+
+            if (columnInfo.dataType === "currency") {
+                var formatter = new google.visualization.NumberFormat({
+                    prefix: '$'
+                });
+                formatter.format(data, 1);
+            }
+            
+            // Create and draw the chart
+            var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+            chart.draw(data, options);
+        }});
+    }
+
+    function runReport() {
+        // Pass in the report ID like so:
+        // https://c.prerelna1.visual.pre.force.com/apex/AnalyticsDemo?reportId=00Ox0000000fX7XEAU
+        var reportId = '{!$CurrentPage.parameters.reportId}';
+        
+        if (reportId) {
+            // Get an instance of the REST API client and set the session ID
+            var client = new forcetk.Client();
+            client.setSessionToken('{!$Api.Session_ID}');
+            
+            // We'll keep the report data around for the life of the page
+            var report = null;
+    
+            // Run the report synchronously
+            client.ajax("/v29.0/analytics/reports/"+reportId+"?includeDetails=true", function(response){
+                // Save the report data
+                report = response;
+                
+                // For debugging
+                $("#output").text(JSON.stringify(report, null, '    '));
+                
+                // Grab the aggregate metadata and load it into a <select>
+                $.each(report.reportMetadata.aggregates, function(index, agg) {
+                    $("#selectAgg").append('<option value="'+index+'">'+
+                                               report.reportExtendedMetadata.aggregateColumnInfo[agg].label+
+                                           '</option>');
+                });
+                
+                renderPieChart(report);
+                
+                // We're done with the status
+                $("#statusText").hide();
+                
+                // Show the pie chart
+                $("#reportChart").removeClass("chartHidden").addClass("chartShown");
+            }, function(jqXHR, textStatus, errorThrown){
+                // uh-oh
+                $("#statusText").text("Error: "+jqXHR.status+" "+jqXHR.statusText);
+                
+                $("#output").text(jqXHR.responseText);
+            });
+            
+            // Rerender the pie chart when the user selects an aggregation
+            $("#selectAgg").change(function () {
+                renderPieChart(report, $('#selectAgg').val());
+            });
+
+        } else {
+            $("#statusText").text("Need a reportId!");
+        }
+    }
+    
+    // When the DOM is ready...
+    $(document).ready(function() {
+        // Show/hide raw data on click
+        $("#outputHeader").click(function(){
+            $("#output").toggle();
+        });
+        
+        // Rerun report on click
+        $("#rerun").click(function(){
+            $("#rerun").hide();
+            runReport();
+        });
+        
+        // Initialize CometD
+        $.cometd.init({
+            url: '/cometd/29.0/',
+            requestHeaders: { Authorization: 'Bearer {!$Api.Session_ID}'}
+        });
+        
+        // Subscribe to a topic. JSON-encoded update will be returned
+        // in the callback
+        $.cometd.subscribe('/topic/SpecialProductsUpdates', function(message) {
+            $('#output').append(JSON.stringify(message, null, '    ')+'\n\n');
+            
+            // Prompt user to rerun report
+            $("#rerun").show();
+        });
+ 
+        // Run the report and render the chart
+        runReport();
+    });
+
+    </script>
+    
+    <h1 id="statusText">Loading data...</h1>
+    <div id="reportChart" class="chartHidden">
+        <label id="selectLabel" for="selectAgg">Show data for: </label>
+        <select id="selectAgg"></select>
+        <div id="piechart_3d" style="width: 500px; height: 300px;"></div>
+    </div>
+    <button type="button" id="rerun" style="display: none">
+        Data changed - click to rerun report!
+    </button>
+    <div>
+        <br/>
+        <button type="button" id="outputHeader">Click to show/hide raw response</button>
+        <pre id="output" style="display: none"></pre>
+    </div>
+</apex:page>

@@ -1,0 +1,31 @@
+<template>
+    <lightning-card title="" icon-name="">
+        <div class="slds-p-around_medium">
+            <!-- Serial Number Field with custom class to reduce width -->
+            <lightning-input 
+                label="Serial Number" 
+                value={serialNumber} 
+                onchange={handleInputChange} 
+                name="serialNumber" 
+                class="narrow-input">
+            </lightning-input>
+
+            <!-- ID Type Dropdown with custom class to reduce width -->
+            <lightning-combobox
+                label="ID Type" 
+                value={idType} 
+                options={idTypeOptions} 
+                onchange={handleIdTypeChange} 
+                class="narrow-input">
+            </lightning-combobox>
+
+            <div class="button-container">
+                <button class="custom-button">Claim Device</button>
+            </div>
+            <!-- Success Message -->
+            <template if:true={isClaimed}>
+                <p class="slds-text-color_success">Device has been successfully claimed!</p>
+            </template>
+        </div>
+    </lightning-card>
+</template>

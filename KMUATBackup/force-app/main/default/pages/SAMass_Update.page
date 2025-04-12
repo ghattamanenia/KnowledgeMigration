@@ -1,0 +1,28 @@
+<apex:page standardController="Service_Asset__c" recordSetVar="Service_Asset__c"  extensions="ServiceAssetMassUpdateCTRL" action="{!onload}">
+
+
+    <apex:form >
+<!--     <apex:messages /> -->
+    <apex:pageMessages /> 
+    <apex:commandButton rendered="{!NOT(displayMassUpdate)}" action="{!Cancel}" value="Back"/>
+        <apex:pageblock rendered="{!displayMassUpdate}" title="Service Asset Mass Update">
+                <apex:pageblockbuttons >
+                    <apex:commandButton action="{!Save}" value="Save"/>
+                    <apex:commandButton action="{!Cancel}" value="Cancel"/>
+                </apex:pageblockbuttons>  
+            <apex:pageblockSection title="Service Asset Detail">
+              <!--    <apex:inputfield value="{!saMassupdate.Asset__c}"/>  -->
+              <apex:inputfield value="{!saMassupdate.Service_Product__c}"/>
+                  <apex:inputfield value="{!saMassupdate.Start_Date__c}"/>
+                  <apex:inputfield value="{!saMassupdate.End_Date__c }"/>
+                  <apex:inputfield value="{!saMassupdate.Renewal_Date__c }"/>
+                  <apex:inputfield value="{!saMassupdate.Renewal_Notice_Sent_Date__c }"/> 
+                  <apex:inputfield value="{!saMassupdate.Opportunity_Raised_Date__c}"/>  
+                  <apex:inputfield value="{!saMassupdate.Purchase_Information__c}"/>
+                  <apex:inputfield value="{!saMassupdate.Account__c }"/>
+                  <apex:inputfield value="{!saMassupdate.Trace_Id__c }"/>               
+            </apex:pageblockSection>
+        </apex:pageblock>
+    </apex:form>
+
+</apex:page>

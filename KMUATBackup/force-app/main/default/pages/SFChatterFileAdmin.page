@@ -1,0 +1,66 @@
+<apex:page controller="SFChatterFileAdminController"  tabStyle="Chatter_Files_Admin__tab">
+
+<apex:form id="theForm">
+       
+ 
+ 
+<apex:outputPanel id="AllfilesSection" > 
+ <apex:pageMessages />
+<apex:pageBlock title="Salesforce Chatter Files Administration">
+
+       
+    <apex:pageBlockSection columns="1">
+        <apex:inputtext label="Please provide the search text to refine search"  value="{!searchtag}"  />
+        <apex:commandButton action="{!searchfiles}" id="searchfiles"  value="Search" rerender="AllfilesSection" />
+        
+    </apex:pageBlockSection>
+   
+ </apex:pageBlock>   
+ 
+ <apex:pageBlock rendered="{!showtable}">   
+         <div >
+            <apex:commandButton value="<<" rerender="AllfilesSection" action="{!beginning}" disabled="{!prev}"/>
+            <apex:commandButton value="<" rerender="AllfilesSection" action="{!previous}" disabled="{!prev}"/>
+            <apex:commandButton value=">" rerender="AllfilesSection" action="{!next}" disabled="{!nxt}"/>
+            <apex:commandButton value=">>" rerender="AllfilesSection" action="{!end}" disabled="{!nxt}" />  <!-- do oncomplete  -->
+            <apex:outputText value="{!pageinfo}" />                                   
+        </div>
+      
+    
+        <apex:pageBlockTable value="{!Files}" var="FL" id="table" >
+        <apex:column >
+             <apex:facet name="header">File Name</apex:facet> {!FL.docname}
+        </apex:column>
+        <apex:column >
+             <apex:facet name="header">All Tags for this file</apex:facet> {!FL.tags}
+        </apex:column>
+        
+         <apex:column >
+             <apex:facet name="header">Actions</apex:facet> 
+           
+            <a href="/{!FL.reldocid}" 
+                onclick="window.open(this.href, 'mywin', 'height=700,width=900'); return false;" >File Details</a> 
+                
+            
+                
+         
+          </apex:column>
+        <apex:column >
+             <apex:facet name="header">Edit</apex:facet>
+             <apex:commandButton id="EditTags"  action="{!EditTags}" value="Edit Tags" rerender="hiddenBlock">
+                           <apex:param name="fileid" value="{!FL.reldocid}" assignTo="{!setFileId}"/>
+             </apex:commandButton>
+             <apex:pageBlock id="hiddenBlock" rendered="false"></apex:pageBlock>
+ 
+        </apex:column>
+        <!--  <apex:column value="{!A.attch.Phone}" /> -->
+    </apex:pageBlockTable>
+    
+
+
+
+</apex:pageBlock>
+</apex:outputPanel>        
+ </apex:form>
+ 
+</apex:page>

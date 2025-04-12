@@ -1,0 +1,20 @@
+<apex:page standardController="Opportunity" extensions="JP_OpportunityLineItem" lightningStylesheets="true" standardStylesheets="true" showHeader="true" sidebar="false" id="page">
+  <apex:form id="form">
+
+    <apex:pageBlock title="商談商品完了予定日ごとの金額">
+      <apex:pageBlockTable value="{!oliList}" var="o" width="100%"  columnsWidth="20%,80%">
+        <apex:column headerValue="完了予定日">
+          <apex:outputText value="{!o.c_date}"/> <!--★変更{!o}→{!o.c_date}-->
+        </apex:column>
+
+        <apex:column headerValue="総計(JPY)">
+          <apex:outputText value="{0, number, integer}">
+            <apex:param value="{!o.Amount}" />
+          </apex:outputText>
+        </apex:column>
+
+      </apex:pageBlockTable>
+    </apex:pageBlock>
+
+  </apex:form>
+</apex:page>

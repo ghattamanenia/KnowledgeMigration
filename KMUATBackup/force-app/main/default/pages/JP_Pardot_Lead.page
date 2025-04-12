@@ -1,0 +1,44 @@
+<apex:page standardController="Lead" lightningStylesheets="true" standardStylesheets="true" showHeader="true" sidebar="false" id="page">
+    <apex:form id="form">
+        <apex:pageBlock >
+            <apex:pageBlockButtons location="top">
+                <apex:outputPanel rendered="{!IF($User.Division=='インサイドセールス推進室'||$User.ProfileId=='00e20000001MEiKAAW'||$User.Alias=='kogiso'||$User.Alias=='hirahara'||$User.Alias=='nkudoh'||$User.Alias=='tanoue'||$User.Alias=='ayakam'||$User.Alias=='riho',true,false)}" >
+                    <apex:image url="/img/msg_icons/error16.png" rendered="{!NOT(Lead.JP_Pardot_Sync__c)}"/>
+                    <apex:commandButton value=" Send to Pardot" action="{!URLFOR($Page.pi__SendToPardot, null, [leadEmail=Lead.Email,leadId=Lead.Id,serverUrl=$Api.Partner_Server_URL_90])}" disabled="{!IF(Lead.JP_RoleBasedEmail__c|| Lead.JP_ReservedEmail__c, "true","false")}" />
+                </apex:outputPanel>
+            </apex:pageBlockButtons>
+
+            <apex:pageBlockSection columns="2" title="Pardot">
+                <apex:outputField value="{!Lead.pi__score__c}" />
+                <apex:outputField value="{!Lead.pi__url__c}" />
+                <apex:outputField value="{!Lead.pi__first_activity__c}" />
+                <apex:outputField value="{!Lead.pi__last_activity__c}" />
+                <apex:outputText label="Pardot Mail" value="{!IF(Lead.JP_RoleBasedEmail__c|| Lead.JP_ReservedEmail__c,"不可","可")} "/>
+                <apex:outputField value="{!Lead.pi__pardot_hard_bounced__c}" />
+
+                <apex:outputField value="{!Lead.Id}" rendered="false"/>
+                <apex:outputField value="{!Lead.Email}" rendered="false"/>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection columns="2" title="Recent scores">
+                <apex:facet name="header">
+                    Recent scores
+                    <span style="font-size: 60%;">　特定のサイトや特定のメールをウォッチしています。30日間アクティブでは無い場合、クリアされます。</span>
+                </apex:facet>
+                <apex:outputField value="{!Lead.JP_Pardot_Product__c}" />
+                <apex:outputField value="{!Lead.JP_Pardot_Solution__c}" />
+                <apex:outputField value="{!Lead.JP_Pardot_ITServices__c}" />
+                <apex:outputField value="{!Lead.JP_Pardot_Medical__c}" />
+                <apex:outputField value="{!Lead.JP_Pardot_wifi__c}" />
+                <apex:outputField value="{!Lead.JP_Pardot_Municipality__c}" />
+                <apex:outputField value="{!Lead.JP_Pardot_Management__c}" />
+                <apex:outputField value="{!Lead.JP_Pardot_Education__c}" />
+                <apex:outputField value="{!Lead.JP_Pardot_Security__c}" />
+                <apex:outputField value="{!Lead.JP_Pardot_Enterprise__c}" />
+                <apex:outputField value="{!Lead.JP_Pardot_Case__c}" />
+                <apex:outputField value="{!Lead.JP_Pardot_EngagementStudio__c}" />
+            </apex:pageBlockSection>
+
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

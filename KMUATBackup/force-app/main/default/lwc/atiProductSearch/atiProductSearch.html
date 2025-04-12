@@ -1,0 +1,82 @@
+<!--
+  @description       : 
+  @author            : Sampath Arjunan
+  @group             : 
+  @last modified on  : 21-11-2024
+  @last modified by  : Sampath Arjunan
+-->
+<template>
+    <lightning-card  icon-name="standard:product2">
+        <lightning-layout multiple-rows="true">
+            <lightning-layout-item size="12" padding="around-small">
+                <lightning-layout>
+                    <div class="customTitle">Product Search</div>
+                </lightning-layout>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12" padding="around-small" class="size3">
+                <lightning-layout >
+                    <lightning-layout-item padding="around-small" size="3">
+                        <lightning-input type="text"  placeholder="Type your search here" value={filter}
+                            onchange={handleFilterChange}></lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" size="3" >
+                        <lightning-button variant="brand" label="Search" title="Submit" onclick={handleSearch}
+                            class="slds-m-left_x-small" style="align-content: end;" >
+                        </lightning-button>
+                         <lightning-helptext content="Search your product"></lightning-helptext>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12" padding="around-small" >
+                <lightning-layout>
+                    <lightning-layout-item size="1">
+                     <b>Sort By</b> 
+                    </lightning-layout-item>
+                    <lightning-layout-item size="5">
+                        <template for:each={sortOptions} for:item="item">
+                            <fieldset key={item.value} style="display: block; float: left;">
+                                <div class="slds-form-element__control">
+                                    <span class="slds-radio">
+                                        <input name="radiogroup" id={item.value} type="radio" value={item.value}
+                                            onchange={handleSortbyChange} />
+                                        <label class="slds-radio__label" for={item.value}>
+                                            <span class="slds-radio_faux"></span>
+                                            <span class="slds-form-element__label">{item.label}</span>
+                                        </label>
+                                    </span>
+                                </div>
+                            </fieldset>
+                        </template>
+                    </lightning-layout-item>    
+                </lightning-layout>  
+            </lightning-layout-item>
+             <lightning-layout-item padding="around-small" size="12">
+                    <lightning-layout >
+                        <Lightning-layout-item padding="around-small" size="12" class="bgcolor">
+                                <p>To find a product or downloadable file, type a word or phrase in the text box above and click the Search button. The search will return a list of products containing any of the words or phrases you entered. The search is not case-sensitive, so you do not need to worry about capitalization.</p>
+                                <h2 class="bold-heading"> To make your search more effective:</h2>
+                                <ol class="slds-list_ordered">
+                                    <li>If you get too many results, try searching for an exact phrase by surrounding it with quotes(example: “128 bit”)</li>
+                                    <li>If you get too few results or the search doesn’t find what you’re  looking for, try using different words, wildcards or more terms</li>
+                                    <li>Check your spelling. A single misspelled or mistyped word can significantly change your  results.</li>
+                                </ol>
+                                <p>Learn from your results. Your initial search may not return exactly what you’re looking for, but scanning the results may give you ideas for other words or phrases to use.</p>
+                                <p>Click <a href="https://www.alliedtelesis.com/gb/en">here</a> for more help</p>
+                        </Lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                        <Lightning-layout-item padding="around-small" size="12">
+                            <c-data-table-wrapper object-name={objectNameToSend} fields-to-query={fieldNamesToSend}
+                            filters={filtersToSend} records-per-page={recordsPerPageToSend} disable-sort={disableSortToSend}
+                            disable-search={disableSearchToSend}></c-data-table-wrapper>
+                        </Lightning-layout-item>
+                    </lightning-layout>
+            </lightning-layout-item>
+        </lightning-layout>
+
+
+    </lightning-card>
+
+</template>

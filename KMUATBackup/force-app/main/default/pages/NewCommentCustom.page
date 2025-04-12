@@ -1,0 +1,28 @@
+<apex:page standardcontroller="Comment__c" extensions="NewCommentCustom" tabstyle="Comment__c">
+ <apex:form >
+        <apex:pageBlock title="New Comment">
+            <apex:pageMessages />
+        <apex:pageBlockButtons >
+              <apex:commandButton action="{!Save}" id="Save"  value="Save" />
+              <apex:commandButton action="{!Cancel}" id="Cancel"  value="Cancel" />   
+        </apex:pageBlockButtons>
+       
+         <apex:pageBlockSection title="Comment Information" columns="2">  
+               <apex:inputField value="{!NewComment.Comment__c}" required="true" style="height:150px;width:350px;"/>
+               <apex:outputField value="{!NewComment.Related_Project__c}"/>
+               <apex:inputField value="{!NewComment.Public__c}"/>
+               <apex:outputField value="{!NewComment.Related_Case__c}"/>
+         </apex:pageBlockSection>     
+         
+        <!-- <apex:pageBlockSection title="Additional Notification Information" columns="2">    
+               <apex:selectList id="Sel_Users" value="{!Selected_emails}" multiselect="true" size="4" label="Select additional users to send notification(Max:10)">
+                <apex:selectOptions value="{!Users}"/>
+               </apex:selectList>
+               
+                <apex:selectList id="Sel_Attachments" value="{!Selected_attachments}" multiselect="true" size="4" label="Select attachments">
+                <apex:selectOptions value="{!Attachmnts}"/>
+               </apex:selectList> 
+         </apex:pageBlockSection> -->
+         </apex:pageBlock>
+ </apex:form>
+</apex:page>

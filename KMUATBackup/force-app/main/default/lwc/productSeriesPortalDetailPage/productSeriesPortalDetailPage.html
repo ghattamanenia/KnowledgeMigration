@@ -1,0 +1,38 @@
+<template>
+    <lightning-tabset>
+        <lightning-tab label="Current Releases">
+            <div class="slds-box" style="padding: 0rem;">
+                <lightning-datatable key-field="Id"
+                                    data={availableData}
+                                    columns={columns}
+                                    hide-checkbox-column
+                                    show-row-number-column
+                                    sorted-by={sortBy}
+                                    sorted-direction={sortDirection}
+                                    onsort={doSorting}
+                                    data-id="Current">
+                </lightning-datatable>
+                <div class="slds-notify slds-notify_alert" role="alert" if:true={noAvlDataFound}>
+                    <h2>{avlNoDataFoundMsg}</h2>
+                </div>
+            </div>
+        </lightning-tab>
+        <lightning-tab label="Archived Versions">
+            <div class="slds-box" style="padding: 0rem;">
+                <lightning-datatable key-field="Id"
+                                    data={archivedData}
+                                    columns={columns}
+                                    hide-checkbox-column
+                                    show-row-number-column
+                                    sorted-by={sortBy}
+                                    sorted-direction={sortDirection}
+                                    onsort={doSorting}
+                                    data-id="Archived">
+                </lightning-datatable>
+                <div class="slds-notify slds-notify_alert" role="alert" if:true={noArchDataFound}>
+                    <h2>{archNoDataFoundMsg}</h2>
+                </div>
+            </div>
+        </lightning-tab>
+    </lightning-tabset>
+</template>

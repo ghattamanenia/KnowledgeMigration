@@ -1,0 +1,193 @@
+<apex:page showHeader="false" sidebar="false" standardcontroller="JP_QuotationHeader__c" extensions="JP_ProductQuotationSelectController">
+    <style>
+        .upBtn {
+            font-weight: bold !important;
+            font-size: 16px;
+            width: 80px !important;
+            height: 26px;
+        }
+
+        .inputF {
+            font-size: 16px;
+            height: 15px;
+        }
+        .selectF {
+            font-size: 16px;
+            height: 20px;
+        }
+        input[type=checkbox] {
+            width:          16px;
+            height:         16px;
+            -moz-transform:     scale(1.1);
+            -webkit-transform:  scale(1.1);
+            transform:      scale(1.1);
+        }
+
+    </style>
+    <apex:includeScript value="https://s.oproarts.com/js/live_ff-1.00.js"></apex:includeScript>
+    <apex:includeScript value="https://s.oproarts.com/js/live_ff-1.20.js"></apex:includeScript>
+    <script type="text/javascript">
+        function execute(selectedValId, openPrice, includingSalesTax, salesTaxRate, roundingSalesTax, displayCorporationSeal){
+            var open = '';
+            var tax = '';
+            var seal = '';
+
+            if(hasError == 'false') {
+                //OPEN品
+                if(document.getElementById(openPrice).value == 'オープン表示あり'){
+                    open = '_open';
+                }else{
+                    open = '_sankou';
+                }
+                //消費税表示
+                if(document.getElementById(includingSalesTax).checked == true){
+                    tax = '_tax';
+                    if(document.getElementById(salesTaxRate).value == ''){
+                        tax += '10';
+                    }else{
+                        tax += document.getElementById(salesTaxRate).value;
+                    }
+                    if(document.getElementById(roundingSalesTax).value == '切り捨て'){
+                        tax += 'down';
+                    }
+                }
+                //社判表示
+                if(document.getElementById(displayCorporationSeal).checked == false){
+                    seal = '_noseal';
+                }
+
+                // ---- BEGIN  ----
+                OPROARTS.Live.fF.action({
+                tp:[
+                    document.getElementById(selectedValId).value
+                ],
+
+                fe:true,
+
+                createsAttach:true,
+
+                createsTask:true,
+
+                title:'見積書_{!JSENCODE(record.JP_QuotationNo__c)}_' + document.getElementById(selectedValId).value + open + tax + seal,
+
+                objectId:'{!JSENCODE(record.Id)}',
+
+                // OPROARTS Live - Force.com API に必要な諸パラメータです。
+                // このパラメータを編集しないでください。
+                api:['{!JSENCODE($Organization.Id)}','{!JSENCODE($User.Id)}','{!JSENCODE($Api.Session_ID)}','{!JSENCODE($Api.Partner_Server_URL_220)}']
+                }).url("https://www.oproarts.com/liveffb/action").pdf();
+                // 作成するドキュメントの形式のメソッドを呼び出します。'pdf()','opr()','print()'を指定します。
+                // 'opr()','print()'を使用する場合、OPRO X Browser をクライアントPCにインストールしてください。
+                // ---- END ----
+            }
+            return false;   
+        };
+        function executePreview(selectedValId, openPrice, includingSalesTax, salesTaxRate, roundingSalesTax, displayCorporationSeal){
+            var open = '';
+            var tax = '';
+            var seal = '';
+            if(hasError == 'false') {
+                //OPEN品
+                if(document.getElementById(openPrice).value == 'オープン表示あり'){
+                    open = '_open';
+                }else{
+                    open = '_sankou';
+                }
+                //消費税表示
+                if(document.getElementById(includingSalesTax).checked == true){
+                    tax = '_tax';
+                    if(document.getElementById(salesTaxRate).value == ''){
+                        tax += '10';
+                    }else{
+                        tax += document.getElementById(salesTaxRate).value;
+                    }
+                    if(document.getElementById(roundingSalesTax).value == '切り捨て'){
+                        tax += 'down';
+                    }
+                }
+                //社判表示
+                if(document.getElementById(displayCorporationSeal).checked == false){
+                    seal = '_noseal';
+                }
+
+                // ---- BEGIN  ----
+                OPROARTS.Live.fF.action({
+                tp:[
+                    document.getElementById(selectedValId).value
+                ],
+
+                fe:true,
+
+                createsAttach:true,
+
+                createsTask:true,
+
+                title:'見積書_{!JSENCODE(record.JP_QuotationNo__c)}_' + document.getElementById(selectedValId).value + open + tax + seal +'_preview',
+
+                objectId:'{!JSENCODE(record.Id)}',
+
+                // OPROARTS Live - Force.com API に必要な諸パラメータです。
+                // このパラメータを編集しないでください。
+                api:['{!JSENCODE($Organization.Id)}','{!JSENCODE($User.Id)}','{!JSENCODE($Api.Session_ID)}','{!JSENCODE($Api.Partner_Server_URL_220)}']
+                }).url("https://www.oproarts.com/liveffb/action").pdfPreview();
+                // 作成するドキュメントの形式のメソッドを呼び出します。'pdf()','opr()','print()'を指定します。
+                // 'opr()','print()'を使用する場合、OPRO X Browser をクライアントPCにインストールしてください。
+                // ---- END ----
+            }
+            return false;   
+        }; 
+
+    </script>
+    
+        <body style="font-family:'メイリオ',Meiryo;">
+        <apex:form id="theForm" >
+            <!--Message-->
+            <apex:pageMessages id="msgId" />
+            <!--Block-->
+            <apex:pageBlock id="pgBlock" html-style="font-size:18px;" mode="detail" rendered="{!!hasError2}" >
+                <apex:pageBlockSection id="pgBlockSection" columns="2">
+                    <!-- 消費税表示 -->
+                    <apex:inputField id="includingSalesTax" value="{!record.JP_IncludingSalesTax__c}" />
+                    <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                    <!-- 消費税率(%) -->
+                    <apex:inputField id="salesTaxRate" value="{!record.JP_SalesTaxRate__c}" styleClass="inputF" />
+                    <!-- 小数点以下 -->
+                    <apex:inputField id="roundingSalesTax" value="{!record.JP_RoundingSalesTax__c}" styleClass="selectF" />
+                    <!-- OPEN品 -->
+                    <apex:inputField id="openPrice" value="{!record.JP_OpenPrice__c}" styleClass="selectF" />
+                    <!-- 社判表示 -->
+                    <apex:inputField id="displayCorporationSeal" value="{!record.JP_DisplayCorporationSeal__c}" />
+                    <!-- テンプレート選択 -->
+                    <apex:selectList value="{!selectedValue}" id="selectedVal" multiselect="false" size="1" styleClass="selectF">
+                        <apex:selectOptions value="{!selectValues}" />
+                    </apex:selectList>                 
+                    <!--ボタン-->
+                    <apex:pageBlockSectionItem >
+                        <apex:commandbutton id="upBtnPre" disabled="false" value="プレビュー" action="{!doSave}" styleClass="upBtn" reRender="script-block,msgId"
+                            onComplete="return executePreview('{!$Component.theForm.pgBlock.pgBlockSection.selectedVal}',
+                                                        '{!$Component.theForm.pgBlock.pgBlockSection.openPrice}',
+                                                        '{!$Component.theForm.pgBlock.pgBlockSection.includingSalesTax}',
+                                                        '{!$Component.theForm.pgBlock.pgBlockSection.salesTaxRate}',
+                                                        '{!$Component.theForm.pgBlock.pgBlockSection.roundingSalesTax}',
+                                                        '{!$Component.theForm.pgBlock.pgBlockSection.displayCorporationSeal}')" />
+                        <apex:commandbutton id="upBtn" disabled="{!NOT(isApploved)}" value="出 力" action="{!doExecute}" styleClass="upBtn" reRender="script-block,msgId"
+                            onComplete="return execute('{!$Component.theForm.pgBlock.pgBlockSection.selectedVal}',
+                                                        '{!$Component.theForm.pgBlock.pgBlockSection.openPrice}',
+                                                        '{!$Component.theForm.pgBlock.pgBlockSection.includingSalesTax}',
+                                                        '{!$Component.theForm.pgBlock.pgBlockSection.salesTaxRate}',
+                                                        '{!$Component.theForm.pgBlock.pgBlockSection.roundingSalesTax}',
+                                                        '{!$Component.theForm.pgBlock.pgBlockSection.displayCorporationSeal}')" />
+                    </apex:pageBlockSectionItem>
+
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:form>
+        
+        <apex:outputPanel layout="block" id="script-block">
+            <script>
+                var hasError = '{!hasError2}';
+            </script>
+        </apex:outputPanel>
+    </body>
+
+</apex:page>

@@ -1,0 +1,133 @@
+<apex:page controller="CaseRMAChildType" tabstyle="case" >
+
+<script type="text/javascript">
+
+    window.onload = function()
+    {
+         var elements = document.getElementsByClassName("HWLOOKUP");
+         for(var i = 0, length = elements.length; i < length; i++) 
+         {
+              elements[i].readOnly = 'none';
+         }
+    }
+    
+</script>
+
+<apex:form >
+        <apex:pageBlock title="RMA Child Case">
+            <apex:pageMessages />
+        
+            
+          <apex:pageBlockButtons >
+              <apex:commandButton action="{!SubmitCase}" id="SubmitCase"  value="Save" /> 
+              <apex:commandButton action="{!CancelSubmit}" id="CancelSubmit"  value="Cancel" />   
+          </apex:pageBlockButtons>
+          <apex:pageBlockSection title="General Information" columns="2">  
+              <apex:inputField value="{!submitCase.Is_it_reproducible__c }"/>
+              <apex:inputField value="{!submitCase.New_or_Existing_Installation__c}"/>
+              <apex:inputTextarea id="caseReproSteps" value="{!submitCase.What_are_the_steps_to_reproduce_it__c}" label="What are the steps to reproduce it?" title="If answer to question above is a Yes." />
+              <apex:inputField value="{!submitCase.If_existing_were_there_recent_changes__c }"/>
+              <apex:inputField value="{!submitCase.specific_circumstances__c }"/>
+          </apex:pageBlockSection>
+            
+          <apex:pageBlockSection title="Severity Information" columns="2">
+            <apex:inputField value="{!submitCase.Have_services_degraded__c }"/>
+            
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Customer Impact" />
+                <apex:outputPanel >
+                    <div class="requiredInput">
+                        <div class="requiredBlock"></div>
+                       <apex:selectList id="Impact" value="{!submitCase.Impact__c }" size="1"  label="Impact">
+                        <apex:selectOption itemValue="-" itemLabel="--None--" />
+                        <apex:selectOption itemValue="High" itemLabel="High" />
+                        <apex:selectOption itemValue="Medium" itemLabel="Medium" />
+                        <apex:selectOption itemValue="Low" itemLabel="Low" />
+                    </apex:selectList>
+                    </div>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            
+            <apex:inputField value="{!submitCase.Is_your_network_down__c }"/>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Customer Urgency" />
+                <apex:outputPanel >
+                    <div class="requiredInput">
+                        <div class="requiredBlock"></div>
+                       <apex:selectList id="Urgency" value="{!submitCase.Urgency__c}" size="1"  label="Urgency">
+                            <apex:selectOption itemValue="-" itemLabel="--None--" />
+                            <apex:selectOption itemValue="High" itemLabel="High" />
+                            <apex:selectOption itemValue="Medium" itemLabel="Medium" />
+                            <apex:selectOption itemValue="Low" itemLabel="Low" />
+                        </apex:selectList>  
+                    </div>
+                </apex:outputPanel>
+                
+             </apex:pageBlockSectionItem>
+            
+            <apex:inputField value="{!submitCase.Is_there_a_workaround_in_place__c }"/>
+            
+             <apex:inputField value="{!submitCase.Priority }" required="true"/>
+          </apex:pageBlockSection>
+           
+           
+            <apex:pageBlockSection title="Product Information" columns="1">
+            
+            <!-- <apex:inputField id="hproduct" required="true" value="{!hwAsset.Product__c}"/> -->
+             <apex:pageBlockSectionItem >
+              <apex:outputLabel value="H/W Asset" /> 
+                <apex:outputPanel >
+                    <div class="requiredInput">
+                        <div class="requiredBlock"></div> 
+                        <apex:inputfield value="{!submitCase.Hw_Asset_Name__c}" styleclass="HWLOOKUP" />
+                        <apex:outputText style="font-style:italic" value="Please use lookup icon to select a Hardware Asset."/>
+                        </div>
+                </apex:outputPanel>
+               </apex:pageBlockSectionItem>    
+               
+               
+             <apex:pageBlockSectionItem datastyle="display:none" > 
+                  <apex:inputfield value="{!submitCase.AccountId }"  />
+             </apex:pageBlockSectionItem>    
+             <!-- <apex:inputfield  value="{!submitCase.AccountId }" style="display:none" /> -->
+             <!-- <apex:inputHidden value="{!submitCase.AccountId }" id="Account"/> -->
+             <!--  <apex:inputField value="{!submitCase.RecordTypeId}" style="display:hidden"/> -->
+           <!-- <apex:pageBlockSectionItem >
+            
+          
+            <apex:outputLabel value="H/W Asset" />
+                <apex:outputPanel >
+                    <div class="requiredInput">
+                        <div class="requiredBlock"></div> 
+                            <apex:selectList id="Hw_Asset" value="{!Hw_Asset}" size="1" label="H/W Asset">
+                            <apex:selectOptions value="{!Assets}"/>
+                           </apex:selectList> 
+                   </div>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>    -->                                                                                                          
+            </apex:pageBlockSection>
+            
+           <apex:pageBlockSection title="RMA Status" columns="2"> 
+        <!--   <apex:inputField value="{!submitCase.Date_of_Purchase__c}"/> -->
+        <!--   <apex:inputField value="{!submitCase.RMA_Reason__c}"/> -->
+           <apex:inputField value="{!submitCase.RMA_Status__c }"/> 
+           <apex:inputField value="{!submitCase.RMA_Tracking_Number__c }" />  
+           <apex:inputField value="{!submitCase.RMA_Service_Offered__c}"/>           
+           <apex:inputField value="{!submitCase.RMA_Number__c }" /> 
+           <apex:inputField value="{!submitCase.ATI_Fault_Code_1__c}"/>
+           <apex:inputField value="{!submitCase.TAC_Comments__c}"/>
+             
+       
+                                                                                  
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Case Response Management" columns="2">
+            <apex:inputField value="{!submitCase.External_Ticket__c }" /> 
+            </apex:pageBlockSection>
+          
+        
+            
+        </apex:pageBlock>
+</apex:form>
+
+</apex:page>

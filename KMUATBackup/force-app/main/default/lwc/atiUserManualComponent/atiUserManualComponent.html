@@ -1,0 +1,64 @@
+<!--
+  @description       : 
+  @author            : Sampath Arjunan
+  @group             : 
+  @last modified on  : 27-11-2024
+  @last modified by  : Sampath Arjunan
+-->
+<template>
+    <lightning-card title="Table of Contents" icon-name="utility:knowledge_base">
+        <template if:true={treeData}>
+            <div class="toc-container">
+                <ul>
+                    <template for:each={treeData} for:item="item">
+                        <li key={item.id}>
+                            <div>
+                                <span class="title" onclick={handleClick} data-id={item.id}>{item.title}</span>
+                            </div>
+                            <template if:true={item.isContentVisible}>
+                                <div class="content">
+                                    <lightning-formatted-rich-text value={item.content}></lightning-formatted-rich-text>
+                                </div>
+                            </template>
+                            <template if:true={item.items}>
+                                <ul>
+                                    <template for:each={item.items} for:item="childItem">
+                                        <li key={childItem.id}>
+                                            <div>
+                                                <span class="title" onclick={handleClick} data-id={childItem.id}>{childItem.title}</span>
+                                            </div>
+                                            <template if:true={childItem.isContentVisible}>
+                                                <div class="content">
+                                                    <lightning-formatted-rich-text value={childItem.content}></lightning-formatted-rich-text>
+                                                </div>
+                                            </template>
+                                            <template if:true={childItem.items}>
+                                                <ul>
+                                                    <template for:each={childItem.items} for:item="subChildItem">
+                                                        <li key={subChildItem.id}>
+                                                            <div>
+                                                                <span class="title" onclick={handleClick} data-id={subChildItem.id}>{subChildItem.title}</span>
+                                                            </div>
+                                                            <template if:true={subChildItem.isContentVisible}>
+                                                                <div class="content">
+                                                                    <lightning-formatted-rich-text value={subChildItem.content}></lightning-formatted-rich-text>
+                                                                </div>
+                                                            </template>
+                                                        </li>
+                                                    </template>
+                                                </ul>
+                                            </template>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </template>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+        </template>
+        <template if:false={treeData}>
+            <p>Loading...</p>
+        </template>
+    </lightning-card>
+</template>

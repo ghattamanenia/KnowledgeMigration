@@ -1,0 +1,31 @@
+<template>
+    <lightning-card title="">
+        <div class="slds-p-around_medium">
+            <lightning-file-upload
+                label="Choose File"
+                name="fileUpload"
+                accept={acceptedFormats}
+                record-id={recordId}
+                onuploadfinished={handleUploadFinished}>
+            </lightning-file-upload>
+
+            <!-- Display uploaded file details -->
+            <template if:true={uploadedFiles}>
+                <div class="slds-m-top_medium">
+                    <h3>Uploaded Files:</h3>
+                    <ul>
+                        <template for:each={uploadedFiles} for:item="file">
+                            <li key={file.documentId}>
+                                {file.title} - {file.size} bytes
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+            </template>
+        </div>
+          <!-- Button with a one-line gap and specific styles -->
+    <div class="button-container" style="padding-left:10px">
+        <button class="custom-button">save</button>
+    </div>
+    </lightning-card>
+</template>

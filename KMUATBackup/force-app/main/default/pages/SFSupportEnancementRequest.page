@@ -1,0 +1,160 @@
+<apex:page controller="SFSupportCreateCaseController" tabStyle="Salesforce_Support__tab" title="Salesforce Support">
+    <apex:includeScript value="{!$Resource.JQuery}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.SFSupportCSS)}" />    
+    <apex:form styleClass="createSFSupportCase">
+    <apex:pageMessages />  
+        <apex:pageBlock title="I'm proposing an enhancement to Salesforce" >   
+            <apex:pageBlockButtons >
+                <!-- <apex:commandButton onclick="validate();" value="Submit" style="margin-right: 10px;" reRender="none"/> -->
+                <input type="button" class="btn submitBtn" onclick="SFSupport.validate();" value="Submit" style="margin-right: 10px;"/>                 
+                <apex:commandButton action="{!CancelCase}" value="Cancel" immediate="true" /> 
+            </apex:pageBlockButtons>
+            <apex:actionFunction name="submitCase" action="{!SubmitCase}"/>
+
+            <table class="eRequestTable">
+                <thead></thead>
+                <tbody>
+
+                    <tr class="separator-bottom">
+                        <td>
+                            <label>What is your proposed enhancement? </label>
+                            <apex:inputTextarea value="{!SupportCase.Description}" styleClass="requiredField"/>
+                        </td> 
+                    </tr>
+
+                    <tr class="separator-bottom"> 
+                        <td class="businessEffected">
+                            <label>If known, select business process(es) effected</label>
+                            <apex:inputField value="{!SupportCase.BusinessProcessesEffected__c}" id="effectedBusinessProcess" onmouseover="this.attributes.title.value = '';"/>
+                            <!-- <apex:selectList value="{!businessType}" styleClass="businessProcessSelect" size="1">
+                                <apex:selectOptions value="{!businessTypeVal}" />
+                            </apex:selectList>    --> 
+                            <!-- <div id="businessProcessesMultiPickList" class="businessProcessesMultiPickList">
+                                <c:MultiselectPicklist leftLabel="Available"
+                                    leftOption = "{!availableBusinessProcesses}"
+                                    rightLabel = "Selected"
+                                    rightOption = "{!selectedBusinessProcesses}"
+                                    size="5"
+                                    width="150px"/> -->
+                            <apex:inputTextarea value="{!SupportCase.Explain_effected_Business_Processes__c}" id="defineBusinessProcess" styleClass="defineBusinessProcess requiredField" style="display: none;" html-placeholder="Please define"/>          
+                            <!-- </div>  -->     
+                        </td>
+                    </tr>
+
+                    <tr class="separator-bottom">
+                        <td>
+                            <label>Describe the expected benefits to Allied Telesis</label>
+                            <apex:inputTextarea value="{!SupportCase.Expected_Benefits_to_Allied_Telesis__c}" styleClass="requiredField"/>                       
+                        </td>                    
+                    </tr>
+                    <!-- <tr class="radioTR">
+                        <td>
+                            <label>Do you expect the enhancement to result in <br/>a measurable increase in revenue?</label>
+                            <apex:selectRadio value="{!radio}">
+                                <apex:selectOptions value="{!radioVal}"/>
+                            </apex:selectRadio>                         
+                        </td>
+                    </tr> -->
+                    <tr>
+                        <td>
+                            <label>Note estimated increase in revenue (USD)</label>
+                            <apex:inputField value="{!SupportCase.estimatedRevenueImprovements__c}" styleClass="currency"/>
+                        </td>
+                    </tr>
+                    <tr class="separator-bottom">
+                        <td class="hide">
+                            <div>
+                                <label>Provide the supporting calculations</label>
+                                <apex:inputTextarea value="{!SupportCase.Explain_revenue_improvements__c}" styleClass="requiredField supportCalc"/>      
+                            </div>                 
+                        </td>
+                    </tr>
+
+                    <!-- <tr class="radioTR">
+                        <td>
+                            <label>Do you expect the enhancement to result in <br/>a measurable cost reduction?</label>
+                            <apex:selectRadio value="{!radio}">
+                                <apex:selectOptions value="{!radioVal}"/>
+                            </apex:selectRadio>                         
+                        </td>
+                    </tr> -->
+                    <tr>
+                        <td>
+                            <label>Note your estimated cost reduction (USD)</label>
+                            <apex:inputField value="{!SupportCase.estimatedCostReduction__c}" styleClass="currency"/>
+                        </td>
+                    </tr> 
+                    <tr class="separator-bottom">
+                        <td class="hide">
+                            <div>
+                                <label>Provide the supporting calculations</label>
+                                <apex:inputTextarea value="{!SupportCase.Explain_cost_Reduction__c}" styleClass="requiredField supportCalc"/>  
+                            </div>                     
+                        </td>
+                    </tr>
+
+                    <tr class="radioTR">
+                        <td>
+                            <label>Is this request related to a legal requirement?</label>
+                            <apex:selectRadio value="{!radio}">
+                                <apex:selectOptions value="{!radioVal}"/>
+                            </apex:selectRadio>                       
+                        </td>
+                    </tr>
+                    <tr class="separator-bottom">
+                        <td class="hide">
+                            <div>
+                                <label style="vertical-align: top;">Please describe the legal requirement</label>
+                                <apex:inputTextarea value="{!SupportCase.Explain_legal_requirement__c}" styleClass="requiredField"/>                               
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- <tr class="radioTR">
+                        <td>
+                            <label>Are there other expected benefits to Allied Telesis for this request?</label>
+                            <apex:selectRadio value="{!radio}">
+                                <apex:selectOptions value="{!radioVal}"/>
+                            </apex:selectRadio>                         
+                        </td>
+                    </tr>  -->
+                    <tr class="radioTR">
+                        <td>
+                            <label>Are you submitting this request on <br/>behalf of someone else?</label>
+                            <apex:selectRadio value="{!radio}">
+                                <apex:selectOptions value="{!radioVal}"/>
+                            </apex:selectRadio>                         
+                        </td>
+                    </tr>
+                    <tr class="separator-bottom">
+                        <td class="hide">
+                            <div>
+                                <label>I'm submitting on behalf of</label>                   
+                                <apex:inputField value="{!SupportCase.Requestor_Name__c}" styleClass="lookUp"/>
+                            </div>
+                        </td>                         
+                    </tr> 
+
+                    <tr class="separator-bottom">
+                        <td>
+                            <label>Additional Comments</label>
+                            <apex:inputTextarea value="{!SupportCase.Additional_Comments__c}"/> 
+                        </td>                          
+                    </tr> 
+
+                    <tr style="display: {!IsAttachment}">
+                        <td class="label">
+                            <label>Optionally, attach a document</label>
+                            <!-- <input type="file" class="{!If(Type == 'Data', 'requiredField', '')}" accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword" onchange="this.style.width = '100%';" /> -->
+                            <apex:inputFile value="{!attachment.body}" filename="{!attachment.name}" id="file"/>
+                          
+                        </td>            
+                      </tr>
+
+                </tbody>            
+            </table>
+
+        </apex:pageBlock>
+    </apex:form>
+    <apex:includeScript value="{!$Resource.SFSupportJS}"/>
+</apex:page>

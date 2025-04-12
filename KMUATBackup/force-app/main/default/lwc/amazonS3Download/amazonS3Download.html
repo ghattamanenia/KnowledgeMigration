@@ -1,0 +1,43 @@
+<!--
+  @description       : 
+  @author            : Sampath Arjunan
+  @group             : 
+  @last modified on  : 22-12-2024
+  @last modified by  : Sampath Arjunan
+-->
+<template>
+  <lightning-card title="File Download" icon-name="action:download">
+    <div class="slds-p-around_medium">
+      <template if:true={isUserEntitled}>
+        <template if:true={fileKey}>
+          <!-- Display the Download Button -->
+          <lightning-button 
+              label="Download File" 
+              onclick={handleDownload} 
+              icon-name="utility:download" 
+              class="slds-m-top_medium">
+          </lightning-button>
+        </template>
+        <template if:false={fileKey}>
+          <!-- File is not ready message -->
+          <p class="slds-text-color_error slds-m-top_medium">
+            File is not ready to download.
+          </p>
+        </template>
+      </template>
+      <template if:false={isUserEntitled}>
+        <!-- User not entitled message -->
+        <p class="slds-text-color_error slds-m-top_medium">
+          You are not entitled to download this software.
+        </p>
+      </template>
+    </div>
+    <template if:true={isLoading}>
+      <lightning-spinner 
+          alternative-text="Loading" 
+          size="medium" 
+          class="slds-m-top_medium">
+      </lightning-spinner>
+    </template>
+  </lightning-card>
+</template>

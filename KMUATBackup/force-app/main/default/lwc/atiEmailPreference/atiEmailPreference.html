@@ -1,0 +1,42 @@
+<!--
+  @description       : 
+  @author            : Sampath Arjunan
+  @group             : 
+  @last modified on  : 03-12-2024
+  @last modified by  : Sampath Arjunan
+-->
+<template>
+    <lightning-card>
+        <div class="slds-p-horizontal_medium">
+            <!-- Radio Group -->
+            <lightning-radio-group 
+                name="emailPreference"
+                label=""
+                options={options}
+                value={value}
+                onchange={handleChange}
+                class="custom-radio-group">
+            </lightning-radio-group>
+        </div>
+        <br/>
+        <!-- Display selected preference -->
+        <!-- <div class="slds-p-horizontal_medium">
+            <template if:true={value}>
+                <p>
+                    <strong>Selected Preference: </strong> 
+                    {selectedLabel}
+                </p>
+            </template>
+        </div> -->
+        <br/>
+        <div class="slds-p-horizontal_medium">
+            <!-- Submit Button -->
+            <lightning-button 
+                variant="brand" 
+                label="Submit Preference" 
+                onclick={handleSubmit} 
+                class="slds-m-top_medium">
+            </lightning-button>
+        </div>
+    </lightning-card>
+</template>

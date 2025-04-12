@@ -1,0 +1,104 @@
+<apex:page standardController="SBQQ__ContractedPrice__c" extensions="AddContractedPriceController">
+   <!-- <apex:pageMessages />  -->
+   <script type='text/javascript'>
+
+    function openLookup(baseURL, width, modified, searchParam){
+
+    var originalbaseURL = baseURL;
+    var originalwidth = width;
+    var originalmodified = modified;
+    var originalsearchParam = searchParam;
+ 
+    var lookupType = baseURL.substr(baseURL.length-3, 3);
+    if (modified == '1') baseURL = baseURL + searchParam;
+ 
+    var isCustomLookup = false;
+ 
+    // Following "01t" is the lookup type for product__c 
+    if(lookupType == "01t"){
+ 
+      var urlArr = baseURL.split("&");
+      var txtId = '';
+      if(urlArr.length > 2) {
+        urlArr = urlArr[1].split('=');
+        txtId = urlArr[1];
+      }
+ 
+      // Following is the url of Custom Lookup page. You need to change that accordingly
+      baseURL = "/apex/SalesContractProductLookup?txt=" + txtId;
+ 
+      // Following is the id of apex:form control "myForm". You need to change that accordingly
+      baseURL = baseURL + "&frm=" + escapeUTF("{!$Component.myForm}");
+      if (modified == '1') {
+        baseURL = baseURL + "&lksearch=" + searchParam+"&pricebookID="+"{!accpricebookId}";
+      }
+ 
+      // Following is the ID of inputField that is the lookup to be customized as custom lookup
+      if(txtId.indexOf('productID') > -1 ){
+        isCustomLookup = true;
+      }
+     
+      
+    }
+ 
+ 
+    if(isCustomLookup == true){
+      openPopup(baseURL, "lookup", 350, 480, "width=820"+""+",height=600,toolbar=no,status=no,directories=no,menubar=no,resizable=yes,scrollable=no", true);
+    }
+    else {
+      if (modified == '1') originalbaseURL = originalbaseURL + originalsearchParam;
+      openPopup(originalbaseURL, "lookup", 350, 480, "width="+originalwidth+",height=480,toolbar=no,status=no,directories=no,menubar=no,resizable=yes,scrollable=no", true);
+    }
+    return;
+  }
+  
+    function noenter(ev)  
+    {
+        if (window.event && window.event.keyCode == 13 || ev.which == 13) {
+            doSearchAF();
+            return false;
+         } else {
+              return true;
+         }
+     }
+</script>
+ 
+    <apex:form >
+        <apex:pageBlock id="pblock" mode="edit">
+        <apex:pageMessages />
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Save" action="{!onDone}"/>
+                <apex:commandButton value="Save & Add More" action="{!onSaveMore}"/>
+                <apex:commandButton value="Cancel" action="{!cancel}"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.SBQQ__ContractedPrice__c.fields.Sales_Contract__c.label}"/>
+                    <apex:inputField id="salesContractInput" value="{!target.Sales_Contract__c}"  required="true" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.SBQQ__ContractedPrice__c.fields.SBQQ__Product__c.label}"/> 
+                    <apex:inputfield required="true" id="productID" value="{!target.SBQQ__Product__c}" onchange="calculateListPrice()"  /> 
+                </apex:pageBlockSectionItem>
+               <!-- <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.SBQQ__ContractedPrice__c.fields.ATFE_Product__c.label}"/> 
+                    <apex:inputfield required="true" id="productID" value="{!target.ATFE_Product__c}" onchange="calculateListPrice()"  /> 
+                </apex:pageBlockSectionItem>-->
+              <!--  <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.SBQQ__ContractedPrice__c.fields.CurrencyIsoCode.label}"/>
+                    <apex:inputField value="{!target.CurrencyIsoCode}" onchange="calculateListPrice()"/>
+                </apex:pageBlockSectionItem> -->
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.SBQQ__ContractedPrice__c.fields.PriceBook_Price__c.label}"/>
+                    <apex:outputField value="{!template.PriceBook_Price__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.SBQQ__ContractedPrice__c.fields.SBQQ__Price__c.label}"/>
+                    <apex:inputField value="{!target.SBQQ__Price__c}"    />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        
+        <apex:actionFunction name="calculateListPrice" action="{!onCalculateListPrice}" reRender="pblock"/>
+    </apex:form>
+</apex:page>

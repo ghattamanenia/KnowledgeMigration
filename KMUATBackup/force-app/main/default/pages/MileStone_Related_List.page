@@ -1,0 +1,53 @@
+<apex:page controller="Milestone_controller">
+<!--- <apex:page standardController="Entitlement" recordSetVar="Entitlement"  > -->
+<!---  <apex:relatedList list="Entitlements" /> -->
+ <style>
+        .vfHelpText a            {position:relative;}
+        .vfHelpText a span       {display: none;}
+        .vfHelpText a:hover span {display: block;
+                                  position:absolute;
+                                  top:1.25em;
+                                  padding:2px 5px;
+                                  left:-15em; width:15em;
+                                  z-index:100;
+                                  border:1px solid orange;
+                                  background-color:#FEFDB9;
+                                  color:black;
+                                 }
+    </style>
+<apex:form >
+ <apex:pageBlock > 
+           <apex:pageBlockTable value="{!lstWrapper}" var="caseWrap" columns="8" >           
+               <apex:column headerValue="MileStone">
+                    <apex:outputlink value="#" onclick="window.open('/{!caseWrap.caseMile.MilestoneTypeId}')">{!caseWrap.caseMile.MilestoneType.name}</apex:outputlink>
+               </apex:column> 
+                 <apex:column headerValue="Start Date">
+                  <!--  <apex:outputText value="{0,date,M'/'d'/'yyyy HH:mm:ss}">
+                    <apex:param value="{!caseWrap.startDare}" /></apex:outputText> -->
+                    <apex:outputText value="{!caseWrap.startDare}"/>
+               </apex:column>
+              <apex:column headerValue="Elapsed Time(Hour:Min)">
+               <apex:outputText value="{!caseWrap.strDateTime }" /> 
+              </apex:column>
+              <apex:column headerValue="Time Remaining (Hour:Min)">
+                 <apex:outputText value="{!caseWrap.sRemainDate}"/> 
+               </apex:column>
+               <apex:column headerValue="Target Response(Hour:Min)">
+               <apex:outputText value="{!caseWrap.stargetDate}"/> 
+              </apex:column>
+               <apex:column headerValue="Target Date">
+                 <apex:outputText value="{!caseWrap.sEndDate}"/> 
+               </apex:column>
+               
+               <apex:column headerValue="Violation">
+                  <!--  <apex:outputText value="{!if(caseWrap.caseMile.IsViolated, 'Violated', null)}" ></apex:outputText> -->
+                  <apex:image id="theImage" value="{!$Resource.ViolationResource}" rendered="{!caseWrap.caseMile.IsViolated}" />
+               </apex:column>
+               <apex:column headerValue="Completed">
+                  <!--  <apex:outputText value="{!if(caseWrap.caseMile.IsCompleted,'Completed', null)}" ></apex:outputText> -->
+                  <apex:image id="theImage1" value="{!$Resource.CompletedImage}" rendered="{!caseWrap.caseMile.IsCompleted}" />
+               </apex:column>                    
+         </apex:pageBlockTable>
+   </apex:pageBlock> 
+</apex:form>
+</apex:page>

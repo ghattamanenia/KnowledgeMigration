@@ -1,0 +1,48 @@
+<apex:page controller="EntitlRelList_Controller">
+  <!--- <apex:page standardController="Entitlement" recordSetVar="Entitlement"  > -->
+  <!---  <apex:relatedList list="Entitlements" /> -->
+  <style>
+    .vfHelpText a            {position:relative;}
+    .vfHelpText a span       {display: none;}
+    .vfHelpText a:hover span {display: block;
+      position:absolute;
+      top:1.25em;
+      padding:2px 5px;
+      left:-15em; width:15em;
+      z-index:100;
+      border:1px solid orange;
+      background-color:#FEFDB9;
+      color:black;
+    }
+  </style>
+  <apex:includeScript value="{!$Resource.JQuery}"/>    
+  <apex:form >
+    <apex:pageBlock > 
+      <apex:pageBlockTable value="{!entiles }" var="entitles" columns="4" >          
+        <apex:column headerValue="Entitlement">
+          <apex:outputText value="{!entitles.name}"  ></apex:outputText>
+          <span class="vfHelpText">
+            <apex:outputLink title="Entitlement Name = {!entitles.name} Region = {!entitles.Region__c} Type = {!entitles.Type}" value="javascript:return false;">
+             <img src="/s.gif" alt="" class="helpOrb" />
+            </apex:outputLink>
+          </span>
+        </apex:column> 
+        <apex:column headerValue="Start Date">
+           <apex:outputText value="{!s}"> 
+          </apex:outputText>
+        </apex:column>
+        <apex:column headerValue="End Date">
+        <apex:outputText value="{!s1}">
+          </apex:outputText>
+        </apex:column>
+      <!--  <apex:column headerValue="Status">
+          <apex:outputText value="{!entitles.Status}" ></apex:outputText>
+        </apex:column>  -->                   
+      </apex:pageBlockTable>
+    </apex:pageBlock> 
+  </apex:form>
+  <script type="text/javascript">
+
+  </script>
+
+</apex:page>

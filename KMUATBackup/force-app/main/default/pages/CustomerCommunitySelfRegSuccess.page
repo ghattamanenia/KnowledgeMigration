@@ -1,0 +1,15 @@
+<apex:page showHeader="false" sidebar="false">
+    <apex:composition template="CustomerSupportTemplate">
+        <apex:define name="body">
+            <div class="row">
+                <div class="twelve columns">
+                    <div class="panel inset radius selfReg confirmMsg">
+                        <p>Thank you for requesting an account on the Allied Telesis support system.</p> 
+                        <p>The support team expects to review your request and reply within one business day. </p> 
+                        <a href="{!$Site.Prefix}" class="btn button large topRight">Home</a> 
+                    </div>
+                </div>
+            </div>
+        </apex:define>
+    </apex:composition>
+</apex:page>

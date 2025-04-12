@@ -1,0 +1,215 @@
+<apex:page standardController="Quote" extensions="ATFE_QuoteCloneWithProducts" tabStyle="Quote">
+ <apex:sectionHeader title="{!cloneQuoteTitle}"/><br/>
+    <apex:form >
+        <apex:pageBlock >
+       <b> <font color ='red'><apex:messages /></font></b>
+            <apex:pageBlockButtons title="Quote Edit">
+                <apex:commandButton value="Save" action="{!SaveQuote}"/>  
+                <apex:commandButton value="Cancel" action="{!Cancel}"/> 
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="Quote Information" columns="2">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Quote.fields.Name.label}"></apex:outputLabel>
+                    <apex:inputField value="{!quoteObj.Name}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.Quote.fields.IsSyncing.label}"></apex:outputLabel> 
+                    <apex:inputField value="{!quoteObj.IsSyncing}"/>
+                </apex:pageBlockSectionItem>
+                
+                 <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Opportunity Name"></apex:outputLabel>
+                    <apex:outputtext value="{!opp.Name}"/> 
+                </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem >
+                    
+                </apex:pageBlockSectionItem>  
+                
+                <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Account Name"></apex:outputLabel>
+                    <apex:outputText value="{!opp.Account.Name}"/>       
+                </apex:pageBlockSectionItem>    
+                <apex:pageBlockSectionItem >
+                </apex:pageBlockSectionItem> 
+                 <apex:pageblocksectionItem >
+                      <apex:outputLabel value="{!$ObjectType.Quote.fields.Description.label}"></apex:outputLabel>
+                        <apex:inputField value="{!quoteObj.Description}"/> 
+                   </apex:pageblocksectionItem>
+                
+                
+                  <apex:pageBlockSectionItem >
+                   <!--  <apex:outputLabel value="Record Type"></apex:outputLabel> 
+                    <apex:outputtext value="{!quoteObj.RecordType}"/>  -->
+                </apex:pageBlockSectionItem>
+                
+                 <apex:pageBlockSectionItem >
+                   <!--  <apex:outputLabel value="{!$ObjectType.Quote.fields.Partner_Name__c.label}"></apex:outputLabel>
+                    <apex:inputField value="{!quoteObj.Partner_Name__c}"/> -->
+                </apex:pageBlockSectionItem>
+               
+                
+            </apex:pageBlockSection>
+            
+             <apex:pageBlocksection title="Prepared For" columns="2" >
+                 <apex:pageblocksectionItem >
+                      <apex:outputLabel value="Contact"></apex:outputLabel>
+                        <apex:inputField value="{!quoteObj.ContactId}"/> 
+                   </apex:pageblocksectionItem>
+                     <apex:pageblocksectionItem >
+                      <apex:outputLabel value="Phone"></apex:outputLabel>
+                        <apex:inputField value="{!quoteObj.Phone}"/> 
+                   </apex:pageblocksectionItem>
+                   
+                    <apex:pageblocksectionItem >
+                      <apex:outputLabel value="Email"></apex:outputLabel>
+                        <apex:inputField value="{!quoteObj.Email}"/> 
+                   </apex:pageblocksectionItem> <apex:pageblocksectionItem >
+                      <apex:outputLabel value="Fax"></apex:outputLabel>
+                        <apex:inputField value="{!quoteObj.Fax}"/> 
+                   </apex:pageblocksectionItem>
+               </apex:pageBlockSection>   
+               
+                 <apex:pageBlockSection title="Address Information" columns="2" id="billAndShipInfo">  
+                 
+                     <apex:pageblocksectionItem >
+                      <apex:outputLabel value="{!$ObjectType.Quote.fields.BillingName.label}"></apex:outputLabel>
+                       <apex:selectList value="{!selectedPartnerOrAccountForBillTo}"  size="1">
+                        <apex:selectOptions value="{!partners}"/>
+                            <apex:actionSupport action="{!setAddressFieldsForBillTo}" event="onchange" rerender="billAndShipInfo" >
+                            </apex:actionSupport>
+                             
+                         </apex:selectList>
+                   </apex:pageblocksectionItem>
+                    <apex:pageblocksectionItem >
+                      <apex:outputLabel value="{!$ObjectType.Quote.fields.ShippingName.label}"></apex:outputLabel>
+                        <apex:selectList value="{!selectedPartnerOrAccountForShipTo}"  size="1">
+                                                    
+                            <apex:selectOptions value="{!partners}"/>
+                            <apex:actionSupport action="{!setAddressFieldsForShipTo}" event="onchange" rerender="billAndShipInfo" >
+                            </apex:actionSupport>
+                             
+                         </apex:selectList> 
+                   </apex:pageblocksectionItem>
+                   
+                        <!--<apex:pageblocksectionItem >
+                          <apex:outputLabel value="Bill To Name"></apex:outputLabel>
+                            <apex:inputField value="{!quoteObj.BillingName}"/> 
+                       </apex:pageblocksectionItem>
+                        <apex:pageblocksectionItem >
+                          <apex:outputLabel value="Ship To Name"></apex:outputLabel>
+                            <apex:inputField value="{!quoteObj.ShippingName}"/> 
+                       </apex:pageblocksectionItem>-->
+                   
+                    <apex:pageblocksectionItem >
+                      <apex:outputLabel value="Billing To Street"></apex:outputLabel>
+                        <apex:inputField value="{!quoteObj.BillingStreet}"/> 
+                   </apex:pageblocksectionItem>
+                    <apex:pageblocksectionItem >
+                      <apex:outputLabel value="Ship To Street"></apex:outputLabel>
+                        <apex:inputField value="{!quoteObj.ShippingStreet}"/> 
+                   </apex:pageblocksectionItem>
+                   
+                    <apex:pageblocksectionItem >
+                      <apex:outputLabel value="Billing To City"></apex:outputLabel>
+                        <apex:inputField value="{!quoteObj.BillingCity}"/> 
+                   </apex:pageblocksectionItem>
+                    <apex:pageblocksectionItem >
+                      <apex:outputLabel value="Ship To City"></apex:outputLabel>
+                        <apex:inputField value="{!quoteObj.ShippingCity}"/> 
+                   </apex:pageblocksectionItem>
+                   
+                    <apex:pageblocksectionItem >
+                      <apex:outputLabel value="Billing To State/Province"></apex:outputLabel>
+                        <apex:inputField value="{!quoteObj.BillingState}"/> 
+                   </apex:pageblocksectionItem>
+                    <apex:pageblocksectionItem >
+                      <apex:outputLabel value="Ship To State/Province"></apex:outputLabel>
+                        <apex:inputField value="{!quoteObj.ShippingState}"/> 
+                   </apex:pageblocksectionItem>
+                   
+                    <apex:pageblocksectionItem >
+                      <apex:outputLabel value="Billing To Zip/Postal Code"></apex:outputLabel>
+                        <apex:inputField value="{!quoteObj.BillingPostalCode}"/> 
+                   </apex:pageblocksectionItem>
+                    <apex:pageblocksectionItem >
+                      <apex:outputLabel value="Ship To Zip/Postal Code"></apex:outputLabel>
+                        <apex:inputField value="{!quoteObj.ShippingPostalCode}"/> 
+                   </apex:pageblocksectionItem>
+                   
+                    <apex:pageblocksectionItem >
+                      <apex:outputLabel value="Billing To Country"></apex:outputLabel>
+                        <apex:inputField value="{!quoteObj.BillingCountry}"/> 
+                   </apex:pageblocksectionItem>
+                    <apex:pageblocksectionItem >
+                      <apex:outputLabel value="Ship To Country"></apex:outputLabel>
+                        <apex:inputField value="{!quoteObj.ShippingCountry}"/> 
+                   </apex:pageblocksectionItem>
+                   
+            </apex:pageBlocksection>
+              
+                         
+             <apex:pageBlocksection title="Quote To" columns="2" id="QuoteDetails">
+              
+                   
+                   <apex:pageblocksectionItem >
+                         <apex:outputLabel value="{!$ObjectType.Quote.fields.QuoteToName.label}" > </apex:outputLabel>
+                         <apex:selectList value="{!selectedPartnerOrAccountForQuoteTo}"  size="1" title="The name of the Account or Partner that this Quote should be sent to">
+                            <apex:selectOptions value="{!partners}"/>
+                            <apex:actionSupport action="{!setAddressFieldsForQuoteTo}" event="onchange" rerender="QuoteDetails" >
+                            </apex:actionSupport>
+                             
+                         </apex:selectList>
+                         
+                   </apex:pageblocksectionItem>
+                   
+                   <apex:pageblocksectionItem >
+                      <apex:outputLabel value="{!$ObjectType.Quote.fields.QuoteToStreet.label}"></apex:outputLabel>
+                        <apex:inputField value="{!quoteObj.QuoteToStreet}"/> 
+                   </apex:pageblocksectionItem>
+                   
+                   
+                    <apex:pageblocksectionItem >
+                       
+                   </apex:pageblocksectionItem>
+                   <apex:pageblocksectionItem >
+                      <apex:outputLabel value="{!$ObjectType.Quote.fields.QuoteToCity.label}"></apex:outputLabel>
+                        <apex:inputField value="{!quoteObj.QuoteToCity}"/> 
+                   </apex:pageblocksectionItem>
+                    <apex:pageblocksectionItem >
+                       
+                   </apex:pageblocksectionItem>
+                   <apex:pageblocksectionItem >
+                      <apex:outputLabel value="{!$ObjectType.Quote.fields.QuoteToState.label}"></apex:outputLabel>
+                        <apex:inputField value="{!quoteObj.QuoteToState}"/> 
+                   </apex:pageblocksectionItem>
+                    <apex:pageblocksectionItem >
+                       
+                   </apex:pageblocksectionItem>
+                     <apex:pageblocksectionItem >
+                      <apex:outputLabel value="{!$ObjectType.Quote.fields.QuoteToPostalCode.label}"></apex:outputLabel>
+                        <apex:inputField value="{!quoteObj.QuoteToPostalCode}"/> 
+                   </apex:pageblocksectionItem>
+                    <apex:pageblocksectionItem >
+                       
+                   </apex:pageblocksectionItem>
+                    <apex:pageblocksectionItem >
+                      <apex:outputLabel value="{!$ObjectType.Quote.fields.QuoteToCountry.label}"></apex:outputLabel>
+                        <apex:inputField value="{!quoteObj.QuoteToCountry}"/> 
+                   </apex:pageblocksectionItem>
+                    <apex:pageblocksectionItem >
+                       
+                   </apex:pageblocksectionItem>
+                  
+                  <!--  <apex:pageblocksectionItem >
+                      <apex:outputLabel value="{!$ObjectType.Quote.fields.PriceBookName__c.label}"></apex:outputLabel>
+                         <apex:selectList value="{!selectedPartner}" size="1">
+                            <apex:selectOptions value="{!partners}"/>
+                         </apex:selectList>
+                   </apex:pageblocksectionItem> -->
+                
+            </apex:pageBlocksection>
+            
+        </apex:pageBlock>
+    </apex:form>
+
+</apex:page>

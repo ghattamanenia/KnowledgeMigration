@@ -1,0 +1,166 @@
+<apex:page standardController="Case" extensions="JP_CaseTodoPageControllerExtension" readOnly="true" LightningStylesheets="true" >
+    <apex:slds />
+    <head>
+        <title>すべての活動履歴</title>
+        <style>
+            html {
+                font-family: 'Salesforce Sans',Arial,sans-serif;
+                font-size: 100%;
+                line-height: 1.375;
+                background: rgb(175,197,222);
+                color: rgb(22,50,92);
+                -webkit-tap-highlight-color: transparent;
+            }
+            body {
+                margin: 0;
+                font-size: 1rem;
+                height: 100vh;
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+            .slds-header {
+                padding: 1rem;
+                background: rgb(250,247,245);
+                border-bottom: 1px solid rgb(222,219,215);
+            }
+            .slds-header-media {
+                height: 40px;
+            }
+            .slds-header-media-icon {
+                display: inline-block;
+                margin-right: .75rem;
+            }
+            .slds-header-media-icon-img {
+                height: 2rem;
+                width: 2rem;
+                border-radius: .25rem;
+            }
+            .slds-header-media-body {
+                height: 36px;
+                display: inline-block;
+                vertical-align: top;
+            }
+            .slds-header-media-body-title {
+                margin: 0px;
+                font-size: 0.75rem;
+                font-weight: 400;
+                line-height: 1;
+                vertical-align: top;
+                color: rgb(112,110,107);
+                text-transform: uppercase;
+            }
+            .slds-header-media-body-subtext {
+                margin: 0px;
+                font-size: 1.125rem;
+                font-weight: 700;
+                color: rgb(62,62,60);
+            }
+            .slds-background-1 {
+                z-index: -2;
+                height: 27.5rem;
+                position: absolute;
+                top: 4.5rem;
+                left: 0;
+                width: 100vw;
+                background-image: url(/_slds/images/themes/oneSalesforce/banner-brand-default.png?cache=210),linear-gradient(to top, transparent 0,rgb(32,92,159));
+                background-repeat: repeat-x;
+                background-position: top left;
+            }
+            .slds-background-2 {
+                z-index: -1;
+                height: 14.5rem;
+                width: 100vw;
+                position: absolute;
+                top: 7.5rem;
+                left: 0;
+                background-image: linear-gradient(to bottom,transparent 60%,rgb(175,197,222));
+            }
+            .slds-background-3 {
+                z-index: -1;
+                position: absolute;
+                width: 100vw;
+                height: calc(100vh - 22rem);
+                min-height: 10rem;
+                top: 22rem;
+                left: 0;
+                background: rgb(175,197,222);
+            }
+            .slds-container {
+                padding: 0 1rem 0.5rem 1rem;
+            }
+            .bPageBlock {
+                background-color: #FFFFFF;
+                margin: 1rem 2rem 1rem 2rem;
+            }
+            .tdPanelGrid {
+                min-height: 5rem;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="slds-header">
+            <div class="slds-header-media">
+                <div class="slds-header-media-icon">
+                    <img class="slds-header-media-icon-img" title="{!Case.CaseNumber}" src="https://alliedtelesis.my.salesforce.com/img/icon/t4v35/standard/case_120.png" style="background:#FF5D2D" />
+                </div>
+                <div class="slds-header-media-body">
+                    <h1 class="slds-header-media-body-title">ケース</h1>
+                    <p class="slds-header-media-body-subtext">{!Case.CaseNumber}</p>
+                </div>
+            </div>
+            <div class="slds-background-1"></div>
+            <div class="slds-background-2"></div>
+            <div class="slds-background-3"></div>
+        </div>
+        <div class="slds-container">
+            <apex:repeat value="{!Tasks}" var="rec" >
+                <apex:pageBlock >
+                    <apex:panelGrid columns="3" width="100%" >
+                        <apex:panelGrid styleClass="tdPanelGrid" >
+                            <apex:facet name="header">作成日</apex:facet>
+                            <apex:outputField value="{!rec.CreatedDate}" />
+                        </apex:panelGrid>
+                        <apex:panelGrid styleClass="tdPanelGrid" >
+                            <apex:facet name="header">件名</apex:facet>
+                            <apex:outputLink value="/{!rec.Id}" >{!rec.Subject}</apex:outputLink>
+                        </apex:panelGrid>
+                        <apex:panelGrid styleClass="tdPanelGrid" >
+                            <apex:facet name="header">名前</apex:facet>
+                            <apex:outputLink value="/{!rec.WhoId}" >{!Case.Subject}</apex:outputLink>
+                        </apex:panelGrid>
+                        <apex:panelGrid styleClass="tdPanelGrid" >
+                            <apex:facet name="header">期日</apex:facet>
+                            <apex:outputField value="{!rec.ActivityDate}" />
+                        </apex:panelGrid>
+                        <apex:panelGrid styleClass="tdPanelGrid" >
+                            <apex:facet name="header">割り当て先</apex:facet>
+                            <apex:outputLink value="/{!rec.OwnerId}" >{!rec.Owner.Name}</apex:outputLink>
+                        </apex:panelGrid>
+                        <apex:panelGrid styleClass="tdPanelGrid" >
+                            <apex:facet name="header">関連先</apex:facet>
+                            <apex:outputLink value="/{!rec.WhatId}" >{!rec.What.Name}</apex:outputLink>
+                        </apex:panelGrid>
+                        <apex:panelGrid styleClass="tdPanelGrid" >
+                            <apex:facet name="header">状況</apex:facet>
+                            <apex:outputField value="{!rec.Status}" />
+                        </apex:panelGrid>
+                        <apex:panelGrid styleClass="tdPanelGrid" >
+                            <apex:facet name="header">添付ファイル有り</apex:facet>
+                            <apex:outputField value="{!rec.JP_AttachmentFlag__c}" />
+                        </apex:panelGrid>
+                        <apex:panelGrid styleClass="tdPanelGrid" >
+                            <apex:facet name="header">最終更新日</apex:facet>
+                            <apex:outputField value="{!rec.LastModifiedDate}" />
+                        </apex:panelGrid>
+                    </apex:panelGrid>
+                    <apex:panelGrid >
+                        <apex:panelGrid >
+                            <apex:facet name="header">コメント</apex:facet>
+                            <apex:outputField value="{!rec.Description}" />
+                        </apex:panelGrid>
+                    </apex:panelGrid>
+                </apex:pageBlock>
+            </apex:repeat>
+        </div>
+    </body>
+</apex:page>

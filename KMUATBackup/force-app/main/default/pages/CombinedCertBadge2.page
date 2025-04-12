@@ -1,0 +1,47 @@
+<apex:page standardController="Certification__c" renderAs="pdf" applyBodyTag="false">
+<apex:stylesheet value="{!URLFOR($Resource.CombinedCertBadge2, 'CombinedCertBadge2.css')}"/>
+<head>
+<style>
+    @page { size:27in 20in;margin:10px;padding:0px;}
+    .attendee{font-family: 'Arial Unicode MS'; font: bold 70px; color: #154B70; align:left;} 
+    .course{font-family: 'Arial Unicode MS'; font: bold 64px; color: #A7BAC9; align:left;} 
+    .certcode{font-family: 'Arial Unicode MS'; font: bold 54px; color: #9E030B; align:left;}
+    .para{font-family: 'Arial Unicode MS'; font: bold 54px; color: black; align:left;padding-top:20px;padding-bottom:20px;}
+    
+    .redband{font-family: 'Arial Unicode MS'; font: bold 90px; color: #FFFFFF; align:left;} 
+    .certcode2{font-family: 'Arial Unicode MS'; font: bold 60px; color: #000000; align:left;}
+    .redbandunder{font-family: 'Arial Unicode MS'; font: bold 60px; color: #000000; align:right;padding-right:180px;} 
+    
+      .page-break {
+                display:block;
+                page-break-after:always;
+            }
+</style>
+</head>  
+    <body>    
+     <div id="certbackground" style="top:0px;padding-top:0;margin-top:0;height:1800px;">  
+     <div id="certdetails" style="padding-top:700px;padding-left:200px;">      
+        <apex:panelGrid columns="1" width="100%">
+            <apex:outputText value="{!Certification__c.atfe_Contact_Name_Cert__r.name}" styleClass="attendee"/>
+            <apex:outputText value="Has successfully completed the following training course" styleClass="para" />
+            <apex:outputText value="{!Certification__c.atfe_Session_Title_Cert__c}" styleClass="course" />            
+            <apex:outputText value="Exam Date: {!Certification__c.atfe_Exam_Date_Cert__c}" styleClass="para" />
+            <apex:outputText value="Expiry Date: {!Certification__c.atfe_Expiry_Date__c}" styleClass="para" />
+            <apex:outputText value="{!Certification__c.Name}" styleClass="certcode"/>
+        </apex:panelGrid>
+     </div>
+     </div>
+<div id="page-break">&nbsp;</div>
+     <div id="logobackground" style="top:0px;padding-top:0;margin-top:0;height:1800px;">
+     <div id="logodetails" style="padding-top:970px;padding-left:700px;">
+        <apex:panelGrid columns="1" width="100%">
+            <apex:outputText value="{!Certification__c.atfe_certification_redband__c}" styleClass="redband" />                     
+        </apex:panelGrid>
+        <apex:panelGrid columns="2" width="100%">         
+            <apex:outputText value="{!Certification__c.Name}" styleClass="certcode2"/>          
+            <apex:outputText value="{!Certification__c.atfe_certification_redband_under__c}" styleClass="redbandunder" />           
+        </apex:panelGrid>
+     </div>
+     </div>     
+    </body>
+</apex:page>

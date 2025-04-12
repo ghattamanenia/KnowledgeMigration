@@ -1,0 +1,8 @@
+<apex:page standardController="Contact" extensions="JP_CLMakeOppFromContact" action="{!makeOpp}">
+<!-- Begin Default Content REMOVE THIS -->
+<apex:outputText value="{!contact.Accountid}{!contact.Name}"
+rendered="false"/>
+This is a page for JP_CLMakeOppFromContact.
+<apex:messages />
+<!-- End Default Content REMOVE THIS -->
+</apex:page>

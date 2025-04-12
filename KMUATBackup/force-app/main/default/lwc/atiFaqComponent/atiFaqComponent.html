@@ -1,0 +1,51 @@
+<!--
+  @description       : 
+  @author            : Sampath Arjunan
+  @group             : 
+  @last modified on  : 24-11-2024
+  @last modified by  : Sampath Arjunan
+-->
+<template>
+    <lightning-card title="FAQs by Category" icon-name="utility:knowledge_base">
+        <template if:true={categoriesWithFAQs}>
+            <template for:each={categoriesWithFAQs} for:item="categoryItem" for:index="index">
+                <div key={categoryItem.category}>
+                    <lightning-accordion allow-multiple-sections-open>
+                        <lightning-accordion-section label={categoryItem.category}>
+                            <template if:true={categoryItem.faqs}>
+                                <template for:each={categoryItem.faqs} for:item="faq">
+                                    <div class="faq-item" key={faq.Id}>
+                                        <div
+                                            class="faq-question"
+                                            onclick={toggleAnswer}
+                                            data-id={faq.Id}
+                                            data-category-index={index}
+                                        >
+                                            <lightning-icon
+                                                icon-name="utility:chevronright"
+                                                class="icon-toggle"
+                                                alternative-text="Expand/Collapse"
+                                                data-id={faq.Id}
+                                                aria-expanded={faq.isExpanded}
+                                            ></lightning-icon>
+                                            {faq.Title__c}
+                                        </div>
+                                        <div class="faq-answer" if:true={faq.isExpanded}>
+                                           <lightning-formatted-rich-text value={faq.Content__c}></lightning-formatted-rich-text>
+                                        </div>
+                                    </div>
+                                </template>
+                            </template>
+                            <template if:false={categoryItem.faqs}>
+                                <p>No FAQs available for this category.</p>
+                            </template>
+                        </lightning-accordion-section>
+                    </lightning-accordion>
+                </div>
+            </template>
+        </template>
+        <template if:false={categoriesWithFAQs}>
+            <p>No categories available or an error occurred.</p>
+        </template>
+    </lightning-card>
+</template>

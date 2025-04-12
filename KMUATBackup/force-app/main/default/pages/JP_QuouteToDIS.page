@@ -1,0 +1,15 @@
+<apex:page showHeader="false" sidebar="false" standardController="JP_QuotationHeader__c" extensions="JP_QuoteToDISController">
+見積代理店コードが102001233、かつ見積状態が承認済の場合のみ表示します。<br />
+<hr />
+<apex:outputtext rendered="{! JP_QuotationHeader__c.JP_QuotationStatus__c='承認済' && JP_QuotationHeader__c.JP_DistributorCode__c='102001233'}">
+⑧見積No：{! quotationNo}<br />
+⑨見積有効期間：{! datestr}<br />
+⑩DISへの連絡事項：*本見積金額には、消費税は含まれておりません。別途申し受けます。 {!JP_QuotationHeader__c.JP_QuotationCondition__c}<br />
+⑪見積数量/見積単価<br />
+<apex:repeat value="{!JP_QuotationHeader__c.JP_QuotationDetail__r}" var="detail">
+    {!detail.JP_ProductCatalogCode__c}
+    ｜{!detail.JP_Quantity__c}
+    ｜{!if(detail.JP_SpecialUnitPrice__c!=0, detail.JP_SpecialUnitPrice__c, detail.JP_UnitPrice__c)}<br />
+    </apex:repeat>
+</apex:outputtext>
+</apex:page>

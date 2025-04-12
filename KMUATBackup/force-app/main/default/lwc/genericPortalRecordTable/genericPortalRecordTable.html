@@ -1,0 +1,16 @@
+<template>
+    <lightning-input type="search" placeholder="Search This List" variant="label-hidden" onchange={handleSearch}></lightning-input>
+    <br/>
+    <div class="slds-box" style="padding: 0rem;">
+        <lightning-datatable key-field="Id"
+                             data={data}
+                             columns={columns}
+                             column-widths-mode="auto"
+                             hide-checkbox-column
+                             show-row-number-column
+                             sorted-by={sortBy}
+                             sorted-direction={sortDirection}
+                             onsort={doSorting}>
+        </lightning-datatable>
+    </div>
+</template>

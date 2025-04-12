@@ -1,0 +1,114 @@
+<apex:page controller="EditChatterFileTagsController" tabstyle="Chatter_Files_Admin__tab">
+
+<style type="text/css">
+  .detailList {
+      table-layout: fixed;
+  }
+  .labelCol {
+      text-align: left !important;
+      vertical-align: middle !important;
+  }
+  .addBtn, .removeBtn {
+    position: relative;
+    top: 35px;
+  }
+  .arrow {
+      cursor: pointer;
+  }
+  
+</style>
+<apex:pageMessages /> 
+<apex:form id="theForm">
+      
+<apex:outputPanel id="AllTagsSection" > 
+<apex:pageBlock title="Tag Chatter File : {!FileName}"  >
+
+ <apex:pageBlockButtons >
+<apex:commandButton action="{!DoneTagging}" id="DoneTagging"  value="Back" />
+  
+ </apex:pageBlockButtons>
+  <apex:pageBlockSection title="Remove Tags" columns="2" id="RemoveTags">
+        <!-- <apex:outputText label="File Name" value="{!FileName}"></apex:outputText> -->
+       
+        <apex:pageBlockSectionitem >
+             <apex:outputLabel value="Select tags to remove from this file"></apex:outputLabel>
+             <!--<apex:selectList value="{!selectedTagstoRm}" size="1" multiselect="true">
+                       <apex:selectOptions value="{!AllFileTags}"/>
+             </apex:selectList> -->
+             
+              <apex:panelGrid columns="3" id="sel2RM">
+                <apex:selectList id="sel1" value="{!leftselected}" multiselect="true" style="width:150px" size="5">
+                    <apex:selectOptions value="{!unselectedvaluesToRm}" />
+                </apex:selectList>
+                    <apex:panelGroup >
+                        <br/>
+                        <apex:image value="{!$Resource.multiselected}" styleClass="arrow">
+                            <apex:actionSupport event="onclick" action="{!selectclickToRm}" reRender="RemoveTags"/>
+                        </apex:image>
+                        <br/><br/>
+                        <apex:image value="{!$Resource.multiunselected}" styleClass="arrow">
+                            <apex:actionSupport event="onclick" action="{!unselectclickToRm}" reRender="RemoveTags"/>
+                        </apex:image>
+                    </apex:panelGroup>
+                <apex:selectList id="sel2" value="{!rightselected}" multiselect="true" style="width:150px" size="5">
+                    <apex:selectOptions value="{!SelectedValuesToRm}" />
+                </apex:selectList>
+            </apex:panelGrid>
+        </apex:pageBlockSectionitem>
+       
+            <apex:commandButton action="{!RemoveTags}" id="RemoveTags"  value="Remove Selected" rerender="AllTagsSection" disabled="{!ShowRemoveBtn}" styleClass="removeBtn"/>
+        
+  </apex:pageBlockSection>
+  
+   
+   <apex:pageBlockSection title="Add Tags" columns="2" id="AddTags">
+    <apex:pageBlockSectionitem >
+         <apex:outputLabel value="Select tags to add to this file"></apex:outputLabel>
+         <!-- <apex:selectList value="{!selectedTagstoAdd}" size="1" multiselect="true">
+                   <apex:selectOptions value="{!AllTags}"/>
+         </apex:selectList> -->
+         <apex:panelGrid columns="3" id="sel2Add">
+                <apex:selectList id="sel1" value="{!leftselectedAdd}" multiselect="true" style="width:150px" size="5">
+                    <apex:selectOptions value="{!unselectedvaluesToAdd}" />
+                </apex:selectList>
+                    <apex:panelGroup >
+                        <br/>
+                        <apex:image value="{!$Resource.multiselected}" styleClass="arrow">
+                            <apex:actionSupport event="onclick" action="{!selectclickToAdd}" reRender="AddTags"/>
+                        </apex:image>
+                        <br/><br/>
+                        <apex:image value="{!$Resource.multiunselected}" styleClass="arrow">
+                            <apex:actionSupport event="onclick" action="{!unselectclickToAdd}" reRender="AddTags"/>
+                        </apex:image>
+                    </apex:panelGroup>
+                <apex:selectList id="sel2" value="{!rightselectedAdd}" multiselect="true" style="width:150px" size="5">
+                    <apex:selectOptions value="{!SelectedValuesToAdd}" />
+                </apex:selectList>
+            </apex:panelGrid>
+         
+         
+   </apex:pageBlockSectionitem>
+   
+   <apex:commandButton action="{!AddTags}" id="AddTags"  value="Add Selected" rerender="AllTagsSection" disabled="{!ShowAddBtn}" styleClass="addBtn"/>
+ 
+    
+     <apex:pageBlockSectionitem >
+         <apex:outputLabel value="Add New Tags(separate tags with comma)"></apex:outputLabel>
+         <apex:actionRegion >
+         <apex:inputtext label="Add New Tags(separate tags with comma)" value="{!AdditionalTags}" >
+          <apex:actionSupport event="onchange" action="{!showAddButton}" reRender="AddTags"/>
+           
+         </apex:inputtext> 
+         </apex:actionRegion>
+     </apex:pageBlockSectionitem>
+     
+     
+     
+    
+     </apex:pageBlockSection>
+    
+     </apex:pageBlock>
+  </apex:outputPanel>     
+ </apex:form>
+ 
+</apex:page>

@@ -1,0 +1,184 @@
+<apex:page showHeader="false" sidebar="false" controller="CustomerCommunityLoggedInController" action="{!forwardToCustomAuthPage}" >
+    <apex:composition template="CustomerSupportTemplate">
+        <apex:define name="body">
+            <style type="text/css">
+                /* Override Salesforce default styling */
+                /* TODO: See if there is better way to do this; */
+                table th {
+                    font-family: "Roboto","HelveticaNeueBoldCond","Helvetica Narrow","Arial Narrow";
+                    font-weight: bold !important;
+                    color: white !important;
+                    background-color: #4f7389 !important;
+                    padding: 8px !important;
+                }
+                table tbody tr:nth-child(even) {
+                    background: #d4eff4 !important;
+                }
+                table tbody tr:nth-child(even) {
+                    background: #f9f9f9 !important;
+                }
+                tr.dataRow.highlight td {
+                    background: inherit !important;
+                } 
+                td {
+                    padding: 8px !important;
+                    border: none !important;
+                }
+                .myCaseTable {
+                    border-spacing: 2px;
+                    border-collapse: separate;
+                    border: 1px solid #ddd !important;
+                }
+                .myCaseBtnContainer {
+
+                }
+                .create-new-case {
+                    color: #fff !important;
+                }
+                div#my-support-cases input {
+                    position: relative;
+                    top: -18px;
+                }
+                span#page-xofy {
+                    position: relative;
+                    top: 23px;
+                }
+            </style>
+            <!-- Case Area -->
+            <div class="row">
+                <div class="twelve columns">
+
+                        <div class="row">
+                            <div class="four" style="margin-left: 15px; margin-bottom: 20px;">
+                                <h3>Welcome, {!name}</h3>
+                                <apex:messages />
+                                <!--<p>error: {!error}</p>-->
+                                <!-- <hr /> -->
+                                <!--<h5>My Account</h5>-->
+                                <!-- <p><a href="/Support/CustomerCommunityUserAccount" class="large green button">My Account</a></p> -->
+
+                                <!--<p>Upgrade</p>--> 
+                            </div>
+                            <apex:form styleClass="twelve columns">
+                                <apex:pageBlock id="details">
+                                    <div class="twelve" style="margin-bottom: 5px;">
+                                        <h1>My Support Cases</h1>
+                                        <div class="right" id="my-support-cases">
+                                            <div class="pagination-controls">
+                                                <apex:commandButton styleClass="paginationBtn" value="|<" rerender="details" action="{!beginning}" disabled="{!prev}" title="First"/>
+                                                <apex:commandButton styleClass="paginationBtn" value="<" rerender="details" action="{!previous}" disabled="{!prev}" title="Previous"/>
+                                                <apex:commandButton styleClass="paginationBtn" value=">" rerender="details" action="{!next}" disabled="{!nxt}" title="Next"/>
+                                                <apex:commandButton styleClass="paginationBtn" value=">|" rerender="details" action="{!end}" disabled="{!nxt}" title="Last"/>
+                                            </div>
+                                            <span id="page-xofy" class="right helpTxtFontSize" style="font-style: italic; margin-right: 5px;">Page {!currentPage} of {!lastPage}</span>
+                                            <a href="/portal/s/" target="_blank" class="two-row green new-button create-new-case" style="margin-right:3px;margin-top:10px">Download Center</a>
+                                            <a href="/Support/CustomerCommunityFindHardWare?AccId={!user.Accountid}" class="two-row green new-button create-new-case" style="margin-right:3px"> Create New Case Search My Products</a>
+                                        </div>
+                                    </div>
+                                    <apex:pageblockTable value="{!caseRslt}" var="case" styleClass="myCaseTable twelve" style="">
+                                        <apex:column headerValue="Case Number" styleClass="">
+                                            <apex:outputLink value="/Support/CustomerCommunityCaseDetail?caseid={!case.Id}">{!case.CaseNumber}</apex:outputLink>
+                                        </apex:column>
+                                        <apex:column value="{!case.Request_Title__c}" headerValue="Title" styleClass="title"/>
+                                        <apex:column value="{!case.Description}" headerValue="Description" />
+                                        <apex:column value="{!case.CreatedDate}" headerValue="Date Opened"/>     
+                                        <apex:column value="{!case.Status}" headerValue="Status"/>            
+                                    </apex:pageblockTable>   
+                                </apex:pageBlock>
+                            </apex:form>  
+                            <!-- sarvinder changes start -->
+                           
+                            <!-- sarvinder changes end -->
+                                                           
+                            <!--   <div class="nine columns" style="margin-top: 25px;">
+                                <h1>My Support Cases</h1>
+                                <a href="/Support/CustomerCommunityFindHardWare?AccId={!user.Accountid}" class="large red button create-new-case" style="float: right;">Create New Case</a>
+
+                                <table class="twelve" style="margin-top: 10px;">
+                                    <thead>
+                                        <tr>
+                                            <th>Case Number</th>
+                                            <th>Title</th>
+                                            <th>Description</th>
+                                            <th>Date Opened</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody> 
+
+                                       
+                                         <apex:repeat value="{!caseResult}" var="case">
+                                            <tr>
+                                                <td><a href="/Support/CustomerCommunityCaseDetail?caseid={!case.Id}"><strong>{!case.CaseNumber}</strong></a></td>
+                                                <td class="title">{!case.Request_Title__c}</td>
+                                                <td>{!case.Description}</td>
+                                                <td>{!case.CreatedDate}</td>
+                                                <td>{!case.Status}</td>
+                                            </tr>
+                                        </apex:repeat> 
+                                        
+
+                                   </tbody>
+                                </table> 
+                           </div> -->
+                        </div>
+
+                </div>
+            </div>
+            <!-- End of Case Area -->
+
+            <!-- KB Area -->
+            <div class="row">
+
+                <div class="six columns">
+                        <h2>Service Announcements</h2>
+                        <p>Our interactive support center is your direct link to answers you need. Search our knowledge base, check support tickets, learn about RMAs and contact Allied Telesis technical experts.</p>
+                </div>
+
+                <div class="six columns">
+
+                        <hr class="show-for-small" />
+                        <h2>Knowledge Base</h2><br/>
+                        <h5>Top Articles</h5>
+                        <apex:outputPanel layout="block">
+                            <!--
+                            <ul>
+                                <knowledge:articleList articleVar="article"
+                                    articleTypes="Question_Answer__kav"
+                                    sortBy="mostViewed"
+                                    pageSize="10"
+                                    language="en_US"
+                                >
+                                    <li><a href="{!URLFOR($Action.KnowledgeArticle.View, article.id)}">{!article.title}</a></li>
+                                </knowledge:articleList>
+                            </ul>
+                            -->
+                            <ul class="kb-articles-container">
+                                <apex:repeat value="{!qa}" var="article">
+                                    <li>
+                                        <a href="/Support/CustomerCommunityArticle?articleId={!article.Id}" target="_blank">{!article.title}</a>
+                                    </li>
+                                </apex:repeat>
+                            </ul>
+                            <!-- <div style="text-align:right;">
+                                <a href="/Support/CustomerCommunityArticlesList">Full List</a>
+                            </div> -->
+                            <apex:form >
+                                <div class="twelve">
+                                    <apex:inputText value="{!searchTerm}" styleClass="nine searchInput" html-placeholder="Enter search keyword"/> 
+                                    <apex:commandButton value="Go" title="Go" action="{!searchKB}" styleClass="two button large goBtn"/>
+                                </div>
+                            </apex:form>
+                        </apex:outputPanel>
+
+                </div>
+            </div>
+            <!-- End of KB Area -->
+        </apex:define>
+    </apex:composition> 
+    <script type = "text/javascript" src = 'https://home-c36.nice-incontact.com/inContact/ChatClient/js/embed.min.js'></script>
+<script type ="text/javascript">
+icPatronChat.init({serverHost:'https://home-c36.nice-incontact.com',bus_no:4599697,poc:'84008f40-cb38-4243-a2a9-5e256809209d',params:['FirstName','Last Name','first.last@company.com',555-555-5555]});
+</script>
+  
+</apex:page>

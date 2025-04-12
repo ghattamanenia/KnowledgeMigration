@@ -1,0 +1,18 @@
+<apex:page showHeader="false" sidebar="false">     
+    <!-- TODO: URL for the logout and redirect is hard-coded. This needs to be changed. -->
+     <!--  <apex:iframe src="https://devpro1-alliedtelesis-devpro1.cs17.force.com/Support/secur/logout.jsp" height="1" width="1" />  -->
+  <apex:iframe src="{!$Site.CurrentSiteUrl}secur/logout.jsp" height="1" width="1" />   
+    <style>
+        .logging-out {
+            font-size: 15px;
+            font-style: italic;
+            position: relative;
+            top: 10px;
+            margin-left: 10px;
+        }
+    </style>
+    <div class="logging-out">Logging out...</div>
+    <script>
+        setTimeout(function (){window.top.location="{!$Site.Prefix}";}, 2000);
+    </script>
+</apex:page>

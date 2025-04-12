@@ -1,0 +1,20 @@
+/* General styling for input fields */
+.slds-input {
+    max-width: 300px; /* Default width for all inputs unless overridden */
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+/* Specific styling for License Server ID and Device Description */
+.custom-input-field {
+    max-width: 600px; /* Reduced width for these specific fields */
+    width: 100%;
+    margin-bottom: 1rem; /* Adds spacing below each field */
+}
+
+/* Specific styling for ID Type picklist */
+.custom-idtype-combobox {
+    max-width: 250px; /* Adjusted width for ID Type picklist */
+    width: 100%;
+    margin-bottom: 1rem;
+}

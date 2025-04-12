@@ -1,0 +1,95 @@
+<apex:page id="forgotPassword" showHeader="false" controller="CustomerCommunityForgotPwdController" title="{!$Label.site.forgot_password}">
+<style type="text/css">
+    div.panel {
+        background: #ffffff;
+    }
+    label.username-label {
+        padding: 7px 10px 7px 0;
+        clear: none;
+        float: left;
+    }
+    input.username-input {
+        max-width: 300px;
+        width: 50%;
+        float: left;
+        margin: 0 12px 0 0;
+    }
+    div#form-limiter {
+        margin: 16px auto;
+        min-height: 100px;
+    }
+    div#forgot-form {
+        padding-top: 16px;
+        margin: auto;
+        text-align: left;
+        float: none;
+        max-width: 500px;
+        width: 100%;
+    }
+</style>
+    <apex:composition template="CustomerSupportTemplate">
+        <apex:define name="body">  
+          <!-- Login Area -->
+          <div class="row">
+            <div class="one columns"/>
+            <div style="padding: 0 16px">
+              <div class="row">
+                  <div class="columns" style="padding-top: 16px" id="forgot-form">
+                    <!-- <apex:outputText styleClass="title" value="{!$Label.site.enter_password}"/> -->
+                    <apex:outputText styleClass="title" value="Did you forget your password? Please enter your username below.Eg: customer@company.com"/>
+                    <apex:form id="theForm">
+                        <div id="form-limiter">
+                            <apex:pageMessages id="error"/>
+                            <apex:outputLabel value="User Name" for="username" styleClass="username-label bold"/>
+                            <apex:inputText id="username" value="{!username}" styleClass="username-input" label="User Name" size="150"/>
+                            <apex:commandButton id="submit" value="Submit" action="{!forgotPassword}" styleClass="btn button hidden-button large hidden-forgot"/>
+                            <apex:commandButton action="{!BackPage}" id="BackPage" styleClass="large green button hidden-button hidden-back" value="Back" immediate="true"/>
+                            <div id="form-buttons">
+                                <a href="javascript:;" id="forgot-button" class="new-button green">Submit</a>
+                                <a href="javascript:;" id="back-button" class="new-button red">Back</a>
+                            </div>
+                        </div>
+                    </apex:form>    
+                  </div>
+                </div>
+            </div>
+
+            <div class="one columns"/>
+          </div>
+        </apex:define>
+    </apex:composition>
+<script type="text/javascript">
+    jQuery('document').ready(function(){
+        jQuery('#forgot-button').click(function(){
+            jQuery('.hidden-forgot').click();
+        });
+        jQuery('#back-button').click(function(){
+            jQuery('.hidden-back').click();
+        });
+        jQuery('#search-submit-button').click(function(){
+            jQuery('.hidden-search-submit').click();
+        });
+    });
+</script>
+    <style type="text/css">
+        @media only screen and (max-width:479px) { 
+
+        }
+
+        @media only screen and (min-width:480px) and (max-width:767px) { 
+
+        }
+
+        @media only screen and (min-width:768px) and (max-width:979px) { 
+
+        }
+
+        @media only screen and (min-width:980px) and (max-width:1199px) { 
+
+        }
+
+        @media only screen and (min-width:1200px) { 
+
+        }
+    </style>
+</apex:page>

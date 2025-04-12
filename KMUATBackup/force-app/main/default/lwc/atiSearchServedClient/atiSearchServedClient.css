@@ -1,0 +1,10 @@
+/* Adjust the width of the inputs */
+.input-width-small {
+    width: 80%; /* Adjust the width as needed */
+}
+
+/* Custom background color for the button */
+.custom-button-bg .slds-button {
+    background-color: rgb(4, 41, 76); /* RGB color for the background */
+    color: white; /* Ensure the text is white for contrast */
+}

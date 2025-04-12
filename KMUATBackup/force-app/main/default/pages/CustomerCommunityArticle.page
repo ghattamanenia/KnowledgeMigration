@@ -1,0 +1,84 @@
+<apex:page showHeader="false" sidebar="false" controller="CustomerCommunityArticleController" >
+    <apex:composition template="CustomerSupportTemplate">
+        <apex:define name="body">
+            <!-- Case Area -->
+            <div id="case-area" class="row">
+                <div class="twelve columns">
+                    <h1 class="container" style="margin-top: 20px; display: inline-block; width: 100%">{!article.Title}</h1>
+                    <apex:pageMessages escape="false"/>
+                    <apex:form >
+                        <apex:pageblock >
+                            <div class="question-field">
+                                <label>Question</label>
+                                <p class="question">{!article.Question__c}</p>
+                            </div>
+                            <div class="answer-field">
+                                <label>Answer</label>
+                                <apex:outputField style="width:100%; heigth:100%" value="{!article.Answers__c}"/>
+                                <apex:outputPanel rendered="{!showattachSection}">
+                                    <h3 style="padding-left: 0;color:black;">Attachments</h3>
+                                    <apex:pageBlockSection columns="1" >
+                                        <apex:pageBlockSectionItem rendered="{!showattach1}">
+                                            <apex:outputLink value="{!URLFOR($Action.Question_Answer__kav.FileFieldDownload,  article.id, ['field'=$ObjectType.Question_Answer__kav.fields.Attachment1__Body__s.name])}">
+                                                {!article.Attachment1__Name__s}
+                                            </apex:outputLink>
+                                        </apex:pageBlockSectionItem>
+                                        <apex:pageBlockSectionItem rendered="{!showattach2}">
+                                            <apex:outputLink value="{!URLFOR($Action.Question_Answer__kav.FileFieldDownload,  article.id, ['field'=$ObjectType.Question_Answer__kav.fields.Attachment2__Body__s.name])}">
+                                                {!article.Attachment2__Name__s}
+                                            </apex:outputLink>
+                                        </apex:pageBlockSectionItem>
+                                        <apex:pageBlockSectionItem rendered="{!showattach3}">
+                                            <apex:outputLink value="{!URLFOR($Action.Question_Answer__kav.FileFieldDownload,  article.id, ['field'=$ObjectType.Question_Answer__kav.fields.Attachment3__Body__s.name])}">
+                                                {!article.Attachment3__Name__s}
+                                            </apex:outputLink>
+                                        </apex:pageBlockSectionItem>
+                                        <apex:pageBlockSectionItem rendered="{!showattach4}">
+                                            <apex:outputLink value="{!URLFOR($Action.Question_Answer__kav.FileFieldDownload,  article.id, ['field'=$ObjectType.Question_Answer__kav.fields.Attachment4__Body__s.name])}">
+                                                {!article.Attachment4__Name__s}
+                                            </apex:outputLink>
+                                        </apex:pageBlockSectionItem>
+                                        <apex:pageBlockSectionItem rendered="{!showattach5}">
+                                            <apex:outputLink value="{!URLFOR($Action.Question_Answer__kav.FileFieldDownload,  article.id, ['field'=$ObjectType.Question_Answer__kav.fields.Attachment5__Body__s.name])}">
+                                                {!article.Attachment5__Name__s}
+                                            </apex:outputLink>
+                                        </apex:pageBlockSectionItem>
+                                    </apex:pageBlockSection>
+                                </apex:outputPanel>
+                            </div>
+                        </apex:pageblock>
+                    </apex:form>
+                </div>
+            </div>
+        </apex:define>
+    </apex:composition>
+    <script type="text/javascript">
+        /* An user attempts enternig an invalid case id or account id */
+        if(!{!showpage}) {
+            $('.container').remove(); /* Remove the container for the contents */
+            $('<a/>').attr({
+                href: "{!$Site.Prefix}/CustomerCommunityLoggedin",
+                class: "btn button large topRight"
+            }).text("Home").appendTo('.panel.radius.inset');
+            $('.message.errorM3').addClass('eleven');
+        }
+    </script>
+    <style type="text/css">
+        div#case-area div.columns div.apexp .bPageBlock {
+            border: 0;
+            background: #ffffff;
+        }
+        div#case-area div.columns div.apexp .bPageBlock .htmlDetailElementTable {
+            border: 0;
+        }
+        div#case-area .bPageBlock.apexDefaultPageBlock .pbBody {
+            margin: 0;
+        }
+        
+    </style>
+    <script type = "text/javascript" src = 'https://home-c36.nice-incontact.com/inContact/ChatClient/js/embed.min.js'></script>
+<script type ="text/javascript">
+icPatronChat.init({serverHost:'https://home-c36.nice-incontact.com',bus_no:4599697,poc:'84008f40-cb38-4243-a2a9-5e256809209d',params:['FirstName','Last Name','first.last@company.com',555-555-5555]});
+</script>
+
+</apex:page>

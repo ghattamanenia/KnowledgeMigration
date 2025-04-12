@@ -1,0 +1,109 @@
+<apex:page controller="SFSupportAllProjectsListController" tabStyle="Global_Project_List__tab" title="Global Project List">
+    <apex:includeScript value="{!$Resource.JQuery}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.SFSupportCSS)}" />    
+    <style type="text/css">
+        body .bPageBlock .pbTitle {
+            width: 195px;
+        }
+        body .bPageBlock .pbTitle h2.mainTitle {
+            font-size: 20px;            
+            margin-left: 8px;        
+        }
+    </style>
+    <apex:pageMessages />  
+    
+    <apex:pageBlock title="Global Project List" id="GlobalProjectList">
+        <a href="{!$Site.Prefix}/apex/SFSupportHome" class="SFSupportHomeBtnTop btn">Salesforce Support Home</a>   
+        <apex:form styleClass="sfSupportHome">
+
+            <div class="myCasesWrapper">
+                          
+                <apex:selectList value="{!CasesByStatus}" size="1" styleClass="myCases" onchange="showMySFCase();">
+                    <apex:selectOption itemValue="AllProjects" itemLabel="All Open Projects"/>
+                    <apex:selectOption itemValue="AllParentDotRel" itemLabel="All Open Dot Releases"/>
+                </apex:selectList>
+                <apex:actionFunction name="showMySFCase" action="{!ShowCases}"/>
+                <!-- &nbsp;<apex:commandButton value="Go" action="{!ShowCases}" styleClass="goBtn" />  -->  
+                <div class="paginationWrapper">
+                    <apex:outputText id="pagination" styleClass="paginationTxt" value="Page {0} of {1}">
+                        <apex:param value="{!currentPage}"/>
+                        <apex:param value="{!lastPage}"/>
+                    </apex:outputText> 
+                    <apex:commandButton value="|<" action="{!Beginning}" disabled="{!DisablePrevious}" reRender="SFSupportHome" title="First"/>
+                    <apex:commandButton value="<" action="{!Previous}" disabled="{!DisablePrevious}" reRender="SFSupportHome" title="Previous"/>
+                    <apex:commandButton value=">" action="{!Next}" disabled="{!DisableNext}" reRender="SFSupportHome" title="Next"/>
+                    <apex:commandButton value=">|" action="{!End}" disabled="{!DisableNext}" reRender="SFSupportHome" title="Last"/>  
+                </div>            
+            </div>
+            <apex:pageBlockSection columns="1" showHeader="false" >      
+
+                <apex:pageBlockTable value="{!AllProjects}" var="AllPrjct" style="width:100%" rendered="{!ShowOpen}">
+                
+                    <apex:column style="width:200px">  
+                        <apex:facet name="header">Project Name</apex:facet> 
+                        <apex:outputText value="{!AllPrjct.Name}"/>
+                         </apex:column> 
+
+                    <!-- <apex:column style="width:200px">  
+                        <apex:facet name="header">Title</apex:facet> 
+                        <apex:outputText value="{!MyCases.Request_Title__c}"/>
+                    </apex:column> -->
+
+                    <apex:column style="min-width:200px">  
+                        <apex:facet name="header">Description</apex:facet> 
+                        <apex:outputText value="{!AllPrjct.Description__c}"/>
+                    </apex:column>
+                    
+                     <apex:column style="width:80px">  
+                        <apex:facet name="header">Status</apex:facet>
+                        <apex:outputField value="{!AllPrjct.Status__c}"/>
+                    </apex:column> 
+                    
+                    <apex:column style="width:120px">  
+                        <apex:facet name="header">Target Date</apex:facet>
+                        <apex:outputField value="{!AllPrjct.Deadline__c}"/>
+                    </apex:column>                       
+
+                </apex:pageBlockTable> 
+                </apex:pageBlockSection>
+                <apex:pageBlockSection columns="1" showHeader="false" rendered="{!ShowClosed}">      
+
+                <apex:pageBlockTable value="{!AllParentDotRel}" var="AllPrntDotRel" style="width:100%">
+                
+                   <apex:column style="width:120px">  
+                        <apex:facet name="header">Project Name</apex:facet> 
+                       <!-- <apex:outputText value="{!AllPrntDotRel.Name}"/> -->
+                        <apex:outputLink value="/apex/SFDotReleaseDetail?id={!AllPrntDotRel.id}">{!AllPrntDotRel.Name}</apex:outputLink>
+                         </apex:column> 
+
+                    <!-- <apex:column style="width:200px">  
+                        <apex:facet name="header">Title</apex:facet> 
+                        <apex:outputText value="{!MyCases.Request_Title__c}"/>
+                    </apex:column> -->
+
+                    <apex:column >  
+                        <apex:facet name="header">Description</apex:facet> 
+                        <apex:outputText value="{!AllPrntDotRel.Description__c}"/>
+                        
+                    </apex:column>
+                    
+                      <apex:column style="width:80px">  
+                        <apex:facet name="header">Status</apex:facet>
+                        <apex:outputField value="{!AllPrntDotRel.Status__c}"/>
+                    </apex:column> 
+                    
+                    <apex:column style="width:120px">  
+                        <apex:facet name="header">Target Date</apex:facet>
+                        <apex:outputField value="{!AllPrntDotRel.Deadline__c}"/>
+                    </apex:column>                      
+
+                </apex:pageBlockTable>
+
+            </apex:pageBlockSection>
+
+        </apex:form>
+
+    </apex:pageBlock>
+
+    <apex:includeScript value="{!$Resource.SFSupportJS}"/>
+</apex:page>

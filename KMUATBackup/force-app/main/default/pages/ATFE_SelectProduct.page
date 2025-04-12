@@ -1,0 +1,52 @@
+<apex:page standardController="OpportunityLineItem" standardStylesheets="true" extensions="ATFE_SelectProductClass">
+
+    <apex:sectionHeader title="Select Products" help="/help/doc/user_ed.jsp?loc=help"></apex:sectionHeader>
+    <apex:form >
+        <apex:pageBlock title="" mode="edit">
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!next}" value="Select" disabled="{!ISNULL(dataList)}"></apex:commandButton>
+                <apex:commandButton action="{!cancel}" value="Cancel"></apex:commandButton>
+            </apex:pageBlockButtons>
+            <!-- <apex:outputText>Opportunity {!opportunity.name}</apex:outputText> -->
+            <h3><span class="searchFirstCell">Product Selection</span></h3>
+                    <table>
+                        <tr>
+                            <td>
+                                <apex:outputLabel value="By Keyword" for="productSearch" /><br/>
+                                <apex:panelGroup >
+                                    <apex:inputText id="searchText" value="{!searchText}" /><br />
+                                    <apex:commandButton action="{!search}" value="Search"></apex:commandButton>
+                                </apex:panelGroup>
+                            </td>
+                        </tr>                                       
+                    </table>    
+            <apex:actionStatus id="status" startText="Searching... please wait..."/>
+            <apex:pageBlockSection columns="1" showHeader="false">
+                <apex:pageBlockSectionItem >
+                    <apex:pageBlockTable value="{!dataList}" var="product" rendered="{!NOT(ISNULL(dataList))}" rowClasses="dataRow even, dataRow odd" columnClasses="dataCell" >
+                        <apex:column headerValue="Select">
+                            <apex:inputCheckbox value="{!product.selected}"/>
+                        </apex:column>
+                        <apex:column headerValue="Product Name">
+                            <a href="/{!product.pbe.Product2Id}">{!product.pbe.Name}</a>
+                        </apex:column>
+                        <apex:column headerValue="Product Code">
+                            <a href="/{!product.pbe.Product2Id}">{!product.pbe.ProductCode}</a>
+                        </apex:column>
+                        <apex:column headerValue="Product Description">
+                            {!product.pbe.Product2.Description}
+                        </apex:column>
+                        <apex:column headerValue="Product Family">
+                            {!product.pbe.Product2.Family}
+                        </apex:column>
+                        <apex:column headerValue="List Price" styleClass="CurrencyElement">
+                            {!product.pbe.UnitPrice}
+                        </apex:column>
+                        
+                    </apex:pageBlockTable>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

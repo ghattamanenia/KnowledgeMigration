@@ -1,0 +1,3 @@
+<apex:page standardcontroller="Asset__c">
+  <apex:include pageName="Entitlements_Custom_RelatedList"/> 
+</apex:page>

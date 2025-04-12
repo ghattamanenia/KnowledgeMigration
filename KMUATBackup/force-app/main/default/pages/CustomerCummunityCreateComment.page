@@ -1,0 +1,60 @@
+<apex:page showHeader="false" sidebar="false" controller="CustomerCummunityCreateCommentController" action="{!forwardToCustomAuthPage}" >
+    <apex:composition template="CustomerSupportTemplate">
+        <apex:define name="body">
+
+            <div class="row">
+                <div class="twelve columns">
+                    <div class="panel radius inset">
+                        <apex:pageMessages id="error" escape="false"/>                    
+                        <div class="row container">
+                            <div class="two columns">&nbsp;</div>
+                            <div class="eight columns">
+                                <apex:form >
+                                    <table class="twelve">
+                                        <tr>
+                                            <td>
+                                                <h1>New Case Comment</h1> 
+                                            </td>
+                                            <td style="text-align: right;">
+                                                <apex:commandButton action="{!SubmitComment}" id="SubmitComment" styleClass="large green button" value="Submit Comment" />&nbsp;&nbsp;&nbsp;<apex:commandButton action="{!BackPage}" id="BackPage" styleClass="large green button" value="Back" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table class="twelve">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="4">Comment Information</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    Comment:
+                                                </td>
+                                                <td>
+                                                    <apex:inputTextarea id="userComment" value="{!userComment}" />
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </apex:form>
+                            </div>
+                            <div class="two columns">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:define>
+    </apex:composition>
+    <script type="text/javascript">
+        /* An user attempts enternig an invalid case id or account id */
+        if(!{!showpage}) {
+            $('.container').remove(); /* Remove the container for the contents */
+            $('<a/>').attr({
+                href: "{!$Site.Prefix}/CustomerCommunityLoggedin",
+                class: "btn button large topRight"
+            }).text("Home").appendTo('.panel.radius.inset');
+            $('.message.errorM3').addClass('eleven');
+        }
+    </script>  
+</apex:page>

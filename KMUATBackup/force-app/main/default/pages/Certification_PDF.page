@@ -1,0 +1,32 @@
+<apex:page standardController="Certification__c" renderAs="pdf" applyBodyTag="false">
+<apex:stylesheet value="{!URLFOR($Resource.CertificationsPDF, 'certification.css')}"/>
+<head>
+<style>
+    @page { size:27in 19in;margin:10px;padding:0px; }
+    .attendee{font-family: 'Arial Unicode MS'; font: bold 80px; color: #9E030B; align:left;} 
+    .course{font-family: 'Arial Unicode MS'; font: bold 64px; color: #000000; align:left;} 
+    .certcode{font-family: 'Arial Unicode MS'; font: bold 48px; color: #9E030B; align:left;}
+    .para{font-family: 'Arial Unicode MS'; font: normal 48px; color: black; align:left;padding-top:20px;padding-bottom:20px;}
+    .dates{font-family: 'Arial Unicode MS'; font: normal 48px; color: black; align:left;padding-top:20px;padding-bottom:20px;}
+    #details {padding-top:700px;padding-left:300px;}
+    #dates {padding-top:200px;padding-left:300px;}
+</style>
+</head>  
+    <body>    
+     <div id="details">        
+        <apex:panelGrid columns="1" width="100%">
+            <apex:outputText value="{!Certification__c.atfe_Contact_Name_Cert__r.name}" styleClass="attendee"/>
+            <apex:outputText value="Has successfully completed the following training course" styleClass="para" />
+            <apex:outputText value="{!Certification__c.atfe_Session_Title_Cert__c}" styleClass="course" />
+        </apex:panelGrid>
+     </div>
+     <div id="dates">        
+        <apex:panelGrid columns="1" width="100%">
+            <apex:outputText value="Exam Date: {!Certification__c.atfe_Exam_Date_Cert__c}" styleClass="dates" />
+            <apex:outputText value="Expiry Date: {!Certification__c.atfe_Expiry_Date__c}" styleClass="dates" />
+            <apex:outputText value="{!Certification__c.Name}" styleClass="certcode"/>
+        </apex:panelGrid>
+     </div>
+     
+    </body>
+</apex:page>

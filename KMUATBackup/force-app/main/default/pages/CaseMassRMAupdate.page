@@ -1,0 +1,39 @@
+<apex:page standardController="Case" extensions="CaseMassRMAupdate" recordSetVar="cases" action="{!selectCases}">
+
+<apex:form >
+        <apex:pageBlock title="RMA Mass Update" rendered="{!showerror}">
+            <apex:pageMessages />
+             <apex:pageBlockButtons >
+              <apex:commandButton action="{!CancelChanges}" id="CancelChanges"  value="Back" /> 
+          </apex:pageBlockButtons>
+        </apex:pageBlock> 
+           
+        <apex:pageBlock title="RMA Mass Update" rendered="{!showblock}">
+            <apex:pageMessages />
+        
+            
+          <apex:pageBlockButtons >
+              <apex:commandButton action="{!SubmitChanges}" id="SubmitChanges"  value="Save" /> 
+              <apex:commandButton action="{!CancelChanges}" id="CancelChanges"  value="Cancel" /> 
+          </apex:pageBlockButtons>
+          
+          <apex:pageBlockSection title="Case Information" columns="2">  
+              <apex:inputField label="Case Status" value="{!cRMAupdate.Status}"/>
+              <apex:inputField label="Case Owner" value="{!cRMAupdate.Ownerid}" required="false"/>
+          </apex:pageBlockSection>    
+              
+          <apex:pageBlockSection title="RMA Information" columns="2"> 
+              <apex:inputField value="{!cRMAupdate.RMA_Status__c}"/>
+             <!-- <apex:inputField value="{!cRMAupdate.RMA_Reason__c}"/>  -->
+              <apex:inputField value="{!cRMAupdate.RMA_Tracking_Number__c}"/>
+              <apex:inputField value="{!cRMAupdate.RMA_Service_Offered__c}"/>
+              <apex:inputField value="{!cRMAupdate.RMA_Number__c}"/>
+             <!-- <apex:inputField value="{!cRMAupdate.Date_of_Purchase__c}"/> -->
+             <apex:inputField value="{!cRMAupdate.ATI_Fault_Code_1__c}"/>
+             <apex:inputField value="{!cRMAupdate.TAC_Comments__c}"/>
+              
+          </apex:pageBlockSection>
+          
+        </apex:pageBlock>
+</apex:form>
+</apex:page>

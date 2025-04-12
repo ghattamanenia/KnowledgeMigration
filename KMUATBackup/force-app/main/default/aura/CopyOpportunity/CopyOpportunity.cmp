@@ -1,0 +1,22 @@
+<aura:component controller="JP_CopyOpportunityForLightning" implements="force:lightningQuickAction,force:hasRecordId">
+    <aura:attribute name="recordId" type="Id"/>
+    
+    <div aura:id="msg" />
+    <p>この商談と共にコピーするレコードを選択してください。<br/>
+    </p><br/>
+
+    <lightning:input type="checkbox" label="商談商品" aura:id="OpportunityLineItem" name="OpportunityLineItem" checked="true"/>
+    <lightning:input type="checkbox" label="パートナー" aura:id="Partner" name="Partner" checked="true"/>
+    <lightning:input type="checkbox" label="顧客の役割" aura:id="OpportunityContactRole" name="OpportunityContactRole" checked="true"/>
+    <lightning:input type="checkbox" label="商談チーム" aura:id="OpportunityTeam" name="OpportunityTeam" checked="true"/>
+    <lightning:input type="checkbox" label="プロジェクト" aura:id="JP_Project__c" name="JP_Project__c" checked="true"/>
+    <lightning:input type="checkbox" label="商流" aura:id="JP_Partner1__c" name="JP_Partner1__c" checked="true"/>
+   
+    
+    <br/>
+    
+    <lightning:button aura:id="btnCopy" name="copy" label="コピー" onclick="{!c.doCopy}"/>
+    <p>フェーズ＆ランクはコピーされません。以下に設定されます。<br/>
+        <lightning:formattedText value="{!$Label.c.JP_CopyOpportunityExplanation}" />
+    </p>
+ </aura:component>

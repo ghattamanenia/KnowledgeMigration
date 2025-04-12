@@ -1,0 +1,28 @@
+<apex:page showHeader="false" standardController="Session__c" recordSetVar="Courses" >
+<pbe:PageBlockTableEnhancerADV targetPbTableIds="courseList" paginate="true" enableExport="false" defaultPageSize="15" pageSizeOptions="5,10,20,30,40,50,100" />
+  <!-- Begin Default Content 
+  <h1>Training Courses Available</h1> -->
+
+
+<apex:form >
+
+  <apex:pageBlock title="Displaying Sessions">       
+      
+  <!-- Display Courses -->
+  
+  <apex:pageBlockTable value="{!Courses}" var="course" id="courseList">
+  <apex:column value="{!course.Name}"/>
+  <apex:column value="{!course.atfe_Session_Title__c}"/>
+  <apex:column value="{!course.atfe_Session_Type__c}"/>
+  <apex:column value="{!course.atfe_Session_End_Date__c}"/>
+  <apex:column value="{!course.atfe_Country__c}"/>
+  <apex:column value="{!course.atfe_Location__c}"/>
+  </apex:pageBlockTable>  
+  </apex:pageBlock>
+  <!-- Form here -->
+
+   
+  </apex:form>
+
+  <!-- End Default Content -->
+</apex:page>

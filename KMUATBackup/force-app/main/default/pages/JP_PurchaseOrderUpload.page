@@ -1,0 +1,177 @@
+<apex:page sidebar="false" standardController="JP_Order010PurchaseOrder__c" extensions="JP_PurchaseOrderUploadController" action="{!init}" docType="html-5.0" tabStyle="POUpload__tab">
+<link href="{!URLFOR($Resource.JP_StaticResources,'jquery-ui/1.11.4/jquery-ui.min.css')}" rel="stylesheet" />
+<script type="text/javascript" src="{!URLFOR($Resource.JP_StaticResources,'jquery/jquery-1.11.3.min.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.JP_StaticResources,'jquery-ui/1.11.4/jquery-ui.js')}"></script>
+
+    <style type="text/css">
+    .contactNameInside {
+        text-align: right;
+    }
+
+    .dropDiv{
+        border:2px black dashed;
+        padding:10px;
+        background-color:lightblue;
+        width:60%;
+    }
+    
+    /* Loading icon */
+    .loader {
+      display: none;
+      background: url('/img/loading32.gif') scroll no-repeat 0 0;
+      width: 32px;
+      height: 32px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+    }
+    
+    /* Overlay */
+    .overlay {
+      display: none;
+      height: 100%;
+      width: 100%;
+      left: 0;
+      top: 0;
+      position: fixed;
+      opacity: 0.3;
+      -moz-opacity: 0.3;
+      -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
+      filter: alpha(opacity=30);
+      -khtml-opacity: 0.3;
+      background: #000;
+      z-index: 1000;
+    }
+
+    </style>
+    <script type="text/javascript">
+        var __sfdcSessionId = '{!GETSESSIONID()}';
+    </script>
+    <script src="../../soap/ajax/35.0/connection.js" type="text/javascript"></script>
+    <script src="../../soap/ajax/35.0/apex.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        function allChecked(){
+            // 一括チェックボックスのID取得
+            var targetCheckId = '{!$Component.form.buttonGroup.doctable.checkChange}';
+            var targetCheck = document.getElementById(targetCheckId);
+            
+            // ファイル数カウント
+            var filecountId = '{!$Component.form.buttonGroup.orderssize}';
+            var filecount = document.getElementById(filecountId);
+            
+            var itemCnt = filecount.value;
+            var checkId = '{!$Component.form.buttonGroup.doctable}';
+
+            for(var i = 0; i < itemCnt; i++){
+                document.getElementById(checkId + ':' + i + ':isCheck').checked = targetCheck.checked;
+            }
+            return false;
+        }
+
+        function remoteLocationPost(){
+            var body = document.getElementById("file_input").files[0];
+            if(typeof body === "undefined"){
+                alert("ファイルが選択されていません。");
+                return;
+            }else{
+                startLoading(); 
+                getAsText(body);
+            }
+        }
+        
+        function getAsText(readFile) {
+            var reader = new FileReader();
+            reader.readAsBinaryString(readFile);
+            reader.onload = attLoaded;
+        }
+        
+        function attLoaded(evt) {
+            var fileString = window.btoa(evt.target.result);
+            var input = document.getElementById("file_input");
+            var filename = input.value;
+            uploadFile(filename,fileString);
+        }
+        
+        /**
+         * Loading icon & Overlay
+         */
+        function startLoading(){
+            jQuery('.loadingBox').show();
+        }
+        function endLoading(){
+            jQuery('.loadingBox').hide();
+        }
+        function transitionPage(baseId){
+            if(hasError == 'false'){
+                window.location.href = returl;
+            }
+        }
+        function reload(){
+            if(hasError == 'false'){
+                location.reload();
+            }
+        }
+    </script>
+
+    <apex:pageMessages id="msg" escape="false"/>
+
+    <apex:form id="form">
+        <apex:pageBlock id="detail">
+            <apex:pageBlockSection id="headerSection" columns="2">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="拠点" />
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock" layout="block"/>
+                        <apex:inputField value="{!record.JP_Order010_Filed002__c}" />
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+
+                <apex:inputField value="{!record.JP_Order010_Filed003__c}" />
+                <apex:inputText label="見積書番号" value="{!quotationNo}" />
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+
+        <apex:pageBlock id="buttonGroup">
+            <apex:inputHidden id="orderssize" value="{!filecount}" />
+            <apex:pageBlockButtons location="top" >
+                <input id="file_input" type="file" name="a" />
+                
+                <apex:commandButton value="Upload" onclick="remoteLocationPost(); return false;" />
+                <apex:commandButton value="保存＆添付" action="{!doSave}" onclick="startLoading();" oncomplete="endLoading();transitionPage();" reRender="script-block,msg" />
+                <apex:commandButton value="保存&添付(ページ遷移なし)" action="{!doSave}" onclick="startLoading();" oncomplete="endLoading();" reRender="buttonGroup,script-block,msg" />
+                <apex:commandButton value="削除" action="{!doDelete}" onclick="if(!window.confirm('削除しますか？')){return false;};startLoading();" oncomplete="endLoading();reload();" reRender="buttonGroup,script-block,msg" />
+            </apex:pageBlockButtons>
+            <apex:actionRegion >
+                <apex:actionFunction name="uploadFile" action="{!uploadFile}" oncomplete="endLoading();" reRender="buttonGroup,msg">
+                    <apex:param name="fname" value="" assignTo="{!filename}" />
+                    <apex:param name="body" value="" assignTo="{!body}"/>
+                </apex:actionFunction>
+            </apex:actionRegion>
+
+            <apex:pageBlockTable id="doctable" value="{!orders}" var="order" rendered="{!AND(orders != null,orders.size > 0)}">
+                <!-- テーブル先頭チェックボックス -->
+                <apex:column styleClass="shortColumn">
+                    <apex:facet name="header" >
+                        <apex:inputCheckbox id="checkChange" value="{!CheckChange}" onchange="return allChecked();" >
+                            <apex:outputText value="選択削除" />
+                        </apex:inputCheckbox>
+                    </apex:facet>
+                    <apex:inputCheckbox id="isCheck" value="{!order.selected}" />
+                </apex:column>
+                <apex:column value="{!order.obj.Name}" />
+                <apex:column value="{!order.obj.CreatedDate}"/>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+
+    <apex:outputPanel layout="block" id="script-block">
+        <script>
+            var hasError = '{!hasError}';
+            var returl = '{!retUrl}';
+        </script>
+    </apex:outputPanel>
+    
+    <!-- Loading icon & Overlay -->
+    <div class="loadingBox loader" />
+    <div class="loadingBox overlay" />
+</apex:page>

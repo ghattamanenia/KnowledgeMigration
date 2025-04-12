@@ -1,0 +1,145 @@
+<apex:page title="Training Session - Register Interest" showHeader="false" standardStylesheets="true">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous" />
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+ <style type="text/css">
+#wrapper {
+    background: #f2f2f2 url("http://partnerportal.alliedtelesis.eu/images/publicimages/background.gif") repeat-y scroll right center;
+}
+#header {
+    background: #f2f2f2 none repeat scroll 0 0;
+}
+#container {
+    background: #f2f2f2 url("http://partnerportal.alliedtelesis.eu/images/publicimages/background.gif") repeat-y scroll right center;
+    float: left;
+    margin-right: -330px;
+    width: 100%;
+    margin-top: 50px;
+}
+#content {
+    background: #f2f2f2 none repeat scroll 0 0;
+    margin-right: 330px;
+    margin-left:20px;
+    font-size:10px;
+}
+#sidebar {
+    float: right;
+    width: 330px;
+    position:fixed;
+    right:0px;
+    top:50px;
+}
+#footer {
+    background: #f2f2f2 none repeat scroll 0 0;
+}
+h1 {
+    margin-top: 0;
+}
+.last {
+    margin-bottom: 0;
+}
+.clearing {
+    clear: both;
+    height: 0;
+}
+.industry {
+    width:175px;
+    }
+#custom-bootstrap-menu.navbar-default .navbar-brand {
+    color: rgba(119, 119, 119, 1);
+}
+#custom-bootstrap-menu.navbar-default {
+    font-size: 14px;
+    background-color: rgba(255, 255, 255, 1);
+    border-bottom: 2px solid #810F10;
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a {
+    color: rgba(119, 119, 119, 1);
+    background-color: rgba(255, 255, 255, 1);
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:focus {
+    color: rgba(51, 51, 51, 1);
+    background-color: rgba(131, 145, 158, 1);
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:focus {
+    color: rgba(85, 85, 85, 1);
+    background-color: rgba(231, 231, 231, 1);
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle {
+    border-color: #ddd;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle:hover,
+#custom-bootstrap-menu.navbar-default .navbar-toggle:focus {
+    background-color: #ddd;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle .icon-bar {
+    background-color: #888;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle:hover .icon-bar,
+#custom-bootstrap-menu.navbar-default .navbar-toggle:focus .icon-bar {
+    background-color: #ffffff;
+}
+    </style>
+  <apex:composition template="{!$Site.Template}">
+    <apex:define name="body"> 
+    <!-- website header code -->
+  <div id="custom-bootstrap-menu" class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header"><a class="navbar-brand" href="http://www.alliedtelesis.com/"><img src="http://www.alliedtelesis.com/sites/default/files/alliedtelesis-logo.png" height="20px"/></a>
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-menubuilder">
+            <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+            </button>
+        </div>
+        <div class="collapse navbar-collapse navbar-menubuilder">
+            <ul class="nav navbar-nav navbar-left">
+                <li><a href="http://www.alliedtelesis.com/solutions">Solutions</a>
+                </li>
+                <li><a href="http://www.alliedtelesis.com/services">Services</a>
+                </li>
+                <li><a href="http://www.alliedtelesis.com/products">Products</a>
+                </li>
+                <li><a href="http://www.alliedtelesis.com/support">Support</a>
+                </li>
+                <li><a href="http://www.alliedtelesis.com/purchase">Purchase</a>
+                </li>
+                <li><a href="http://www.alliedtelesis.com/about">About</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- website header code end -->
+<div id="wrapper">
+  <div id="container">  
+    <div id="content">   
+<h1>Training and Certification Programs</h1><p>&nbsp;</p>
+<p style="font-size:18px;color:#983222;">Thank you for your interest. We shall contact you shortly!</p><p>&nbsp;</p>
+<p style="font-size:14px;"><strong>The Allied Telesis Training and Certification Model</strong></p>
+<img src="http://www.alliedtelesis.com/sites/default/files/default_images/training-pyramid-eu.png" height="288px" /><img src="http://www.alliedtelesis.com/sites/default/files/default_images/training-table.png" height="288px" />
+<p style="font-size:14px;">The networking industry is constantly seeking qualified experts to sell, design, install, manage and troubleshoot voice, video and data networks. Allied Telesis has developed an extensive set of certification courses and exams to help you increase your knowledge of IP networking.</p>
+<p style="font-size:14px;">Whether you are a field technician, a design engineer, reseller or a network administrator, the Allied Telesis certification program has coursework tailored to your needs and to the specific market vertical and technology you represent. Coursework covers all aspects of hardware and software deployments, from basic rack and stack, to in-depth configuration, design and troubleshooting.</p>
+        </div>
+ </div>
+        
+<div id="sidebar">
+    <img src="http://partnerportal.alliedtelesis.eu/images/publicimages/net.campus-offer.jpg" alt="Net.Campus" /><p>&nbsp;</p>
+
+  <div class="btn btn-lg" style="padding:10px;">
+  <a href="http://go.alliedtelesis.com/attraining" class="btn btn-primary btn-lg active" role="button" style="padding:10px;font-size:14px;">Book another course</a>
+  </div>
+<p>&nbsp;</p>
+  <img src="http://partnerportal.alliedtelesis.eu/images/publicimages/NetCampus.png" alt="Net.Campus" width="300px" />
+       
+</div>
+
+</div>
+    </apex:define>
+  </apex:composition>
+</apex:page>

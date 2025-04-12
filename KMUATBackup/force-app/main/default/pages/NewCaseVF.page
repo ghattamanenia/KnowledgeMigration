@@ -1,0 +1,58 @@
+<apex:page controller="NewCaseCtrl" showHeader="true" lightningStylesheets="true">
+    <apex:slds />
+
+    <apex:form >
+        <div class="slds-scope">
+            <div align="center">
+                <apex:outputPanel rendered="{!lisrcon.size <=0}">
+                    <apex:pageMessage severity="error" strength="1" summary="Please add contact on this account." />
+                </apex:outputPanel>
+            </div>
+            <div align="center">
+                <apex:outputPanel rendered="{!acc.Business__c==''}">
+                    <apex:pageMessage severity="error" strength="1" summary="Please fill Time Zone field on account." />
+                </apex:outputPanel>
+            </div>
+            <div align="center">
+                <apex:outputPanel rendered="{!acc.billingcity==''}">
+                    <apex:pageMessage severity="error" strength="1" summary="Please enter Billing City on account." />
+                </apex:outputPanel>
+            </div>
+            <div align="center">
+                <apex:outputPanel rendered="{!acc.BillingCountry==''}">
+                    <apex:pageMessage severity="error" strength="1" summary="Please enter Billing Country on account." />
+                </apex:outputPanel>
+            </div>
+
+            <div align="center">
+                <apex:outputPanel rendered="{!acc.BillingStreet==''}">
+                    <apex:pageMessage severity="error" strength="1" summary="Please enter Billing Street on account." />
+                </apex:outputPanel>
+            </div>
+            <div align="center">
+                <apex:outputPanel rendered="{!if(AND(acc.Region__c !='EMEA', acc.BillingState ==''),true,false)}">
+                    <apex:pageMessage severity="error" strength="1" summary="Please enter Billing State on account." />
+                </apex:outputPanel>
+            </div>
+
+            <div align="center">
+                <apex:outputPanel rendered="{!acc.BillingPostalCode==''}">
+                    <apex:pageMessage severity="error" strength="1" summary="Please enter Billing Postal Code on account." />
+                </apex:outputPanel>
+            </div>
+            <div align="center">
+                <apex:outputPanel >
+                   <br/><br/><br/><br/>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!if((acc.Business__c!=''&& acc.billingcity!='' && acc.BillingCountry!='' && acc.Region__c!='' && acc.BillingState!='' && acc.BillingPostalCode!=''),true,false)}">
+                    <apex:commandButton styleClass="slds-button slds-button_success" value="Next" action="{!validateAndRedirect}" />
+                </apex:outputPanel>
+                
+                <apex:outputPanel >
+                    &nbsp;&nbsp;<apex:commandButton styleclass="slds-button slds-button_destructive" value="Cancel" action="{!onCancel}" />
+                </apex:outputPanel>
+                 
+            </div>
+        </div>
+    </apex:form>
+</apex:page>

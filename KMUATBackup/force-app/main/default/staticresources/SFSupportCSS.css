@@ -1,0 +1,369 @@
+/* Overriding the exisiting */
+body .apexp > div {
+	border-top: 1px solid #eaeaea !important;
+}
+
+body .apexp .bPageBlock.apexDefaultPageBlock .pbBody {
+	margin: 0;
+	padding: 0 20px 20px 20px;
+}
+body .pbButtonb input.btn,
+body .pbButton input.btn,
+body .pbSubsection input.btn {
+	font-size: 13px;
+	padding: 6px 20px !important;  
+}
+body .bPageBlock .pbBody > .data2Col {
+	padding: 10px 20px 20px 20px !important;
+}
+body .bPageBlock .pbTitle h2.mainTitle {
+	font-size: 16px;
+	margin-left: 18px;
+}
+body .pbBody h2.dotRelatedTitle {
+	display: inline-block;	
+	font-size: 16px;
+	position: relative;
+	top: 15px;	
+	margin-bottom: 10px;
+}
+body .createSFSupportCase .pbBody {
+	min-width: 850px !important;
+}
+body .pbBody table.list tr.headerRow td, 
+body .pbBody table.list tr.headerRow th {
+	padding: 10px !important;
+}
+body .pbBody table.list tr.dataRow th, 
+body .pbBody table.list tr.dataRow td {
+	font-size: 13px;
+	padding: 10px;
+	line-height: 20px;
+	white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+	white-space: -pre-wrap;      /* Opera 4-6 */
+	white-space: -o-pre-wrap;    /* Opera 7 */
+	white-space: pre-wrap;       /* css-3 */
+	word-wrap: break-word;       /* Internet Explorer 5.5+ */
+	word-break: break-all;
+	white-space: normal;
+}
+.pbBody > table > tbody > tr > td{
+	/*font-weight: bold;
+	width: 25%;*/
+	width: 50%;
+	padding: 20px 10px;
+}
+.pbBody > table > tbody > tr > td.hide{
+	padding-top: 0;
+	padding-bottom: 0;
+}
+body .bPageBlock .tertiaryPalette {
+	width: 100%;
+}
+body .pbBody input.btn.btnInHeader {
+	font-size: 12px;
+	position: relative;
+	top: 23px;
+	padding: 1px 13px !important;
+}
+/*top: -29px;*/
+@-moz-document url-prefix() {
+	body .pbBody input.btn.btnInHeader {
+		top: 16px;
+	}
+}
+@-ms-document url-prefix() {
+	body .pbBody input.btn.btnInHeader {
+		top: 22px;
+	}
+}
+.bPageBlock .pbButton,
+.bPageBlock .pbButtonb {
+	text-align: right;
+}
+.pbBottomButtons {
+	margin-top: 0 !important;
+}
+.pbBody > table {
+	border-collapse: collapse; 
+	width: 100%;
+}
+.pbBody > table > tbody > tr > td > label,
+.pbBody > table > tbody > tr > td > .labelWrapper > label,
+.pbBody > table > tbody > tr > td > div > label {
+	display: inline-block;
+	color: #333;
+	font-size: 13px;
+	font-weight: bold;
+	width: 330px;	
+	margin-right: 10px;
+	vertical-align: top;	
+}
+.apexp .detailList .list .headerRow th {
+	font-size: 13px !important;
+}
+.bPageBlock .pbBody .descLabel {
+	position: relative;
+	bottom: 15px;      
+}
+.bPageBlock  .pbBody .detailList .dataCol,
+.bPageBlock .pbBody .detailList .labelCol {
+	width: 25%;
+}
+.bPageBlock .pbBody .requiredInput .requiredBlock {
+	display: none;
+}
+.bPageBlock .pbBody .requiredField {
+	border-left: solid 4px #c00;
+}
+.createSFSupportCase .dateFormat {
+	display: none;
+	/*margin-left: 5px;*/
+}
+
+/* Button Alignment Starts */
+.createSFSupportCase .bPageBlock .pbTitle {
+	width: 60% !important;
+}
+.caseDetail .bPageBlock .pbTitle,
+.enhancementDetail .bPageBlock .pbTitle {
+	display: none;
+}
+.bPageBlock .pbHeader>table>tbody>tr>td.pbTitle {
+	padding-left: 12px !important;			
+}
+/* Button Alignment Ends */
+
+/*** Custom ***/
+/* Home starts */
+.sfSupportHome select {
+    font-size: 14px;
+    -webkit-appearance: menulist-button;
+    height: 28px;
+}
+.selectCaseTitle {
+    font-size: 16px;
+    font-weight: normal;
+}
+.selectCaseHelper {
+    margin-top: 10px;
+    font-style: italic;
+    color: #555;            
+}
+.myCasesWrapper {
+    margin: 15px 0 10px 0;                    
+}
+.myCasesWrapper .myCases {
+    font-size: 14px;
+}
+.myCasesWrapper .goBtn {
+    font-size: 13px;
+    padding: 5px 18px;
+    position: relative;
+    top: -1px;
+}
+.sfSupportHome > div > div.pbSubsection > table > tbody > tr > td {
+    padding: 0 !important;
+}
+.myCases {
+    margin-left: 0;
+    padding-left: 6px;
+}
+body .apexp .bPageBlock .pbBody .SFSupportProjectListBtn,
+body .apexp .bPageBlock .pbBody .SFSupportProjectListBtn:hover,
+body .apexp .bPageBlock .pbBody .SFSupportHomeBtnTop,
+body .apexp .bPageBlock .pbBody .SFSupportHomeBtnTop:hover {
+	color: inherit;  	
+	font-size: 13px;
+	text-decoration: none;	
+	padding: 6px 20px;
+	float: right;
+}
+body .apexp .bPageBlock .pbBody .SFSupportProjectListBtn {
+	margin-top: -40px;
+}
+body .apexp .bPageBlock .pbBody .SFSupportHomeBtnTop {
+    margin-top: -55px;
+}
+/* FF specific */
+@-moz-document url-prefix() {
+    .sfSupportHome select {
+        height: 33px;
+        padding: 8px 1px;
+    }
+}
+/* Home ends */
+
+.createSFSupportCase textarea, 
+.createSFSupportCase input { 
+	outline: none; 
+}
+.createSFSupportCase textarea, 
+.createComment textarea {
+	width: 300px;
+	height: 75px;
+}
+.createSFSupportCase input[type="radio"] {
+	vertical-align: top;
+	margin: 0 5px 0 10px;
+}
+.createSFSupportCase input[type="file"] {
+	vertical-align: middle;
+	margin-left: -3px;
+}
+.createSFSupportCase select {
+	vertical-align: top;
+	margin-right: 8px;
+}
+.topSection {
+	padding: 15px 0;
+	border-bottom: 1px solid #dbdbdb;
+}        
+.topSection .caseTypeSelect {
+	padding: 3px 8px;
+}
+.topSection .goBtn {
+	font-size: 13px;	
+	padding: 5px 18px;
+	position: relative;
+	top: -1px;          
+}
+.caseDetail, 
+.enhancementDetail,
+.dotReleaseDetail {
+      font-size: 13px;
+}
+.paginationWrapper {
+	float: right;
+	margin-top: 5px;
+}
+.submitting {
+	opacity: 0.5;
+	cursor: wait !important;
+}
+.errorField {
+	border: 2px solid #c00;
+}
+.errorMsg {
+	margin-left: 340px;
+}
+.hide .errorMsg { /* Think better way to handle this */
+	margin-top: -20px;
+	margin-bottom: 20px;
+}
+.hide .lookUp .errorMsg { /* Think better way to handle this */
+	margin-top: 0;
+}
+.errorMsg.otherFieldError {
+	margin-left: 480px;
+}
+.hide > div:first-child {
+	display: none;
+	padding-top: 20px;
+	padding-bottom: 20px; 
+}
+.hidden {
+	visibility: hidden;
+}
+.disabled {
+	opacity: 0.3;
+}
+.floatRight {
+	float: right;
+}
+.separator-bottom {
+	border-bottom: 1px solid #dbdbdb;
+}           
+.separator-top {
+	border-top: 1px solid #dbdbdb;	
+}
+.createSFSupportCase .headerHelpTxt {
+	color: #933;
+	font-size: 12px;
+	font-style: italic;
+	margin-left: 18px;
+}
+.attachmentHelpTxt {
+	float: right;
+	font-size: 11px;
+	margin-top: -45px;
+	margin-right: 40px;
+}
+.createSFSupportCase .lookUp {
+	display: inline;
+}
+.createSFSupportCase tr > td > fieldset {
+	display: inline;
+	margin-left: -10px;
+	padding: 0;
+}
+
+/* Hide the dropdown for User lookup */
+.createSFSupportCase .lookUp > select {
+	display: none;
+}
+
+/* Add number before the each label */
+/*
+body {
+	counter-reset: qNum;           
+}
+.pbBody > table tr td label::before {
+	counter-increment: qNum;      
+	content: counter(qNum) "). ";
+	margin-right: 3px;
+}
+*/
+.labelWrapper {
+	display: inline-block;		
+	vertical-align: top;
+}
+
+/* Home */
+.paginationTxt {
+	display: inline-block;
+	font-style:italic;             
+	margin-top: 5px;
+	margin-right: 15px;            
+}
+/* Create Case for "Issues" */
+.stepsToRepro {
+  vertical-align: text-top;
+  margin: 0;  
+  padding-left: 0;
+}
+.stepsToRepro li {
+  margin: 6px 20px;
+}
+/* Create Enhancement Request */
+.eRequestTable {
+	min-width: 1100px;
+}
+.eRequestTable .businessEffected > label,
+.eRequestTable .businessEffected > table,
+.eRequestTable .businessEffected > textarea {
+	float: left;
+}
+.eRequestTable .businessEffected > table {
+	margin-top: -8px;
+	margin-right: 5px;	
+}
+.eRequestTable .businessEffected .multiSelectPicklistRow .multiSelectPicklistCell {
+	padding-right: 8px;
+}
+
+/*
+#businessProcessesMultiPickList,
+#businessProcessesMultiPickList .duelingListBox {
+	display: inline-block;
+}
+#businessProcessesMultiPickList label {
+	padding-right: 15px;
+}
+#businessProcessesMultiPickList .addRemove {
+	padding-top: 15px;
+}
+#businessProcessesMultiPickList .upDown {
+	display: none;
+}
+*/

@@ -1,0 +1,33 @@
+<apex:page standardController="JP_RequestInformation__c"  extensions="JP_SO_Detail" lightningStylesheets="true" standardStylesheets="true" showHeader="true" sidebar="false" id="page">
+  <apex:form id="form">
+
+    <apex:pageBlock title="SO明細">
+      <apex:pageBlockTable value="{!sodList}" var="a">
+
+        <apex:column headerValue="管理番号">
+          <apex:outputLink value="{!URLFOR('/' + a.JP_Management_No__r.Id)}">{!a.JP_Management_No__r.Name}</apex:outputLink>
+        </apex:column>
+
+        <apex:column headerValue="SO明細名">
+          <apex:outputLink value="{!URLFOR('/' + a.Id)}">{!a.Name}</apex:outputLink>
+        </apex:column>
+
+        <apex:column headerValue="SO明細コメント共通4">
+          <apex:outputtext value="{!a.JP_SO_Item_Common4__c}" />
+        </apex:column>
+
+        <apex:column headerValue="小計">
+          <apex:outputtext value="{!a.JP_Subtotal__c}" />
+        </apex:column>
+
+        <apex:column headerValue="作成日">
+          <apex:outputText value="{0,date,yyyy/MM/dd}">
+            <apex:param value="{!a.CreatedDate}"/>
+          </apex:outputText>
+        </apex:column>
+
+      </apex:pageBlockTable>
+    </apex:pageBlock>
+
+  </apex:form>
+</apex:page>

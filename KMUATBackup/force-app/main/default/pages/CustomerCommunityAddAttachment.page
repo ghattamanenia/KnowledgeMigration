@@ -1,0 +1,51 @@
+<apex:page showHeader="false" sidebar="false" controller="CustomerCommunityAddAttachmentController" action="{!loadMessages}">
+    <apex:composition template="CustomerSupportTemplate">
+        <apex:define name="body">
+            <!-- Case Area -->
+            <div class="row">
+                <div class="two columns"></div>
+                <div class="eight columns">
+                    <div id="panel" class="panel radius inset">
+                        <!-- <apex:pageBlock id="block"> -->
+                            <apex:pageMessages id="error" escape="false"/> 
+                            <div class="row container">                         
+                                <div class="twelve columns">
+                                    <h1 style="margin-top: 20px; display: inline-block; width: 100%">File Upload Example</h1>
+                                        <!--<apex:sectionHeader title="Visualforce Example" subtitle="File Upload Example"/>-->
+                                        <apex:form enctype="multipart/form-data"> 
+                                        <table class="twelve">
+                                            <tr>
+                                                <td>
+                                                    <b>Select the File</b><br/>
+                                                    Type the path of the file or click the Browse button to find the file.<br/><br/>
+                                                    <apex:inputFile value="{!attachment.body}" filename="{!attachment.name}" id="file"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <apex:commandButton action="{!upload}" value="Save" styleClass="button large"/>&nbsp;&nbsp;
+                                                    <apex:commandButton action="{!BackPage}" value="Back" styleClass="button large"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </apex:form>
+                                </div>
+                            </div>
+                        <!-- </apex:pageBlock> -->
+                    </div>
+                </div>
+                <div class="two columns"></div>
+            </div>
+        </apex:define>
+    </apex:composition>
+    <script type="text/javascript">
+        if({!showpage}==false) {
+            $('.container').remove(); /* Remove the container for the contents */
+            $('<a/>').attr({
+                href: "{!$Site.Prefix}/CustomerCommunityLoggedin",
+                class: "btn button large topRight"
+            }).text("Home").appendTo('.panel.radius.inset');
+            $('.message.errorM3').addClass('eleven').closest('.columns').removeClass('eight').addClass('twelve');
+        }
+    </script>  
+</apex:page>

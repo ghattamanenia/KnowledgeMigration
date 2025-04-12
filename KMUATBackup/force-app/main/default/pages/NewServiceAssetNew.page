@@ -1,0 +1,154 @@
+<apex:page tabStyle="Service_Asset__c" standardStylesheets="true" standardController="Service_Asset__c"  extensions="serviceAssetcontroller" >
+<apex:slds />                    
+<apex:sectionHeader rendered="{!NOT(editpage)}" subtitle="New Service Asset" title="Service Asset Edit"/>
+<apex:sectionHeader rendered="{!editpage}"  subtitle="Edit Service Asset" title="Service Asset Edit"/>
+
+<apex:pageMessages />
+
+<script type='text/javascript'>
+
+  function openLookup(baseURL, width, modified, searchParam){
+    var originalbaseURL = baseURL;
+    var originalwidth = width;
+    var originalmodified = modified;
+    var originalsearchParam = searchParam;
+ 
+    var lookupType = baseURL.substr(baseURL.length-3, 3);
+    if (modified == '1') baseURL = baseURL + searchParam;
+ 
+    var isCustomLookup = false;
+ 
+    // Following "001" is the lookup type for Account object so change this as per your standard or custom object
+    if(lookupType == "01t"){
+ 
+      var urlArr = baseURL.split("&");
+      var txtId = '';
+      if(urlArr.length > 2) {
+        urlArr = urlArr[1].split('=');
+        txtId = urlArr[1];
+      }
+ 
+      // Following is the url of Custom Lookup page. You need to change that accordingly
+      baseURL = "/apex/CustomServiceLookup?txt=" + txtId;
+ 
+      // Following is the id of apex:form control "myForm". You need to change that accordingly
+      baseURL = baseURL + "&frm=" + escapeUTF("{!$Component.myForm}");
+      if (modified == '1') {
+        baseURL = baseURL + "&lksearch=" + searchParam;
+      }
+ 
+      // Following is the ID of inputField that is the lookup to be customized as custom lookup
+      if(txtId.indexOf('hproduct') > -1 ){
+        isCustomLookup = true;
+      }
+       if(txtId.indexOf('hproduct2') > -1 ){
+        isCustomLookup = true;
+      }
+    }
+ 
+ 
+    if(isCustomLookup == true){
+      openPopup(baseURL, "lookup", 350, 480, "width="+width+",height=480,toolbar=no,status=no,directories=no,menubar=no,resizable=yes,scrollable=no", true);
+    }
+    else {
+      if (modified == '1') originalbaseURL = originalbaseURL + originalsearchParam;
+      openPopup(originalbaseURL, "lookup", 350, 480, "width="+originalwidth+",height=600,toolbar=no,status=no,directories=no,menubar=no,resizable=yes,scrollable=no", true);
+    } 
+  }
+  
+    function noenter(ev)  
+    {
+        if (window.event && window.event.keyCode == 13 || ev.which == 13) {
+            doSearchAF();
+            return false;
+         } else {
+              return true;
+         }
+     }
+</script>
+
+<apex:form id="myForm">
+ <!--  <apex:actionFunction reRender="searchresult,recordCount,errormessage1" status="status" name="doSearchAF" action="{!FilterProduct}" />
+ -->
+ <apex:pageblock title="Service Asset Edit" mode="edit" id="psection" >
+
+
+    <apex:pageblockButtons >
+         <apex:actionstatus id="status">         
+                   
+            <apex:facet name="start">         
+                        <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                        <span class="waitingDescription">Loading...</span>                  
+            </apex:facet>
+        </apex:actionstatus>
+               
+        <apex:commandButton rendered="{!isSaSection}" value="Save" action="{!save}"/>
+     <!---   <apex:commandButton rendered="{!isSaSection}" value="Save & New" action="{!savenew}"/> --->
+        <apex:commandButton rendered="{!isSaSection}" value="Cancel" action="{!Cancel}"/>  
+     <!--
+         <apex:actionSupport status="status"  event="onclick"  reRender="hwSection" >
+            <apex:commandButton rendered="{!isSaSection}" immediate="true" value="Search Product" action="{!SearchProduct}"/>
+         </apex:actionSupport>     
+            <apex:commandButton rendered="{!isProductSection}" value="Back" action="{!Back}"/> 
+      -->   
+                     
+    </apex:pageblockButtons>
+    
+    <apex:pageblockSection title="Information"  rendered="{!NOT(editpage)}"   id="hwSection" columns="2">
+    
+     <!---  <apex:inputField required="true" value="{!SaAsset.Name}"/> -->
+     <apex:inputField id="hproduct" required="true" value="{!SaAsset.Service_Product__c}"/>  
+       <apex:inputField value="{!SaAsset.Asset__c}"/>  
+        <apex:inputField required="true" value="{!SaAsset.Account__c}"/>      
+      <apex:inputField value="{!SaAsset.Purchase_Information__c}"/>  
+      <apex:inputField required="true" value="{!SaAsset.Start_Date__c}"/>
+      <apex:inputField value="{!SaAsset.Opportunity_Raised_Date__c}"/>
+      <apex:inputField value="{!SaAsset.Trace_Id__c}"/>
+       
+       
+              <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>  
+
+        
+     <!---  <apex:inputField value="{!SaAsset.LocationZipcode__c}"/> --->
+<!--         <apex:inputField value="{!SaAsset.RecordTypeID}"/> -->
+        
+                
+    </apex:pageblockSection>
+    
+     <apex:pageblockSection title="Information" rendered="{!editpage}" id="hwEditSection" columns="2">
+     
+         <apex:inputField required="true" value="{!SaAsset.Name}"/>   
+         <apex:inputField value="{!SaAsset.Asset__c}"/> 
+        <!-- <apex:outputField id="hproduct2" value="{!SaAsset.Service_Product__c}"/> -->
+         <apex:inputfield id="hproduct3" value="{!SaAsset.Service_Product__c}"/>
+         <apex:inputField required="true" value="{!SaAsset.Account__c}"/>
+        
+          <apex:inputField value="{!SaAsset.SO__c}"/>
+          <apex:inputField value="{!SaAsset.Start_Date__c}"/>
+          
+          <apex:inputField value="{!SaAsset.DO__c}"/>
+          <apex:inputField value="{!SaAsset.End_Date__c}"/>
+          <apex:inputField value="{!SaAsset.Purchase_Information__c}"/>
+          <apex:outputField value="{!SaAsset.SAP_SODO__c}"/>
+          <apex:outputField value="{!SaAsset.SODO_Line_Item__c}"/>
+          <apex:inputField value="{!SaAsset.Renewal_Notice_Sent_Date__c}"/>
+          <apex:inputField value="{!SaAsset.Comments__c}"/>
+          <apex:inputField value="{!SaAsset.Renewal_Not_Sent__c}"/>
+          <apex:inputField value="{!SaAsset.Renewal_Date__c}"/>
+          <apex:inputField value="{!SaAsset.Opportunity_Raised_Date__c}"/>
+          <apex:inputField value="{!SaAsset.Trace_Id__c}"/>                                            
+     </apex:pageblockSection> 
+     
+</apex:pageblock>
+
+</apex:form>
+</apex:page>
+<!--
+        <apex:column rendered="{!isProduct}" headerValue="Select Product">
+            <input type="radio" name="selectRadio" id="radio">
+                <apex:actionSupport event="onclick" action="{!getSelected}" rerender="Selected_PBS">
+                    <apex:param name="id" value="{!oproduct.id}"/>
+                </apex:actionSupport>
+            </input>
+        </apex:column>
+-->

@@ -1,0 +1,23 @@
+<apex:page controller="ATFE_Services" tabStyle="Opportunity" >
+    <apex:form >
+        <apex:sectionHeader title="Add Quantity to Services"/><br/>
+        <apex:pageBlock >
+        <apex:pagemessages />
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Save" action="{!saveLineItem}" />
+                <apex:commandButton value="Cancel" action="{!cancel}"/>
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockTable value="{!SelectedServices}" var="ser" >
+                <apex:column value="{!ser.prod.Name}"/>
+                <apex:column value="{!ser.prod.ProductCode}"/>
+                <apex:column headerValue="PriceBook Price" styleClass="CurrencyElement">
+                    {!ser.prod.UnitPrice}
+                </apex:column>
+                <apex:column headerValue="Quantity">
+                    <apex:inputText value="{!ser.Quantity}"/>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

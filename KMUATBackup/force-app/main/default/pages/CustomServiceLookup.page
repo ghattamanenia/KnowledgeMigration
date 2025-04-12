@@ -1,0 +1,134 @@
+<apex:page showHeader="false" sidebar="false" controller="ServiceSearchCTRL" tabStyle="product2" >
+
+  <apex:sectionHeader title="Service Lookup"/>  
+  <script type='text/javascript'>
+     function noenter(ev)  
+     {
+        if (window.event && window.event.keyCode == 13 || ev.which == 13) {
+            doSearchAF();
+            return false;
+         } else {
+              return true;
+         }
+     }
+     function funcRedirect()
+     {          
+         if (document.getElementById('j_id0:j_id3:pb:sproduct:j_id5:prodstring').value.length < 2 )
+         {
+             document.getElementById('j_id0:j_id3:pb:sproduct:j_id5:prodstring').value = '';
+             alert('Error: Please enter a search string at least 2 characters long.');
+         }                        
+         doSearchAF();        
+     }
+</script>
+<!-- onclick="funcRedirect();" onclick="funcRedirect();"   -->
+<apex:form >
+<apex:actionFunction status="status" name="doSearchAF" action="{!FilterService}" />
+   <apex:pageBlock id="pb">
+   <apex:pageblockSection columns="1" id="sproduct" >           
+        <apex:pageBlockSectionItem >           
+            <apex:inputText id="prodstring"  onkeypress="return noenter(event);" value="{!ProductString}"/>
+            <apex:commandButton status="status" action="{!FilterService}"     value="Go!"  />                
+        </apex:pageBlockSectionItem>    
+        <apex:outputLabel id="errormessage1">{!errorMessage}</apex:outputLabel>                   
+        <apex:panelGrid columns="7">
+                <apex:commandButton status="fetchStatus" reRender="pb" value="|<" action="{!first}" disabled="{!!hasPrevious}" title="First Page"/>
+                <apex:commandButton status="fetchStatus" reRender="pb" value="<" action="{!previous}" disabled="{!!hasPrevious}" title="Previous Page"/>
+                <apex:commandButton status="fetchStatus" reRender="pb" value=">" action="{!next}" disabled="{!!hasNext}" title="Next Page"/>
+                <apex:commandButton status="fetchStatus" reRender="pb" value=">|" action="{!last}" disabled="{!!hasNext}" title="Last Page"/>
+                <apex:outputText rendered="{!resultFound}" >{!(pageNumber * size)+1-size}-{!IF((pageNumber * size)>noOfRecords, noOfRecords,(pageNumber * size))} of {!noOfRecords}</apex:outputText>
+                <!-- <apex:commandButton status="fetchStatus" reRender="pb" value="Refresh" action="{!refresh}" title="Refresh Page"/> -->
+                <apex:outputPanel style="color:#4AA02C;font-weight:bold">
+                    <apex:actionStatus id="fetchStatus" startText="Fetching..." stopText=""/>
+                </apex:outputPanel>
+            </apex:panelGrid>
+                <apex:outputpanel style="overflow:scroll;height:350px;" layout="block">            
+        <apex:pageblockTable columnsWidth="40%,25%,10%,5%,5%,5%,5%,30%" var="a" value="{!Products}" >                    
+        <!--     
+        <apex:column > 
+            <apex:facet name="header">Product Name</apex:facet>
+            <apex:commandLink reRender="psection" action="{!navigateProduct}" value="{!a.Name}">
+              <apex:param name="id" value="{!a.id}"/>
+            </apex:commandLink>
+        </apex:column> 
+        -->
+        <apex:column >
+          <apex:facet name="header">
+            <apex:outputPanel >{!$ObjectType.Product2.fields.Name.label}</apex:outputPanel>
+          </apex:facet>
+           <apex:outputLink value="javascript:top.window.opener.lookupPick2('{!FormTag}','{!TextBox}_lkid','{!TextBox}','{!a.Id}','{!a.Name}', false)" rendered="{!NOT(ISNULL(a.Id))}">{!a.Name}</apex:outputLink>     
+        </apex:column>
+                         
+        <apex:column >
+         <apex:facet name="header">
+            <apex:outputPanel >{!$ObjectType.Product2.fields.ProductCode.label}</apex:outputPanel>
+         </apex:facet>           
+        <apex:outputtext >{!a.ProductCode}</apex:outputtext>
+        </apex:column>  
+           
+
+
+        
+        
+     <!--   
+        <apex:column >
+         <apex:facet name="header">
+            <apex:outputPanel >{!$ObjectType.Product2.fields.Family.label}</apex:outputPanel>
+         </apex:facet>           
+         <apex:outputtext >{!a.Family}</apex:outputtext>
+        </apex:column>  -->
+        
+        <apex:column >
+         <apex:facet name="header">
+            <apex:outputPanel >{!$ObjectType.Product2.fields.IsActive.label}</apex:outputPanel>
+         </apex:facet>           
+         <apex:outputField value="{!a.IsActive}"/>
+        </apex:column> 
+        
+        
+        <apex:column >
+         <apex:facet name="header">
+            <apex:outputPanel >{!$ObjectType.Product2.fields.ATFE_APAC__c.label}</apex:outputPanel>
+         </apex:facet>           
+         <apex:outputField value="{!a.ATFE_APAC__c}"/>
+        </apex:column>  
+        
+        <apex:column >
+         <apex:facet name="header">
+            <apex:outputPanel >{!$ObjectType.Product2.fields.ATFE_CSA__c.label}</apex:outputPanel>
+         </apex:facet>           
+        <apex:outputField value="{!a.ATFE_CSA__c}"/>
+        </apex:column>  
+        
+        <apex:column >
+         <apex:facet name="header">
+            <apex:outputPanel >{!$ObjectType.Product2.fields.ATFE_EMEA__c.label}</apex:outputPanel>
+         </apex:facet>           
+         <apex:outputField value="{!a.ATFE_EMEA__c}"/>
+        </apex:column>  
+        
+        
+        <apex:column >
+         <apex:facet name="header">
+            <apex:outputPanel >{!$ObjectType.Product2.fields.ATFE_NA__c.label}</apex:outputPanel>
+         </apex:facet>           
+         <apex:outputField value="{!a.ATFE_NA__c}"/>
+        </apex:column>  
+        
+         <apex:column >
+         <apex:facet name="header">
+            <apex:outputPanel >{!$ObjectType.Product2.fields.Description.label}</apex:outputPanel>
+         </apex:facet>           
+         <apex:outputtext >{!a.Description}</apex:outputtext>
+        </apex:column>  
+        
+        
+                       
+          
+    </apex:pageblockTable>        
+    </apex:outputpanel>            
+    </apex:pageblockSection>
+    </apex:pageBlock>    
+</apex:form>
+    
+</apex:page>

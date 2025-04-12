@@ -1,0 +1,22 @@
+<!--
+  @description       : 
+  @author            : Sampath Arjunan
+  @group             : 
+  @last modified on  : 10-12-2024
+  @last modified by  : Sampath Arjunan
+-->
+<template>
+    <lightning-card title="File Details" icon-name="action:more">
+        <div class="slds-p-around_medium">
+            <lightning-button 
+                label="Fetch File Details" 
+                onclick={fetchFileDetails} 
+                variant="brand" 
+                disabled={isLoading}>
+            </lightning-button>
+        </div>
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading"></lightning-spinner>
+        </template>
+    </lightning-card>
+</template>

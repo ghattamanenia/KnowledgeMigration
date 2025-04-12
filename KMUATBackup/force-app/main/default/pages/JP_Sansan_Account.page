@@ -1,0 +1,56 @@
+<apex:page standardController="Account" lightningStylesheets="true" standardStylesheets="true" showHeader="true" sidebar="false" id="page">
+    <apex:form id="form">
+        <apex:pageBlock >
+
+            <apex:pageBlockSection columns="2" title="Sansan">
+                <apex:outputField value="{!Account.sci_org_name__c}" />
+                <apex:outputField value="{!Account.sci_org_address_postalCode__c}" />
+                <apex:outputField value="{!Account.sci_org_phone__c}" />
+                <apex:outputField value="{!Account.sci_org_address_state__c}" />
+                <apex:outputField value="{!Account.sci_org_fax__c}" />
+                <apex:outputField value="{!Account.sci_org_address_city__c}" />
+                <apex:outputField value="{!Account.sci_public_organization_url__c}" />
+                <apex:outputField value="{!Account.sci_org_address_street__c}" />
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection columns="2" title="帝国データバンク">
+                <apex:outputField value="{!Account.sci_tdb_tradeName__c}" />
+                <apex:outputField value="{!Account.sci_tdb_address_postalCode__c}" />
+                <apex:outputField value="{!Account.sci_tdb_tdbMainIndustrialClassName__c}" />
+                <apex:outputField value="{!Account.sci_tdb_address_state__c}" />
+                <apex:outputField value="{!Account.sci_tdb_tdbSubIndustrialClassName__c}" />
+                <apex:outputField value="{!Account.sci_tdb_address_city__c}" />
+                <apex:outputField value="{!Account.sci_tdb_tdbCorporationCode__c}" />
+                <apex:outputField value="{!Account.sci_tdb_address_street__c}" />
+
+                <apex:outputField value="{!Account.sci_tdb_publicOffering__c}" />
+                <apex:outputField value="{!Account.sci_tdb_legalCapitalRange_ge__c}" />
+                <apex:outputField value="{!Account.sci_tdb_establishedIn__c}" />
+                <apex:outputField value="{!Account.sci_tdb_legalCapitalRange_lt__c}" />
+                <apex:outputField value="{!Account.sci_tdb_latestSalesAccountingTerm__c}" />
+                <apex:outputField value="{!Account.sci_tdb_latestSalesRange_ge__c}" />
+                <apex:outputField value="{!Account.sci_tdb_representativeTitle__c}" />
+                <apex:outputField value="{!Account.sci_tdb_latestSalesRange_lt__c}" />
+                <apex:outputField value="{!Account.sci_tdb_representativeName__c}" />
+                <apex:outputField value="{!Account.sci_tdb_employeeNumberRange_ge__c}" />
+                <apex:outputField value="{!Account.sci_tdb_representativeKanaName__c}" />
+                <apex:outputField value="{!Account.sci_tdb_employeeNumberRange_lt__c}" />
+
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection columns="2" title="国税庁">
+                <apex:outputField value="{!Account.sci_nta_corporateName__c}" />
+                <apex:outputField value="{!Account.sci_nta_addressInside_postalCode__c}" />
+                <apex:outputField value="{!Account.sci_nta_corporateName_kana__c}" />
+                <apex:outputField value="{!Account.sci_nta_addressInside_state__c}" />
+                <apex:outputField value="{!Account.sci_nta_corporateName_en__c}" />
+                <apex:outputField value="{!Account.sci_nta_addressInside_city__c}" />
+                <apex:outputField value="{!Account.sci_nta_corporateNumber__c}" />
+                <apex:outputField value="{!Account.sci_nta_addressInside_street__c}" />
+            </apex:pageBlockSection>
+
+
+
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

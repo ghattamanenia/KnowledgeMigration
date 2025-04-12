@@ -1,0 +1,14 @@
+<aura:component implements = "force:lightningQuickAction,force:hasRecordId" controller = "JP_CopyQuoToOppForLightning">
+    <aura:attribute name = "recordId" type = "String"/>
+    <aura:attribute name = "opportunity" type = "String"/>
+    
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+
+    <div aura:id = "msg"/>
+    
+	<lightning:recordEditForm objectApiName = "JP_QuotationHeader__c">
+        <lightning:inputField aura:id = "oppInput" fieldName = "JP_OpportunityNo__c" value = "{!v.opportunity}"/>
+	</lightning:recordEditForm>
+    <br/>    
+	<lightning:button class = "slds-align_absolute-center" label = "商談にコピー" onclick = "{!c.copyQuotation}"/>
+</aura:component>

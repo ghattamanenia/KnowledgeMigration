@@ -1,0 +1,44 @@
+<template>
+    <lightning-card title="Device Filter">
+        <div class="slds-p-around_medium container">
+            <!-- Left Column: License Server ID and ID Type -->
+            <div class="left-column">
+                <!-- License Server ID Field -->
+                <lightning-input 
+                    label="License Server ID" 
+                    value={licenseServerId} 
+                    onchange={handleInputChange} 
+                    data-id="licenseServerId">
+                </lightning-input>
+
+                <!-- ID Type Picklist -->
+                <lightning-combobox 
+                    label="ID Type" 
+                    value={idType} 
+                    options={idTypeOptions} 
+                    onchange={handleInputChange} 
+                    data-id="idType">
+                </lightning-combobox>
+            </div>
+
+            <!-- Right Column: Device Description -->
+            <div class="right-column">
+                <!-- Device Description Field -->
+                <lightning-input 
+                    label="Device Description" 
+                    value={deviceDescription} 
+                    onchange={handleInputChange} 
+                    data-id="deviceDescription">
+                </lightning-input>
+            </div>
+
+            <!-- Filter Button -->
+            <lightning-button 
+                label="Filter" 
+                variant="brand" 
+                onclick={handleFilter} 
+                class="slds-m-top_medium">
+            </lightning-button>
+        </div>
+    </lightning-card>
+</template>

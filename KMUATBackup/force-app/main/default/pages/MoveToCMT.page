@@ -1,0 +1,75 @@
+<apex:page Controller="MoveToCMT" tabstyle="case" >
+<apex:form >
+
+         <apex:pageBlock title="Move To CMT" rendered="{!showerror}">
+            <apex:pageMessages />
+             <apex:pageBlockButtons >
+              <apex:commandButton action="{!Cancel}" id="Cancel"  value="Back" /> 
+          </apex:pageBlockButtons>
+        </apex:pageBlock> 
+        
+        <apex:pageBlock title="Move To CMT" rendered="{!showblock}">
+            <apex:pageMessages />
+        
+            
+          <apex:pageBlockButtons >
+              <apex:commandButton action="{!MoveCase}" id="MoveToCMT"  value="Copy To CMT" /> 
+              <apex:commandButton action="{!Cancel}" id="Cancel"  value="Cancel" />   
+          </apex:pageBlockButtons>
+          <apex:pageBlockSection title="Enhancement Details" columns="2" rendered="{!Enhancement}">  
+          
+            <apex:selectRadio value="{!EnhancementOptionSelected}">
+            <apex:selectOptions value="{!RadioOptions}"/>
+            </apex:selectRadio>
+            
+            
+               
+            <apex:selectList id="DotRelease" value="{!Name_Selected}" size="1" label="Select a Dot release if adding to an existing Dot release">
+                <apex:selectOptions value="{!ReleaseNames}"/>
+            </apex:selectList>
+             
+            <apex:pageBlockSectionItem >
+            <apex:outputLabel value="Provide a name for this Dot Release Item/Project" />
+            <apex:outputPanel >
+            <div class="requiredInput">
+                <div class="requiredBlock"></div>
+               <apex:inputtext value="{!New_Project_Name}" id="New_Project_Name" />
+            </div>
+            </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+          
+           
+         
+           
+          </apex:pageBlockSection>
+          
+          <apex:pageBlockSection title="Dot Release Details" columns="1" rendered="{!DotRelease}">  
+          
+          <apex:pageBlockSectionItem >
+            <apex:outputLabel value="Choose a Parent Dot Release" />
+            <apex:outputPanel >
+            <div class="requiredInput">
+                <div class="requiredBlock"></div>
+            <apex:selectList id="DotRelease" value="{!Name_Selected}" size="1" label="Choose a Parent Dot Release">
+            <apex:selectOptions value="{!ReleaseNames}"/>
+           </apex:selectList> 
+            </div>
+            </apex:outputPanel>
+            </apex:pageBlockSectionItem> 
+           
+            <apex:pageBlockSectionItem >
+            <apex:outputLabel value="Provide a name for this Dot Release Item" />
+            <apex:outputPanel >
+            <div class="requiredInput">
+                <div class="requiredBlock"></div>
+               <apex:inputtext value="{!New_Project_Name}" id="DotReleaseChildName"  />
+            </div>
+            </apex:outputPanel>
+            </apex:pageBlockSectionItem> 
+           
+        
+              
+          </apex:pageBlockSection>
+        </apex:pageBlock>
+</apex:form>
+</apex:page>

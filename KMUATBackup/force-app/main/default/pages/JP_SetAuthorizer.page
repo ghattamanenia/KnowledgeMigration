@@ -1,0 +1,80 @@
+<apex:page showHeader="true" sidebar="false" standardController="JP_QuotationHeader__c" extensions="JP_SetAuthorizerController" tabStyle="JP_QuotationHeader__c">
+    <div style="width:1024px;">
+
+    <apex:outputPanel id="out">
+        <apex:pageMessages id="msg" escape="false"/>
+    </apex:outputPanel>
+
+    <apex:form id="form">
+        <apex:pageBlock id="syoninsya_Jouhou" mode="edit">
+            <!--ボタン-->
+            <apex:pageBlockButtons location="top">
+            <apex:commandButton id="btnSave" immediate="false" value="保存" action="{!doSave}" />
+            <apex:commandButton id="btnCancel" immediate="false" value="キャンセル" action="{!doCancel}" />
+            </apex:pageBlockButtons>
+            
+            
+            
+            <apex:pageBlockSection columns="1" id="shoninjyoukyo" title="承認者設定">
+                <apex:outputField value="{!QHeader.JP_QuotationApprovalProcessNo__c}" id="processNo" />
+                <apex:outputField value="{!apm.JP_Description__c}" id="description" />
+                <apex:inputField value="{!QHeader.JP_Applicant__c}" id="applicant" />
+            </apex:pageBlockSection>
+            
+            <!-- ステップ１ -->
+            <apex:pageBlockSection columns="1" id="step1" title="STEP1" rendered="{!renderedSTEP1}">
+                <apex:outputText value="{!$Label[QUEUE1NAME]}" escape="false" style="display:block; padding-left:100px;" rendered="{!STEP1Queue}"/>
+                <apex:repeat value="{!step1}" var="f">
+                    <apex:inputField value="{!QHeader[f]}" />
+                </apex:repeat>
+                
+            </apex:pageBlockSection>
+            
+            <!-- ステップ２ -->
+            <apex:pageBlockSection columns="1" id="step2" title="STEP2" rendered="{!renderedSTEP2}">
+                <apex:outputText value="{!$Label[QUEUE2NAME]}" escape="false" style="display:block; padding-left:100px;" rendered="{!STEP2Queue}"/>
+                <apex:repeat value="{!step2}" var="f">
+                    <apex:inputField value="{!QHeader[f]}" />
+                </apex:repeat>
+            </apex:pageBlockSection>
+            
+            <!-- ステップ３ -->
+            <apex:pageBlockSection columns="1" id="step3" title="STEP3" rendered="{!renderedSTEP3}">
+                <apex:outputText value="{!$Label[QUEUE3NAME]}" escape="false" style="display:block; padding-left:100px;" rendered="{!STEP3Queue}"/>
+                <apex:repeat value="{!step3}" var="f">
+                    <apex:inputField value="{!QHeader[f]}" />
+                </apex:repeat>
+            </apex:pageBlockSection>
+            
+            <!-- ステップ４ -->
+            <apex:pageBlockSection columns="1" id="step4" title="STEP4" rendered="{!renderedSTEP4}">
+                <apex:outputText value="{!$Label[QUEUE4NAME]}" escape="false" style="display:block; padding-left:100px;" rendered="{!STEP4Queue}"/>
+                <apex:repeat value="{!step4}" var="f">
+                    <apex:inputField value="{!QHeader[f]}" />
+                </apex:repeat>
+            </apex:pageBlockSection>
+            
+            <!-- ステップ５ -->
+            <apex:pageBlockSection columns="1" id="step5" title="STEP5" rendered="{!renderedSTEP5}">
+                <apex:outputText value="{!$Label[QUEUE5NAME]}" escape="false" style="display:block; padding-left:100px;" rendered="{!STEP5Queue}"/>
+                <apex:repeat value="{!step5}" var="f">
+                    <apex:inputField value="{!QHeader[f]}" />
+                </apex:repeat>
+            </apex:pageBlockSection>
+            
+            <!-- ステップ６ -->
+            <apex:pageBlockSection columns="1" id="step6" title="STEP6" rendered="{!renderedSTEP6}">
+                <apex:outputText value="{!$Label[QUEUE6NAME]}" escape="false" style="display:block; padding-left:100px;" rendered="{!STEP6Queue}"/>
+                <apex:repeat value="{!step6}" var="f">
+                    <apex:inputField value="{!QHeader[f]}" />
+                </apex:repeat>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton id="btnSave" immediate="false" value="保存" action="{!doSave}" />
+                <apex:commandButton id="btnCancel" immediate="false" value="キャンセル" action="{!doCancel}" />
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+    </div>
+</apex:page>

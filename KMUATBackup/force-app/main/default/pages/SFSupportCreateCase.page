@@ -1,0 +1,142 @@
+<apex:page controller="SFSupportCreateCaseController" tabStyle="Salesforce_Support__tab" title="Salesforce Support">
+  <apex:includeScript value="{!$Resource.JQuery}"/>
+  <apex:stylesheet value="{!URLFOR($Resource.SFSupportCSS)}" />  
+  <apex:pageMessages />  
+  <apex:form styleClass="createSFSupportCase {!Type}">
+    <apex:pageBlock title="{!HeaderText}" >   
+
+      <apex:pageBlockButtons >
+        <input type="button" id="submitBtn" class="btn submitBtn" onclick="SFSupport.validate();" value="Submit" style="margin-right: 10px;"/>
+        <apex:commandButton action="{!CancelCase}" value="Cancel" immediate="true"/> 
+      </apex:pageBlockButtons>
+      <apex:actionFunction name="submitCase" action="{!SubmitCase}"/>
+
+      <table class="createCaseTable">
+        <thead></thead>
+        <tbody>
+
+          <tr class="separator-bottom" style="display: {!IsDesc};">
+            <td>
+              <label>{!DescLabel}</label>                
+              <apex:inputTextarea value="{!SupportCase.Description}" styleClass="requiredField"/>
+            </td>
+          </tr>
+
+          <tr class="separator-bottom" style="display: {!IsAdditionalDesc};">
+            <td>
+              <label>{!AdditionalDescLabel}
+                <ul style="display: {!If(Type == 'Issue', 'inline-block', 'none')};" class="stepsToRepro">Please provide: 
+                  <li>URL demonstrating the issue</li>
+                  <li style="list-style: none;">and/or</li>
+                  <li>Steps to reproduce the issue</li>
+                </ul>
+              </label>             
+              <apex:inputTextarea value="{!SupportCase.What_are_the_steps_to_reproduce_it__c}" styleClass="{!If(Type == 'Issue', 'requiredField', '')}"/>        
+            </td>             
+          </tr>   
+          
+          <tr class="separator-bottom" style="display: {!If(Type == 'Access', 'table-row', 'none')}">
+            <td>
+              <label>What is the business requirement for <br/>this request?</label>
+              <apex:inputTextarea value="{!SupportCase.Business_requirement_for_access__c}" styleClass="requiredField"/>
+            </td> 
+          </tr>
+
+          <tr id="uploadTypeSelect" class="separator-bottom" style="display: {!If(Type == 'Data', 'table-row', 'none')}">
+            <td>
+              <label>What type of a data upload are you requesting?</label>
+              <apex:selectList value="{!uploadType}" size="1" styleClass="requiredField dataTypeSelect">
+                  <apex:selectOptions value="{!uploadTypeVal}" />
+              </apex:selectList>    
+              <apex:inputTextarea value="{!SupportCase.Data_Type_Comments__c}" style="display: none;"/>
+            </td> 
+          </tr>
+          
+          <!-- <tr class="separator" style="display: {!If(Type == 'Data', 'table-row', 'none')}">
+            <td>
+              <label>Please explain reason for data upload or <br/>enter additional comments</label>
+              <apex:inputTextarea value="{!SupportCase.Additional_Comments__c}"/>
+            </td> 
+          </tr> -->
+
+          <tr class="separator-bottom" style="display: {!If(Type == 'Data', 'table-row', 'none')}">
+            <td class="label">
+              <label>What is the target date you'd like <br/>the data to be active</label>
+              <!-- <apex:inputField value="{!SupportCase.Upload_Active_Date__c}" label="" styleClass="requiredField activeDate"/> -->
+              <apex:inputField value="{!SupportCase.Upload_Active_Date__c}" label="" styleClass="requiredField activeDate"/>
+            </td>
+          </tr>
+
+          <tr class="separator-bottom" style="display: {!If(Type == 'User Account', 'table-row', 'none')}">
+            <td class="employeeName">
+              <label>What Salesforce user is being terminated?</label>
+              <apex:inputField value="{!SupportCase.Leaver_Name__c}" label="" styleClass="lookUp"/>
+            </td>
+          </tr>
+
+          <tr class="separator-bottom" style="display: {!If(Type == 'User Account', 'table-row', 'none')}">
+            <td class="employeeName">
+              <label>When do you need the Salesforce user to be terminated?</label>
+              <apex:inputField value="{!SupportCase.User_Termination_Date__c}" label="" styleClass="requiredField activeDate"/>
+            </td>
+          </tr>
+
+          <tr class="radioTR" style="display: {!IsOnBehalfOf}" >
+            <td>
+              <label>Are you submitting this request on <br/>behalf of someone else?</label>
+              <apex:selectRadio value="{!radio}">
+                <apex:selectOptions value="{!radioVal}"/>
+              </apex:selectRadio>
+
+              <!-- <input type="radio" name="requestor" value="Yes"/>Yes
+              <input type="radio" name="requestor" value="No" checked="checked"/>No  -->                         
+            </td>
+          </tr>
+          <tr style="display: {!IsOnBehalfOf}" >
+            <td class="hide">
+              <div>
+                <label>I'm submitting on behalf of</label>                   
+                <apex:inputField value="{!SupportCase.Requestor_Name__c}" styleClass="lookUp"/>
+              </div>
+            </td>                         
+          </tr>  
+
+          <tr class="separator-top" style="display: {!If(Type == 'User Account', 'table-row', 'none')}">
+            <td>
+              <div class="labelWrapper">
+                <label>
+                  Please attach authorizing email from HR or management representative
+                </label>
+                <div style="margin-top: 5px;">
+                  [<a href="#" onclick='window.open("https://alliedtelesis.my.salesforce.com/sfc/#version?selectedVersionId=068w0000001hqvy", "", "location=1, menubar=0, statusbar=0, width=800, height=500, left=500, top=300");' style="margin: 0 3px; color: #1797c0; font-weight: bold;">How to save Outlook email as pdf</a>]
+                </div>
+              </div>
+              <apex:inputFile value="{!attachment.body}" filename="{!attachment.name}" id="authDoc" styleclass="requiredField attachment"/>
+            </td>
+          </tr>
+
+          <tr class="separator-top" style="display: {!IsAttachment}">
+            <td class="label">
+              <label>Optionally, attach a document</label>
+               <apex:inputFile value="{!attachment.body}" filename="{!attachment.name}" id="file" styleclass="attachment"/>
+            </td>            
+          </tr>  
+
+          <tr class="separator-top" style="display: {!IsAttachmentForData}">
+            <td class="label">
+              <label>Please attach a document for data upload</label>
+               <apex:inputFile value="{!attachment.body}" filename="{!attachment.name}" id="dataFile" styleClass="requiredField dataUpload"/>
+            </td>            
+          </tr>  
+        </tbody>
+      </table>
+    
+    </apex:pageBlock>
+  </apex:form>
+  <script type="text/javascript">
+    if(window.location.search.indexOf('Data') >= 0) {
+      function setFocusOnLoad() {}
+    }
+  </script>
+  <apex:includeScript value="{!$Resource.SFSupportJS}"/>
+</apex:page>

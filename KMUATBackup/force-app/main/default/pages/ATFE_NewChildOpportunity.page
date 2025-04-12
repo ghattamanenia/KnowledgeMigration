@@ -1,0 +1,247 @@
+<apex:page standardController="Opportunity" standardStylesheets="true" extensions="ATFE_NewChildOpportunity">
+<apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"/>
+
+<script type="text/javascript">
+ 
+    $.extend({
+      getUrlVars: function(){
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for(var i = 0; i < hashes.length; i++)
+        {
+          hash = hashes[i].split('=');
+          vars.push(hash[0]);
+          vars[hash[0]] = hash[1];
+        }
+        return vars;
+      },
+      getUrlVar: function(name){
+        return $.getUrlVars()[name];
+      }
+    });
+ 
+    $(document).ready(function(){       
+        var errorValues = ["CloseDate","OpportunityName","Stage","ForecastCategoryName","Components","ApprovalHierarchy","Fulfillment"];          
+        
+        for (i = 0; i < errorValues.length; i++) {
+            var st = '\'span[id$="' + errorValues[i] + 'Error"]\'';
+            var ErrorHtml = $(st);
+            if (ErrorHtml.length != 0){
+                var Errorstring = ErrorHtml.html().split(errorValues[i] + ": ");
+                ErrorHtml.html(Errorstring[1]);
+            }
+        }
+        
+        var urlValues = ["CloseDate","ChildPriceBook","OwnerID","AccountNameID","MasterOpportunityID","RecordType"];
+        
+        for (i = 0; i < urlValues.length; i++) {
+            var inputTag = '\'input[name$="' + urlValues[i] + '"]\'';   
+            if($.getUrlVar(urlValues[i]) != null){
+                $(inputTag).val($.getUrlVar(urlValues[i]).replace(/\%2F/g, "/").replace(/\+/g, " "));
+                //$(inputTag).val($.getUrlVar(urlValues[i]).replace(/\+/g, " "));
+            }
+        }
+    });
+    function changedStage(){
+    
+        switch ($('select[name$="Stage"]').val()){
+            case "Prospect/Qualification": 
+                $('input[name$="Probability"]').val("25"); 
+                break;
+            case "Engagement/Value Proposition": 
+                $('input[name$="Probability"]').val("50"); 
+                break;
+            case "Final Quote": 
+                $('input[name$="Probability"]').val("75"); 
+                break;
+            case "Final Negotiation/Review": 
+                $('input[name$="Probability"]').val("90"); 
+                break;
+            case "Booking (Forecast)": 
+                $('input[name$="Probability"]').val("95"); 
+                break;
+            case "Booking (Purchase Order)": 
+                $('input[name$="Probability"]').val("98"); 
+                break;
+            case "Closed/Lost" : 
+                $('input[name$="Probability"]').val("0");
+                break;
+        }
+    
+    }
+</script>
+
+
+<apex:sectionHeader title="New Child Opportunity" help="/help/doc/user_ed.jsp?loc=help"></apex:sectionHeader>
+<apex:form id="NewChildOpp" >
+<apex:messages />
+
+<apex:pageBlock >
+    <apex:pageBlockButtons >
+        <apex:commandButton action="{!save}" value="Save"/>
+        <apex:commandButton action="{!cancel}" value="Cancel"/>
+    </apex:pageBlockButtons>
+    <apex:inputHidden id="ChildPriceBook" value="{!ChildPriceBook}"/>
+    <apex:inputHidden id="OwnerID" value="{!OwnerID}"/>
+    <apex:inputHidden id="AccountNameID" value="{!AccountNameID}"/>
+    <apex:inputHidden id="MasterOpportunityID" value="{!MasterOpportunityID}"/>
+    <apex:inputHidden id="RecordType" value="{!ChildRecordType}"/>
+    <div class="pbBody">
+    <div class="pbSubheader first tertiaryPalette" id="head_1_ep"><span
+        class="pbSubExtra"><span class="requiredLegend"><span
+        class="requiredExampleOuter"><span class="requiredExample">&nbsp;</span></span>
+        <span class="requiredMark">*</span><span class="requiredText"> = Required Information</span></span></span>
+    <h3>Opportunity Information<span class="titleSeparatingColon">:</span></h3>
+    </div>
+    <div class="pbSubsection">
+        <table class="detailList" border="0" cellpadding="0" cellspacing="0">
+            <tbody>
+                <tr>
+                    <td class="labelCol"><label></label></td>
+                    <td class="dataCol col02"></td>
+                    <td class="labelCol requiredInput">
+                            <label for="CloseDate"><span class="requiredMark">*</span>Close Date</label>
+                    </td>
+                    <td class="dataCol">
+                        <div class="requiredInput">
+                            <div class="requiredBlock"></div>
+                            <span class="dateInput dateOnlyInput">
+                                <apex:inputText id="CloseDate" required="true" tabindex="8" value="{!CloseDate}" style="{!errorStyle}" size="12"/>
+                                <br/><apex:message for="CloseDate" id="CloseDateError"/>
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="labelCol requiredInput">
+                        <label for="OpportunityName"><span class="requiredMark">*</span>Opportunity Name</label>
+                    </td>
+                    <td class="dataCol col02">
+                        <div class="requiredInput">
+                            <div class="requiredBlock"></div>
+                            <apex:inputText id="OpportunityName" required="true" tabindex="1" value="{!OpportunityName}" style="{!errorStyle}" size="20" maxlength="120" />
+                            <br/><apex:message for="OpportunityName" id="OpportunityNameError"/>
+                        </div>
+                    </td>
+                    <td class="labelCol requiredInput">
+                        <label for="Stage"><span class="requiredMark">*</span>Stage</label>
+                    </td>
+                    <td class="dataCol">
+                        <div class="requiredInput">
+                        <div class="requiredBlock"></div>
+                            <span>
+                                <apex:selectList required="true" id="Stage" tabindex="9" value="{!Stage}" size="1" onchange="changedStage(this);">
+                                    <apex:selectOption itemValue="" itemLabel="--None--"/>
+                                    <apex:selectOption itemValue="Prospect/Qualification" itemLabel="Prospect/Qualification"/>
+                                    <apex:selectOption itemValue="Engagement/Value Proposition" itemLabel="Engagement/Value Proposition"/>
+                                    <apex:selectOption itemValue="Final Quote" itemLabel="Final Quote"/>
+                                    <apex:selectOption itemValue="Final Negotiation/Review" itemLabel="Final Negotiation/Review"/>
+                                    <apex:selectOption itemValue="Booking (Forecast)" itemLabel="Booking (Forecast)"/>
+                                    <apex:selectOption itemValue="Booking (Purchase Order)" itemLabel="Booking (Purchase Order)"/>
+                                    <apex:selectOption itemValue="Closed/Lost" itemLabel="Closed/Lost"/>
+                                </apex:selectList>
+                                <br/><apex:message for="Stage" id="StageError"/>
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="labelCol requiredInput">
+                        
+                    </td>
+                    <td class="dataCol col02">
+                        
+                    </td>
+                    <td class="labelCol"><label for="Probability">Probability (%)</label></td>
+                    <td class="dataCol">
+                        <apex:inputText id="Probability" tabindex="10" disabled="true" value="{!Probability}" size="20" />
+                    </td>
+                </tr>
+                <tr>
+                  <!--  <td class="labelCol requiredInput">
+                        <label for="Components"><span class="requiredMark">*</span>Components</label>
+                    </td>
+                    <td class="dataCol col02">
+                        <div class="requiredInput">
+                        <div class="requiredBlock"></div>
+                            <span>
+                                <apex:selectList required="true" id="Components" value="{!Components}" tabindex="5" size="1">
+                                    <apex:selectOption itemValue="" itemLabel="--None--"/>
+                                    <apex:selectOption itemValue="Product only" itemLabel="Product only"/>
+                                    <apex:selectOption itemValue="Services only" itemLabel="Services only"/>
+                                    <apex:selectOption itemValue="Product and Services" itemLabel="Product and Services"/>
+                                </apex:selectList>
+                                <br/><apex:message for="Components" id="ComponentsError"/>
+                            </span>
+                        </div>
+                    </td>-->
+                    <td class="labelCol requiredInput">
+                        <label for="ForecastCategoryName"><span class="requiredMark">*</span>Forecast Category</label>
+                    </td>
+                    <td class="dataCol">
+                        <div class="requiredInput">
+                        <div class="requiredBlock"></div>
+                            <apex:selectList required="true" id="ForecastCategoryName" value="{!ForecastCategoryName}" tabindex="12" size="1">
+                                <apex:selectOption itemValue="" itemLabel="--None--"/>
+                                <apex:selectOption itemValue="Omitted" itemLabel="Omitted"/>
+                                <apex:selectOption itemValue="Pipeline" itemLabel="Pipeline"/>
+                                <apex:selectOption itemValue="Best Case" itemLabel="Best Case"/>
+                                <apex:selectOption itemValue="Commit" itemLabel="Commit"/>
+                            </apex:selectList>
+                            <br/><apex:message for="ForecastCategoryName" id="ForecastCategoryNameError"/>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                   <!-- <td class="labelCol requiredInput">
+                        <label for="ApprovalHierarchy"><span class="requiredMark">*</span>Approval Hierarchy</label>
+                    </td>
+                    <td class="dataCol col02">
+                        <div class="requiredInput">
+                        <div class="requiredBlock"></div>
+                        <span>
+                            <apex:selectList required="true" id="ApprovalHierarchy" value="{!ApprovalHierarchy}" style="{!errorStyle}" tabindex="7" size="1">
+                                <apex:selectOption itemValue="" itemLabel="--None--"/>
+                                <apex:selectOption itemValue="EMEA" itemLabel="EMEA"/>
+                                <apex:selectOption itemValue="North America" itemLabel="North America"/>
+                                <apex:selectOption itemValue="DE/CH" itemLabel="DE/CH"/>
+                                <apex:selectOption itemValue="Latin America" itemLabel="Latin America"/>
+                                <apex:selectOption itemValue="APAC" itemLabel="APAC"/>
+                                <apex:selectOption itemValue="Japan" itemLabel="Japan"/>
+                            </apex:selectList>
+                            <br/><apex:message for="ApprovalHierarchy" id="ApprovalHierarchyError"/>
+                        </span>
+                        </div>
+                    </td>-->
+                    <td class="labelCol requiredInput">
+                        <label for="Fulfillment"><span class="requiredMark">*</span>Fulfillment</label>
+                    </td>
+                    <td class="dataCol">
+                        <div class="requiredInput">
+                            <div class="requiredBlock"></div>
+                            <span>
+                                <apex:selectList required="true" id="Fulfillment" value="{!Fulfillment}" style="{!errorStyle}" tabindex="15" size="1">
+                                    <apex:selectOption itemValue="" itemLabel="--None--"/>
+                                    <apex:selectOption itemValue="Direct" itemLabel="Direct"/>
+                                    <apex:selectOption itemValue="Indirect" itemLabel="Indirect"/>
+                                </apex:selectList>
+                                <br/><apex:message for="Fulfillment" id="FulfillmentError"/>
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    </div>
+    
+    </apex:pageBlock>
+</apex:form>
+<script>
+    function jq(myid) { /* This function handles the colon in VisualForce Ids */
+       return '#' + myid.replace(/(:|\.)/g,'\\$1');
+     }
+    var f = "{!$Component.NewChildOpp}";
+</script>
+
+</apex:page>

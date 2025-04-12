@@ -1,0 +1,62 @@
+<apex:page controller="SFSupportAddAttachmentController" tabStyle="Salesforce_Support__tab" title="Salesforce Support">
+    <apex:stylesheet value="{!URLFOR($Resource.SFSupportCSS)}"/>
+    <style type="text/css">
+        .btn {
+            font-size: 13px !important;
+            padding: 6px 20px !important;
+        }
+        .btnBottom {
+            margin: 20px 0;
+        }
+        body .apexp .bPageBlock.apexDefaultPageBlock .pbBody {
+            margin-left: 15px;          
+        }
+        body .bPageBlock .pbTitle h2.mainTitle {
+          margin-left: 23px;
+        }           
+    </style>
+    <apex:includeScript value="{!$Resource.JQuery}"/>
+    <apex:pageMessages id="error" escape="false"/> 
+    <apex:form >
+        <apex:pageBlock title="Add Attachment" >               
+
+            <apex:inputFile value="{!attachment.body}" filename="{!attachment.name}" id="file" styleclass="attachmentBtn requiredField" style="margin-top: 20px;"/>                      
+            <div class="btnBottom">
+                <input type="button" id="saveBtn" class="btn submitBtn" onclick="validateAttachment();" value="Save" style="margin-right: 10px;"/>
+                <apex:commandButton action="{!BackPage}" value="Done"/> 
+            </div>        
+            <apex:actionFunction name="upload" action="{!upload}"/>               
+        </apex:pageBlock>  
+    </apex:form>                    
+    <script type="text/javascript">
+        // TODO: Combine this with other validations after make it to modular
+        function validateAttachment() {
+            var $requiredField = $jq('.requiredField'),
+                $submitBtn = $jq('.submitBtn'),
+                $errorMsg = $jq('<span class="errorMsg"><strong>Error:</strong> You must select an attachment.</span>').css('margin-left', '10px');
+                
+            $requiredField.on('focus', function() {
+                var $this = $jq(this);
+                
+                if($this.val()) {
+                    $this.removeClass('errorField');
+                    $this.siblings('.errorMsg').remove();   
+                }
+            }); 
+
+            if($requiredField.val() == '') {
+                if(!$requiredField.hasClass('errorField')) {
+                    $errorMsg.insertAfter($requiredField.addClass('errorField'));
+                }
+                $submitBtn.removeAttr('disabled', 'disabled').removeClass('submitting').val('Submit');
+                return;
+            }
+            else if($requiredField.val()) {
+                $requiredField.removeClass('errorField');
+                $requiredField.siblings('.errorMsg').remove();
+                $submitBtn.attr('disabled', 'disabled').addClass('submitting').val('Submitting...');
+                upload();
+            }                   
+        }
+    </script>   
+</apex:page>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApexPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <availableInTouch>false</availableInTouch>
+    <confirmationTokenRequired>false</confirmationTokenRequired>
+    <description>Screen to display while you do Polling to SPMS when you pushed down a &quot;Create Quote&quot; button from the choice Wizard of the price list.</description>
+    <label>JP_PGCallSPMSPolling</label>
+</ApexPage>

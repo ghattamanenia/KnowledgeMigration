@@ -1,0 +1,135 @@
+<apex:page Controller="SFSupportEnhancementDetailController" tabStyle="Salesforce_Support__tab" title="Salesforce Support">
+    <apex:includeScript value="{!$Resource.JQuery}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.SFSupportCSS)}"/>
+    <apex:form styleClass="enhancementDetail">
+        <!-- <apex:pageBlock title="Enhancement Request ID: {!SFSupport_Case.CaseNumber}" > -->
+        <apex:pageBlock >
+            <apex:pageMessages />
+
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!back}" id="CancelChanges"  value="Salesforce Support Home" /> 
+                <apex:commandButton id="CloseCase"  onclick="return confirm('Are you sure you would like to close this case?');" action="{!CloseCase}" value="Close Case" rendered="{!showCloseBtn}"/>  
+            </apex:pageBlockButtons>
+
+            <apex:pageBlockSection title="Details" columns="2">  
+            
+                
+                <apex:outputField label="Opened Date" value="{!SFSupport_Case.CreatedDate}"/>
+
+                <apex:outputField label="Description" value="{!SFSupport_Case.Description}" />
+                <apex:outputField label="Created By" value="{!SFSupport_Case.CreatedBy.Name}" />
+
+                <apex:outputField label="Benefits to Allied Telesis" value="{!SFSupport_Case.Expected_Benefits_to_Allied_Telesis__c}"/>
+                <apex:outputField label="Submitting on Behalf of" value="{!SFSupport_Case.Requestor_Name__c}" />
+                
+                <apex:outputField label="Additional Comments" value="{!SFSupport_Case.Additional_Comments__c}" /> 
+                <apex:outputField label="Business Requirements for this Enhancement" value="{!SFSupport_Case.BusinessProcessesEffected__c}"/>
+
+                <apex:outputField label="Legal Requirements for this Enhancement" value="{!SFSupport_Case.Explain_legal_requirement__c}"/>
+                <apex:outputField label="Other Business Requirements for this Enhancement" value="{!SFSupport_Case.Explain_effected_Business_Processes__c}" rendered="{!showOtherBusiness}"/>        
+
+                <apex:outputField label="Estimated Cost Reduction in Dollars" value="{!SFSupport_Case.estimatedCostReduction__c}"/>
+
+                <apex:outputField label="Estimated Revenue Increase in Dollars" value="{!SFSupport_Case.estimatedRevenueImprovements__c}"/>
+                <apex:outputField label="Supporting Calculations for Cost Reduction" value="{!SFSupport_Case.Explain_cost_Reduction__c}"/>
+                
+                <apex:outputField label="Supporting Calculations for Revenue Improvements" value="{!SFSupport_Case.Explain_revenue_improvements__c}"/>     
+
+               <!--  <apex:pageBlockSectionItem rendered="{!showProjectList}">
+                  <!--  <apex:outputLabel value="Related Project Name in Global Project List" for="relatedProjectList"/> -->
+                  <!-- <apex:outputLabel value="Project Name" for="relatedProjectList" />
+                    <apex:outputLink value="{!$Site.Prefix}/apex/SFSupportProjectList" id="relatedProjectList">{!relatedProject.Name}</apex:outputLink>       
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!showDotReleaseList}">
+                  <!--  <apex:outputLabel value="Related Item Name in Dot Release Item List" for="relatedDotReleaseList"/> -->
+                   <!--<apex:outputLabel value="Project Name" for="relatedProjectList" />
+                    <apex:outputLink value="{!$Site.Prefix}/apex/SFDotReleaseDetail?id={!relatedProject.Parent_Project__c}" id="relatedDotReleaseList">{!relatedProject.Name}</apex:outputLink>        
+                </apex:pageBlockSectionItem>  -->            
+                <!--   <apex:outputText label="Supporting Calculations for Revenue Improvements" value="{!SFSupport_Case.Explain_revenue_improvements__c}"/> -->
+              
+                <!-- <apex:outputField label="Is revenue improvement expected?" value="{!SFSupport_Case.isRevenueImprovements__c}"  /> -->
+                <!-- <apex:outputField label="Are Supporting documents provided?" value="{!SFSupport_Case.isDocumentsProvided__c}" /> 
+                <apex:outputField label="Department" value="{!SFSupport_Case.Department__c}"  /> -->
+                <!-- <apex:outputField label="Title" value="{!SFSupport_Case.Request_Title__c}"  />
+                <apex:outputField label="Is cost reduction expected?" value="{!SFSupport_Case.isCostReduction__c}"  /> -->
+
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Request Status" columns="2">  
+                <apex:outputField label="Status" value="{!SFSupport_Case.Status}" rendered="{!showcaseStatus }"/>
+                <apex:outputField label="Status Comments" value="{!SFSupport_Case.ATFE_Status_Comments__c}" rendered="{!showcaseStatus }"/>
+                
+            
+                <apex:outputtext label="Status" value="{!PrjStatus}" rendered="{!showProjectStatus }"/>
+                <apex:outputfield label="Status Comments" value="{!relatedProject.Status_Comments__c}" rendered="{!showProjectStatus }"/>
+                
+                <apex:pageBlockSectionItem rendered="{!showProjectList}">
+                  <apex:outputLabel value="Project Name" for="relatedProjectList" />
+                    <apex:outputLink value="{!$Site.Prefix}/apex/SFSupportProjectList" id="relatedProjectList">{!relatedProject.Name}</apex:outputLink>  
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem rendered="{!showDotReleaseList}">
+                  <apex:outputLabel value="Project Name" for="relatedProjectList" />
+                    <apex:outputLink value="{!$Site.Prefix}/apex/SFDotReleaseDetail?id={!relatedProject.Parent_Project__c}" id="relatedDotReleaseList">{!relatedProject.Name}</apex:outputLink>        
+                </apex:pageBlockSectionItem>  
+                
+                 
+                 <apex:outputField value="{!relatedProject.Deadline__c}" rendered="{!showProjectStatus}"/>
+            </apex:pageBlockSection>
+            
+            
+
+            <apex:pageBlockSection title="Request Resolution" columns="2">  
+                <apex:outputField label="Resolution" value="{!SFSupport_Case.Resolution_Code__c}"/>
+                <apex:outputField label="Closed Date" value="{!SFSupport_Case.ClosedDate}"/>
+                <apex:outputField label="Description" value="{!SFSupport_Case.caseResolution__c}"/>  
+            </apex:pageBlockSection>
+
+            <!-- Case Comments -->
+            <apex:commandButton action="{!CreateComment}" id="NewComment"  value="New Comment" styleClass="floatRight btnInHeader"/> 
+            <apex:pageBlockSection title="Comments" columns="1"> 
+                <apex:pageBlockTable value="{!caseComments}" var="comment" rendered="{!showComments}"> 
+                    <apex:column >  
+                        <apex:facet name="header">Comment</apex:facet> 
+                         <apex:outputField value="{!comment.Comment__c}"/>
+                    </apex:column> 
+                    <apex:column style="width: 250px;">  
+                        <apex:facet name="header">Created By</apex:facet> 
+                        <apex:outputText value="{!comment.CreatedBy.Name}, {!comment.CreatedDate}"/>
+                    </apex:column> 
+                </apex:pageBlockTable>
+            </apex:pageBlockSection> 
+
+            <!-- Attachments Section -->
+            <apex:commandButton action="{!AddAttachment}" id="NewAttachment"  value="New Attachment" styleClass="floatRight btnInHeader"/> 
+            <apex:pageBlockSection title="Attachments" columns="1"> 
+                <apex:pageBlockTable value="{!AttachmentList}" var="caseAttachment" rendered="{!showAttachments}"> 
+
+                    <apex:column style="width: 200px; text-overflow: ellipsis;">
+                        <apex:facet name="header">Name</apex:facet> 
+                        <a href="/servlet/servlet.FileDownload?file={!caseAttachment.Id}" download="{!caseAttachment.Name}">
+                          {!caseAttachment.Name}
+                        </a>
+                    </apex:column>
+
+                    <!-- <apex:column style="width: 80px;">
+                        <apex:facet name="header">Size</apex:facet> 
+                        <apex:outputText value="{!caseAttachment.BodyLength}"/>
+                    </apex:column>
+
+                    <apex:column>
+                        <apex:facet name="header">Description</apex:facet> 
+                        <apex:outputText value="{!caseAttachment.Description}"/>
+                    </apex:column> -->
+
+                    <apex:column style="width: 150px;">
+                        <apex:facet name="header">Created By</apex:facet> 
+                        <apex:outputText value="{!caseAttachment.CreatedBy.Name}"/>
+                    </apex:column>
+                    
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+
+</apex:page>

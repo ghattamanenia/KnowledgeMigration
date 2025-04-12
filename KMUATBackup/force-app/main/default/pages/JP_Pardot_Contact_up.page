@@ -1,0 +1,12 @@
+<apex:page standardController="Contact">
+
+  <apex:form >
+  
+    <apex:outputLabel value="Pardot URL"/>
+    <apex:inputField value="{!Contact.pi__url__c}" style="width:50%"/>
+        
+    <apex:commandButton action="{!save}" value="保存" />
+    
+  </apex:form>
+
+</apex:page>

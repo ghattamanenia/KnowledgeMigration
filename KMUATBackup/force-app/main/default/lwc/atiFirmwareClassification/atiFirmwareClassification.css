@@ -1,0 +1,122 @@
+.firmware-list {
+    list-style-type: none;
+    padding: 5px;
+    margin: 0;
+}
+
+.firmware-item {
+    margin-bottom: 15px;
+}
+
+.firmware-header {
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+}
+.firmware-headerf-field {
+    font-size: 13px; /* Adjust text size for the additional fields */
+    margin-left: 5px;
+}
+
+.expand-collapse-btn {
+    margin-right: 10px;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+}
+
+.firmware-name {
+    font-weight: bold;
+    font-size: 14px;
+    margin-right: 10px; /* Space between the name and additional fields */
+}
+
+
+.software-item a {
+    text-decoration: none;
+    color: #0070d2;
+}
+
+.software-item a:hover {
+    text-decoration: underline;
+}
+
+.no-products-text {
+    font-style: italic;
+    color: #999;
+}
+
+
+	
+.currentReleasesClass{
+    color: blue !important; /* Change text color to blue */
+    font-weight: normal; /* Optional: Make the font weight normal */
+    text-decoration: none; /* Optional: Remove underline */
+}
+
+.archivedVersionsClass{
+    color: #005fb2; /* Slightly darker blue for hover */
+    text-decoration: underline; /* Add underline on hover */
+
+}
+.software-container {
+    margin: 0 auto;
+    padding: 1rem;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    background-color: #ffffff;
+    max-width: 600px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.software-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.software-item {
+    border-bottom: 1px solid #e5e5e5;
+    padding: 0.75rem 0;
+}
+
+.software-item:last-child {
+    border-bottom: none;
+}
+
+.software-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.software-icon {
+    margin-right: 0.75rem;
+    flex-shrink: 0;
+}
+
+.software-details {
+    flex-grow: 1;
+    font-size: 1rem;
+}
+
+.software-link {
+    color: #0070d2;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.software-link:hover {
+    text-decoration: underline;
+    color: #005fb2;
+}
+
+.software-action {
+    flex-shrink: 0;
+}
+
+.loading-message {
+    text-align: center;
+    font-style: italic;
+    color: #999;
+}

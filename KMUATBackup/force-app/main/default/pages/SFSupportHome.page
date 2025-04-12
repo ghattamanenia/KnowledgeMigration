@@ -1,0 +1,115 @@
+<apex:page docType="html-5.0" controller="SFSupportHomeController"  tabStyle="Salesforce_Support__tab" title="Salesforce Support">
+    <apex:slds />
+    <apex:includeScript value="{!$Resource.JQuery}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.SFSupportCSS)}" />    
+    <style type="text/css">
+        body .bPageBlock .pbTitle {
+            width: 195px;
+        }
+        body .bPageBlock .pbTitle h2.mainTitle {
+            font-size: 20px;            
+            margin-left: 8px;        
+        }
+    </style>
+    <apex:pageMessages />  
+
+    <apex:pageBlock title="Salesforce Support" id="SFSupportHome">
+        <a href="{!$Site.Prefix}/apex/SFSupportProjectList" class="SFSupportProjectListBtn btn">Global Project List</a> 
+        <apex:form styleClass="sfSupportHome">
+         
+
+            <div class="topSection">      
+                <h3 class="selectCaseTitle">How may we help you?&nbsp;</h3> 
+                <apex:selectList value="{!caseType}" size="1" styleClass="selectCaseType" onchange="createSFCase();">
+                    <apex:selectOption itemValue="" itemLabel="--Please Select One--" />
+                    <apex:selectOption itemValue="Issue" itemLabel="I'm reporting an issue with Salesforce"/>
+                    <apex:selectOption itemValue="Information" itemLabel="I have a question about Salesforce"/>
+                    <apex:selectOption itemValue="Enhancement" itemLabel="I'm proposing an enhancement to Salesforce"/>
+                    <apex:selectOption itemValue="Access" itemLabel="I'm requesting a change to an user's access in Salesforce"/>
+                    <apex:selectOption itemValue="Data" itemLabel="I'm requesting a data upload to Salesforce"/>
+                    <apex:selectOption itemValue="User Account" itemLabel="I'm requesting termination of an existing Salesforce user"/>
+                    <apex:selectOption itemValue="Other" itemLabel="I have a request not listed above"/>
+                </apex:selectList>
+                <apex:actionFunction name="createSFCase" action="{!Go}"/>
+                <!-- &nbsp;<apex:commandButton value="Go" action="{!Go}" styleClass="goBtn"/>   --> 
+                <div class="selectCaseHelper">Please contact HR for new account requests.</div>
+            </div>
+
+            <div class="myCasesWrapper">
+                <apex:selectList value="{!CasesByStatus}" size="1" styleClass="myCases" onchange="showMySFCase();">
+                    <apex:selectOption itemValue="OpenCases" itemLabel="Your Open Cases"/>
+                    <apex:selectOption itemValue="ClosedCases" itemLabel="Your Closed Cases"/>
+                </apex:selectList>
+                <apex:actionFunction name="showMySFCase" action="{!ShowCases}"/>
+                <!-- &nbsp;<apex:commandButton value="Go" action="{!ShowCases}" styleClass="goBtn" />  -->  
+                <div class="paginationWrapper">
+                    <apex:outputText id="pagination" styleClass="paginationTxt" value="Page {0} of {1}">
+                        <apex:param value="{!currentPage}"/>
+                        <apex:param value="{!lastPage}"/>
+                    </apex:outputText> 
+                    <apex:commandButton value="|<" action="{!Beginning}" disabled="{!DisablePrevious}" reRender="SFSupportHome" title="First"/>
+                    <apex:commandButton value="<" action="{!Previous}" disabled="{!DisablePrevious}" reRender="SFSupportHome" title="Previous"/>
+                    <apex:commandButton value=">" action="{!Next}" disabled="{!DisableNext}" reRender="SFSupportHome" title="Next"/>
+                    <apex:commandButton value=">|" action="{!End}" disabled="{!DisableNext}" reRender="SFSupportHome" title="Last"/>  
+                </div>            
+            </div>
+            <apex:pageBlockSection columns="1" showHeader="false" >      
+
+                <apex:pageBlockTable value="{!OpenCases2status}" var="MyCases" style="width:100%" rendered="{!ShowOpen}">
+                
+                    <apex:column style="width:80px">  
+                        <apex:facet name="header">Case ID</apex:facet> 
+                        <apex:outputLink value="/apex/{!If(MyCases.cs.SF_Case_Category__c == 'Enhancement', 'SFSupportEnhancementRequestDetail', 'SFSupportCaseDetail')}?id={!MyCases.cs.id}">{!MyCases.cs.CaseNumber}</apex:outputLink>
+                    </apex:column> 
+
+                    <apex:column >  
+                        <apex:facet name="header">Description</apex:facet> 
+                        <apex:outputText value="{!MyCases.cs.Description}"/>
+                    </apex:column>
+
+                    <apex:column style="width:120px">  
+                        <apex:facet name="header">Status</apex:facet> 
+                        <apex:outputText value="{!MyCases.Status}"/>
+                    </apex:column>
+                                        
+                    <apex:column style="width:120px">  
+                        <apex:facet name="header">Opened Date</apex:facet>
+                        <apex:outputField value="{!MyCases.cs.CreatedDate}"/>
+                    </apex:column>                       
+
+                </apex:pageBlockTable> 
+                </apex:pageBlockSection>
+                <apex:pageBlockSection columns="1" showHeader="false" rendered="{!ShowClosed}">      
+
+                <apex:pageBlockTable value="{!ClosedCases}" var="MyCases" style="width:100%">
+                
+                   <apex:column style="width:80px">  
+                        <apex:facet name="header">Case ID</apex:facet> 
+                        <apex:outputLink value="/apex/{!If(MyCases.SF_Case_Category__c == 'Enhancement', 'SFSupportEnhancementRequestDetail', 'SFSupportCaseDetail')}?id={!MyCases.id}">{!MyCases.CaseNumber}</apex:outputLink>
+                    </apex:column> 
+
+                    <!-- <apex:column style="width:200px">  
+                        <apex:facet name="header">Title</apex:facet> 
+                        <apex:outputText value="{!MyCases.Request_Title__c}"/>
+                    </apex:column> -->
+
+                    <apex:column >  
+                        <apex:facet name="header">Description</apex:facet> 
+                        <apex:outputText value="{!MyCases.Description}"/>
+                    </apex:column>
+                    
+                    <apex:column style="width:120px">  
+                        <apex:facet name="header">Closed Date</apex:facet>
+                        <apex:outputField value="{!MyCases.closeddate}"/>
+                    </apex:column>                      
+
+                </apex:pageBlockTable>
+
+            </apex:pageBlockSection>
+
+        </apex:form>
+
+    </apex:pageBlock>
+
+    <apex:includeScript value="{!$Resource.SFSupportJS}"/>
+</apex:page>

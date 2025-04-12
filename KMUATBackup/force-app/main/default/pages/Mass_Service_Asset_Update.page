@@ -1,0 +1,15 @@
+<apex:page standardController="Service_Asset__c" extensions="MassServiceAssetUpdateController" recordSetVar="ServiceAssetRecords" docType="html-5.0">
+  
+  <b> Please select the Start date and End Date to mass update the Service Assets </b>
+  
+  <apex:form >
+  <apex:pageBlock >  
+  
+  Start Date: <apex:input type="date" value="{!startDate}" required="true" />  <br/>
+   End Date: <apex:input type="date" value="{!endDate}" required="true" />  <br/>
+   Purchase Information: <apex:input type="text" value="{!purchaseinfo}" required="true" />  <br/> <br/>
+  <apex:commandButton action="{!massUpdate}" value="Mass Update" />
+  </apex:pageBlock>
+  </apex:form>
+  
+</apex:page>

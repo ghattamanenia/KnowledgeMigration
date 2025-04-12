@@ -1,0 +1,81 @@
+<apex:page showHeader="true" sidebar="true" tabStyle="opportunity" standardController="opportunity" extensions="JP_CLCallSPMSPollingController" >
+<apex:form id="form01" >
+    SPMSの商談データを用意しています。<br/>
+    そのままお待ちください。
+
+    <apex:pageBlock id="pBlock" >
+        <apex:facet name="header">{!opportunity.Name}</apex:facet>
+        <apex:outputPanel id="outPtext">
+        <apex:actionFunction name="statusCheck" action="{!statusCheck}" rerender="outPtext,outPcode"/>
+        <apex:actionFunction name="moveToDetailURL" action="{!moveToDetailURL}"/>
+        <apex:outputLabel id="label" value="ステータス : "/>
+        <apex:outputtext id="curStatus" value="{!status}"/>
+        </apex:outputPanel>
+        <apex:outputPanel id="outPcode">
+
+        <script type="text/javascript">
+            // 変数の設定
+            var i;
+            var pollingLimit; //ポーリング上限回数
+            var pollingtime;  //ポーリング間隔
+            var wholetime;    //全体のタイムアウト設定秒
+            var strStatus;
+            var errMsg;
+            var detailUrl;
+            var quoid;
+            var spmsFileName = ' C:\\spms\\StartSPMSfromSFDC.adp ';
+            var msg_NoQuoteStatusChange;
+            var msg_Error_QuoteIFTimeout;
+            var msg_Error_QuoteIFFlow;
+            var fso=new ActiveXObject("Scripting.FileSystemObject");
+            var accessPath =fso.GetFile("C:\\Program Files\\Microsoft Office\\OFFICE11\\MSACCESS.exe ").ShortPath;
+            // タイムアウト関数
+            function Termination(){
+                alert(totalTimuoutMSG);
+                moveToDetailURL();
+            }
+            // ポーリング関数
+            function doChkRes(){
+                if(strStatus == "連携済正常" ){
+                    executeJS();
+                    moveToDetailURL();
+                }else if(strStatus == "連携済異常"){
+                    alert( errMsg );
+                    moveToDetailURL();
+                }else if (strStatus != "連携済正常" && strStatus != "連携済異常" && i <= pollingLimit ){
+                }else if (strStatus != "連携済正常" && strStatus != "連携済異常" &&  i > pollingLimit ){
+                    alert(errMsg);
+                    moveToDetailURL();
+                }
+            }
+            var cmdOption = ' /cmd '+ quoid;
+            // SPMS起動関数
+            function executeJS() {
+                var WshShell = new ActiveXObject("WScript.Shell");
+                WshShell.Run(accessPath + spmsFileName + cmdOption );
+            }
+            // 処理実行部
+            i = "{!StatusCount}";
+            quoid = "{!Quoid}";
+            if(i==1){
+                pollingLimit    = "{!pollingLimit}";
+                pollingTime     = "{!pollingTime}";
+                wholetime       = "{!wholetime}";
+                totalTimuoutMSG = "{!totalTimeoutMSG}";
+                window.setTimeout(Termination,wholetime);
+            }
+            strStatus = "{!status}";
+            if(i>1){
+                errMsg = "{!errorDetailMsg}";
+                doChkRes();
+            }
+            window.setTimeout(statusCheck,pollingTime);
+
+        </script>
+        </apex:outputPanel>
+        <apex:pageblockButtons location="bottom">
+            <apex:commandButton value="Cancel" action="{!cancel}" />
+        </apex:pageblockButtons>
+    </apex:pageBlock>
+</apex:form>
+</apex:page>

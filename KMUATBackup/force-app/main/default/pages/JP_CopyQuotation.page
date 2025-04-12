@@ -1,0 +1,50 @@
+<apex:page standardcontroller="JP_QuotationHeader__c" extensions="JP_CopyQuotationController" >
+    <apex:slds />
+    <script src='/canvas/sdk/js/publisher.js'></script>
+<style>
+    .mypage {
+        font-family: "ProximaNovaSoft-Regular", Calibri; 
+        font-size: 110%;
+        /*padding-top: 12px;*/
+        height: 30px;
+    }
+    .mypage button {
+        -webkit-appearance: button;
+        border-radius: 3px;
+        display: block;
+        padding: 12px;
+        margin: 8px 0;
+        width: 100%;
+        background: #eee;
+        border: solid 1px #ccc;
+      }
+
+</style>
+
+    <apex:outputPanel id="out">
+        <apex:pageMessages />
+    </apex:outputPanel>
+
+    <apex:form style="text-align: center;  margin-top: 5px;">
+        <apex:actionFunction name="doCopy" action="{!doCopy}" status="status" reRender="out" />
+        <apex:actionStatus id="status" />
+        <apex:actionFunction name="setTakeoverFlgTrue" action="{!setTakeoverFlgTrue}" oncomplete="copy();" reRender="out" />
+        <apex:actionFunction name="setTakeoverFlgFalse" action="{!setTakeoverFlgFalse}" oncomplete="copy();" reRender="out" />
+    </apex:form>
+    
+    <apex:outputPanel id="hoge">
+        <script>
+            window.onload = function() {
+                if( confirm( '見積書番号を引き継いでコピーしますか？\n・番号を引き継いでコピーする場合はOK\n・番号を引き継がないでコピーする場合はキャンセル\n・コピー元が2015、2016、2017の見積書番号で始まる場合はキャンセル' ) ) {
+                    setTakeoverFlgTrue();
+                }else{ 
+                    setTakeoverFlgFalse();
+                }
+            }
+
+            function copy(){
+                doCopy();
+            }
+        </script>
+    </apex:outputPanel>
+</apex:page>

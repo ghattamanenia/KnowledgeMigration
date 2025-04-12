@@ -1,0 +1,71 @@
+<apex:page showHeader="false" sidebar="false" standardcontroller="JP_QuotationHeader__c" extensions="JP_ProductQuotationPreviewController" >
+    <style>
+        h1 {
+            font-size:15px;
+        }
+
+    .upBtn {
+        font-weight: bold !important;
+        width: 80px !important;
+    }
+
+    .clsBtn {
+        font-weight: bold !important;
+        width: 80px !important;
+    }
+
+    </style>
+    <apex:includeScript value="https://s.oproarts.com/js/live_ff-1.20.js"></apex:includeScript>
+    <script type="text/javascript">
+        function execute(selectedValId){
+            // ---- BEGIN  ----
+            OPROARTS.Live.fF.action({
+            tp:[
+                document.getElementById(selectedValId).value
+            ],
+
+            fe:false,
+
+            createsAttach:true,
+
+            createsTask:true,
+
+            title:'見積書_{!JSENCODE(param_qhno)}_' + document.getElementById(selectedValId).value,
+
+            objectId:'{!JSENCODE(param_qhid)}',
+
+            // OPROARTS Live - Force.com API に必要な諸パラメータです。
+            // このパラメータを編集しないでください。
+            api:['{!JSENCODE($Organization.Id)}','{!JSENCODE($User.Id)}','{!JSENCODE($Api.Session_ID)}','{!JSENCODE($Api.Partner_Server_URL_220)}']
+            }).url("https://www.oproarts.com/liveffb/action").pdfPreview();
+            // 作成するドキュメントの形式のメソッドを呼び出します。'pdf()','opr()','print()'を指定します。
+            // 'opr()','print()'を使用する場合、OPRO X Browser をクライアントPCにインストールしてください。
+            // ---- END ----
+
+            return false;   
+        };      
+    </script>
+    
+        <body style="font-family:'メイリオ',Meiryo;">
+        <!--  -->
+        <h1 style="color:red">見積書プレビューは「見積書出力」の画面でできるようになりました。この機能は間もなく廃止します。</h1>
+        <apex:form id="theForm" >
+            <!--Message-->
+            <apex:pagemessages />
+                <!--Block-->
+                 <apex:pageBlock id="pgBlock" mode="detail" rendered="{!!hasError}" >
+                    <apex:pageBlockSection id="pgBlockSection" columns="3">
+                        <!--1-->
+                        <apex:selectList value="{!selectedValue}" id="selectedVal" multiselect="false" size="1">
+                            <apex:selectOptions value="{!selectValues}" />
+                        </apex:selectList>                 
+                        <!--2-->
+                        <apex:commandbutton id="upBtn" disabled="false" value="プレビュー" styleClass="upBtn" onclick="return execute('{!$Component.theForm.pgBlock.pgBlockSection.selectedVal}')" />
+                        <!--3-->
+                        <apex:commandbutton id="clsBtn" disabled="false" value="閉じる" styleClass="clsBtn" onClick="window.open('about:blank','_self').close();"  rendered="{!$User.UIThemeDisplayed == 'Theme3'}" />
+                    </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:form>
+    </body>
+
+</apex:page>

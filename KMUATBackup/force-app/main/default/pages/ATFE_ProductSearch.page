@@ -1,0 +1,295 @@
+<apex:page controller="ATFE_ProductSearch" sidebar="false">  
+    
+    <apex:includeScript value="{!$Resource.JQuery}"/>
+    <apex:includeScript value="{!$Resource.JQueryUI}"/>
+    <script>
+        var j$ = jQuery.noConflict();
+    </script>
+    
+    <!-- 
+        DataTable javascript (http://www.datatables.net/)
+     -->
+    <apex:includeScript value="{!URLFOR($Resource.JqueryDataTable, 'JqueryDataTable/js/jquery.dataTables.js')}"/>
+
+    <!-- 
+        uses javascript Globalize (https://github.com/jquery/globalize)
+        Example to change currency and format of currency:
+            Globalize.format(1111.4444,"c","eu");
+     -->
+    <apex:includeScript value="{!URLFOR($Resource.jQueryGlobalize, 'lib/globalize.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jQueryGlobalize, 'lib/cultures/globalize.cultures.js')}"/>
+
+    <script src="/soap/ajax/26.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/26.0/apex.js" type="text/javascript"></script>
+    
+    <apex:stylesheet value="{!URLFOR($Resource.JQueryRedmondTheme, 'jquery-ui-1.8.23.custom.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.JqueryDataTable, 'JqueryDataTable/css/jquery.dataTables.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.JqueryDataTable, 'JqueryDataTable/css/jquery.dataTables_themeroller.css')}"/>
+    
+    <script>
+        j$('#results').hide();
+        // Set the Session ID so AJAX calls can be made to SF
+        sforce.connection.sessionId = "{!$Api.Session_ID}"; 
+        
+        // Set the Profile for the user
+        var profile = "{!$Profile.Name}";
+        
+        // Set the Price Book Regions for the user
+        var regions = sforce.connection.query("select Price_Book_Region__c from User where id = '{!$User.id}'");
+        
+        // Must use split since it is calling a multi-select dropdown value from the DB
+        var userRegions = regions.records.Price_Book_Region__c.split(";"); 
+        
+        // Product Type values for checkboxes
+        var productTypes = new Array('Product','Service');
+        
+        //setting currency values
+        var currencySymbol = new Array();
+        //currencySymbol["USD"] = "$";
+        //currencySymbol["EUR"] = "&pound;";
+        currencySymbol["USD"] = "";
+        currencySymbol["EUR"] = "eu;";
+        
+        j$(document).ready(function() {
+        
+        // Build out the Price Book Region checkboxes
+            j$.each(userRegions, function( iteration, item) {
+                j$("#PriceBookRegion").append(
+                    j$(document.createElement("input")).attr({
+                        type: 'checkbox',
+                        id: 'priceBookRegionchk',
+                        name: 'priceBookRegionchk',
+                        value: item,
+                        checked: true,
+                        style: function() {
+                            if (userRegions.length > 1)
+                                return '';
+                            else
+                                return 'display: none';
+                        }
+                    })
+                ).append(
+                    j$(document.createElement('label')).attr({
+                        'for': 'priceBookRegionchk',
+                        style: function() {
+                            if (userRegions.length > 1)
+                                return '';
+                            else
+                                return 'display: none';
+                        }
+                    })
+                    .text(item)
+                )
+            });
+            
+            // Build out the array for autocomplete --> Updated by Neha for search results issue with API 56.0 in the apex class ATFE_ProductSearch
+            var productList = sforce.apex.execute("ATFE_ProductSearch", "getProductList", {regions: userRegions});
+            
+            // Assign the array for autocomplete
+            j$('#keyword').autocomplete({source: productList});
+        });
+    
+        function searchProductData() {
+//TODO: add required service column - only if we get the information.
+
+            // Setting progress bar to 25%
+            j$( "#progressbar" ).show().progressbar({
+                value: 25
+            });
+            
+            var keyword = j$('#keyword').val(); 
+            var regions = new Array();
+            var resultData = new Array();
+            var resultsHeader = new Array();
+            var priceBookIDs = new Array();
+            var pbNames = new Array();
+            
+            // Clears out the results table
+            if (j$('#results').html() != '')
+            {
+                j$('#results').dataTable().fnDestroy()
+                j$('#results').html('');
+            }
+            
+            // Build the regions
+            j$('input[name = "priceBookRegionchk"]').each(function() {
+                if(j$(this).attr('checked'))
+                {
+                    regions.push(j$(this).attr('value'));
+                }
+            });
+            
+            // Make a call to get the Price Book Names
+            //var pricebookNames = sforce.apex.execute("ATFE_ProductSearch", "getPricebookNames", {region: regions});
+            var pricebookNamesArray = new Array(JSON.parse(sforce.apex.execute("ATFE_ProductSearch", "getPricebookNames", {regions: regions}))); 
+            pricebookNamesArray.sort();
+            
+            j$.each(pricebookNamesArray[0], function(key, value){
+                    pbNames.push([key,value]);
+            });
+            pbNames.sort();
+            
+            // Setting progress bar to 50%
+            j$( "#progressbar" ).progressbar({
+                value: 50
+            });
+            
+            // Make a call to get the search results
+            var searchResults = sforce.apex.execute("ATFE_ProductSearch", "getSearchResults", {keyword: keyword, regions: regions});
+            
+            // Build the resultsHeader
+            resultsHeader.push({"sTitle":"Product Name", "sWidth":"175px"});
+            resultsHeader.push({"sTitle":"Description", "sWidth":"250px"});
+            
+            // Build out the pricebook named columns
+            j$.each(pbNames, function(key, value){
+                resultsHeader.push({"sTitle":value[1],"sWidth":"120px"});   
+                priceBookIDs.push(value[0]);    
+            }); 
+            priceBookIDs.sort();
+            
+            // Setting progress bar to 75%
+            j$( "#progressbar" ).progressbar({
+                value: 75
+            });
+            
+            // Build the resultsData
+            j$.each(JSON.parse(searchResults), function(key, value){ 
+                var resultRow = new Array();
+                
+                resultRow.push(value['ProductData'].Name);
+                resultRow.push(value['ProductData'].Description);
+                
+                // Builds out the pricebook columns dynamically based on how many are returned in the quiery above.
+                for (i=0; i < priceBookIDs.length; i++)
+                {
+                    if (value['PriceBookData'][priceBookIDs[i]] == null)
+                    {
+                        resultRow.push("--");
+                    }
+                    else
+                    {
+                        //resultRow.push(Globalize.format(Globalize.parseFloat(value['PriceBookData'][priceBookIDs[i]]),"c", currencySymbol[value['PriceBookData'][priceBookIDs[i] + 'CurrencyISOCode']]) + "&nbsp;&nbsp;&nbsp;<button name=\"service\" onClick=\"servicePrice('" + priceBookIDs[i] + "', '" + value['ProductData'].Id + "','" + value['PriceBookData']['00000std_' + value['PriceBookData'][priceBookIDs[i] + 'CurrencyISOCode']] + "','" + value['PriceBookData'][priceBookIDs[i] + 'CurrencyISOCode'] + "')\" ></button>"); //value['PriceBookData'][priceBookIDs[i]]
+                        resultRow.push(Globalize.format(Globalize.parseFloat(value['PriceBookData'][priceBookIDs[i]]),"c", currencySymbol[value['PriceBookData'][priceBookIDs[i] + 'CurrencyISOCode']]) + "&nbsp;&nbsp;&nbsp;<button name=\"service\" onClick=\"servicePrice('" + priceBookIDs[i] + "', '" + value['ProductData'].Id + "','" + value['PriceBookData'][priceBookIDs[i]] + "','" + value['PriceBookData'][priceBookIDs[i] + 'CurrencyISOCode'] + "')\" ></button>"); //value['PriceBookData'][priceBookIDs[i]]
+                    }
+                }
+                
+                resultData.push(resultRow);
+            });
+            
+            // Setting progress bar to 100%
+            j$( "#progressbar" ).progressbar({
+                value: 100
+            });
+            
+            j$('#results').dataTable({
+                "bJQueryUI": true,
+                "bDestroy": true,
+                "aaData": resultData,
+                "aoColumns": resultsHeader,
+                "bAutoWidth": false,
+                "oLanguage": {
+                   "sSearch": "Filter Search Results: ",
+                   "sInfoEmpty": "No results found"
+                },
+                "bStateSave": true
+            }).show();
+            
+            j$("button[name~='service']").button({
+                icons: {
+                    primary: "ui-icon-wrench"
+                },
+                text: false
+            }).attr("style","width:20px;height:20px;top:5px;");
+            
+            j$( "#progressbar" ).hide();
+        }
+            
+        function servicePrice(priceBookId, productId, productPrice, currencyISOCode) {
+            /*
+            select product2.name, unitprice, product2id, product2.RelatedProduct__c, isactive, product2.isactive, Pricebook2.id, Pricebook2.name from PricebookEntry where product2.RelatedProduct__c = '01t20000001lOdzAAE' and pricebook2id = '01s200000001sdAAAQ'
+            AT-SBx908
+            */
+            j$("#dialog-modal").html("");
+            var realPriceBookId = priceBookId;
+            if (priceBookId.search('00000std_') != -1) {
+                realPriceBookId = '01s20000000HSJz';
+            }
+            //var services = sforce.connection.query("select Product2.name, Product2.description, unitprice, product2id from PricebookEntry where Product2.RelatedProduct__c = '" + productId + "' and pricebook2Id = '" + priceBookId + "'");
+            var services = sforce.connection.query("select Product2.name, Product2.description, unitprice, product2id from PricebookEntry where Product2Id IN (SELECT SBQQ__OptionalSKU__c FROM SBQQ__ProductOption__c WHERE SBQQ__ConfiguredSKU__c = '" + productId + "' ) and pricebook2Id = '" + realPriceBookId + "'");
+            var servicesData = '';
+            
+            if (services.records != null){
+                
+                j$.each(services.records, function (key, value){
+                    var sum = 0;
+                    sum += Number(value.UnitPrice);
+                    sum += Number(productPrice);
+                    
+                    servicesData += "<tr>" +
+                        "<td style='vertical-align:top;'>" + value.Product2.Name + "</td>" +
+                        "<td style='vertical-align:top;'>" + value.Product2.Description + 
+                        "<td style='vertical-align:top;'>" + Globalize.format(Globalize.parseFloat(value.UnitPrice),"c",currencySymbol[currencyISOCode]) + "</td>" +
+                        "<td style='text-align:center;vertical-align:top;'>+</td>" +
+                        "<td style='vertical-align:top;'>" + Globalize.format(Globalize.parseFloat(productPrice),"c",currencySymbol[currencyISOCode]) +  "</td>" +
+                        "<td style='text-align:center;vertical-align:top;'>=</td>" +
+                        "<td style='padding-right:5px;vertical-align:top;'>" + Globalize.format(sum,"c",currencySymbol[currencyISOCode]) + "</td>" + 
+                        "</tr>" + 
+                        "<tr><td colspan='7' style='color:lightgrey;height:1px'><hr size='1'></td></tr>"; 
+                });
+                
+                j$("#dialog-modal").append("<table style='border:1px solid lightgrey;'><tr>" + 
+                    "<th style='width:175px;'>Service</th>" +
+                    "<th style='width:300px;'>Description</th>" +
+                    "<th style='width:70px;'>Price</th>" +
+                    "<th style='width:10px'>&nbsp;</th>" +
+                    "<th style='width:70px;'>Product</th>" +
+                    "<th style='width:10px'>&nbsp;</th>" +
+                    "<th style='width:70px;'>Total</th>" +
+                    "</tr>" + 
+                    "<tr><td colspan='7' style='color:lightgrey;height:1px'><hr size='1'></td></tr>" + 
+                    servicesData + "</table>").dialog({
+                        modal: true,
+                        width: "800px"
+                });
+            }
+            else
+            {
+                servicesData = "<tr><td>No services are defined for this product.</td></tr>"
+                j$("#dialog-modal").append("<table style='border:1px solid lightgrey;'>" + servicesData + "</table>").dialog({
+                    modal: true,
+                    width: "400px"
+                });
+            }
+        }   
+    </script>
+    
+  <apex:pageMessages ></apex:pageMessages>
+ 
+ <!-- search form -->
+    <apex:pageBlock title=" Product and Service Search">
+        <center>
+           <table bgcolor="skyblue">
+                <tr>
+                    <td>
+                        <apex:outputLabel value="Search by keyword: " for="productSearch" /> <input type="text" id="keyword"/>
+                    </td>
+                    <td>
+                        <div id="PriceBookRegion"></div>
+                    </td>
+                    <td>
+                        <div id="ProductType"></div>
+                    </td>
+                        <!-- TODO: Add advanced filter -->
+                    <td>
+                        <input type="button" value="Search" onclick="searchProductData()"/>
+                    </td>
+                </tr>
+           </table>
+        </center>
+    </apex:pageBlock>
+    <div id="dialog-modal" title="Product Services"></div>
+    <div id="progressbar" style="height:5px;"></div>
+    <table id='results' border='1' class="display" bgcolor="blue"></table>
+
+</apex:page>

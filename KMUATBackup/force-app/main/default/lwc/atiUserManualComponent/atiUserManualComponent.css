@@ -1,0 +1,30 @@
+.toc-container {
+    font-family: Arial, sans-serif;
+    padding: 1rem;
+}
+
+.toc-container ul {
+    list-style-type: none;
+    padding-left: 1.5rem;
+}
+
+.toc-container li {
+    padding: 0.5rem 0;
+}
+
+.title {
+    cursor: pointer;
+    color: #0070d2;
+    text-decoration: underline;
+}
+
+.title:hover {
+    text-decoration: none;
+}
+
+.content {
+    margin-top: 0.5rem;
+    padding-left: 1rem;
+    font-size: 0.9rem;
+    color: #333;
+}

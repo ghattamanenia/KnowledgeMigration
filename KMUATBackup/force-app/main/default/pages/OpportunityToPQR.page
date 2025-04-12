@@ -1,0 +1,73 @@
+<apex:page showHeader="false" sidebar="false" standardController="Opportunity" extensions="OpportunityToPQRController" >
+
+    <apex:outputPanel id="out">
+        <apex:pageMessages id="msg" escape="false"/>
+    </apex:outputPanel>
+    
+    <apex:form id="form">
+        <div style="padding-left:20px; padding-top:20px;">
+            <apex:outputLabel escape="true" value="{!$ObjectType.Opportunity.fields.Name.label}" />：
+            <apex:outputField value="{!opp.Name}" />
+            <br />
+            
+            <apex:outputLabel escape="true" value="{!$ObjectType.Opportunity.fields.ATFE_OppID__c.label}" />：
+            <apex:outputField value="{!opp.ATFE_OppID__c}" />
+            <br />
+            
+            <apex:outputLabel escape="true" value="{!$ObjectType.Account.fields.Name.label}" />：
+            <apex:outputField value="{!opp.Account.Name}" />
+            <br />
+            
+            <apex:outputLabel escape="true" value="{!$ObjectType.Opportunity.fields.CloseDate.label}" />：
+            <apex:outputField value="{!opp.CloseDate}" />
+            <br />
+            
+            <apex:outputLabel escape="true" value="{!$ObjectType.Opportunity.fields.StageName.label}" />：
+            <apex:outputField value="{!opp.StageName}" />
+            <br />
+            
+            <apex:outputLabel escape="true" value="{!$ObjectType.Opportunity.fields.Probability.label}" />：
+            <apex:outputField value="{!opp.Probability}" />
+            <br />
+            
+            <apex:outputLabel escape="true" value="{!$ObjectType.Opportunity.fields.Amount.label}" />：
+            <apex:outputText value="{!opp.Amount}" />
+            <br />
+            
+            <apex:outputLabel escape="true" value="{!$ObjectType.Opportunity.fields.JP_Distribution__c.label}" />：
+            <apex:outputField value="{!opp.JP_Distribution__c}" />
+            <br /><br/>
+            
+            <!-- 
+            <apex:outputLabel escape="true" value="パートナー：" /><br />
+            <apex:repeat value="{!paList}" var="pa">
+                <apex:outputField value="{!pa.AccountTo.Name}" /><br />
+            </apex:repeat>
+            <br />
+             -->
+            
+            <apex:outputLabel escape="true" value="商談チーム：" /><br />
+            <apex:repeat value="{!otmList}" var="otm">
+                <apex:outputField value="{!otm.Name}" />/<apex:outputField value="{!otm.TeamMemberRole}" /><br />
+            </apex:repeat>
+            <br />
+            
+            <table>
+                <tr>
+                    <th style="width:150px;"><apex:outputText value="商品コード" /></th>
+                    <th style="width:200px;"><apex:outputText value="商品名" /></th>
+                    <th style="width:100px;"><apex:outputText value="数量" /></th>
+                </tr>
+                <apex:repeat value="{!oliList}" var="oli">
+                    <tr>
+                        <td><apex:outputField value="{!oli.ProductCode}" /></td>
+                        <td><apex:outputField value="{!oli.Product2.Name}" /></td>
+                        <td><apex:outputField value="{!oli.Quantity}" /></td>
+                    </tr>
+                </apex:repeat>
+            </table>
+            <br />
+        </div>
+    </apex:form>
+    
+</apex:page>

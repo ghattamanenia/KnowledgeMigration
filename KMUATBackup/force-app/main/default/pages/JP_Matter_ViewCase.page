@@ -1,0 +1,25 @@
+<apex:page standardController="JP_Matter__c"  extensions="JP_Matter_ViewCase" lightningStylesheets="true" standardStylesheets="true" showHeader="true" sidebar="false" id="page">
+  <apex:form id="form">
+    <apex:outputField value="{!JP_Matter__c.JP_Client__c}"/>
+    <apex:pageBlock >
+      <apex:pageBlockTable value="{!caseList}" var="case">
+        <apex:column headerValue="問合せ番号">
+          <apex:outputLink value="{!URLFOR('/' + case.Id)}">{!case.CaseNumber}</apex:outputLink>
+        </apex:column>
+        <apex:column value="{!case.CreatedDate}"/>
+        <apex:column value="{!case.Origin}"/>
+        <apex:column headerValue="件名">
+          <apex:outputLink value="{!URLFOR('/' + case.Id)}">{!case.Subject}</apex:outputLink>
+        </apex:column>
+        <apex:column value="{!case.JP_InquiryCategory__c}"/>
+        <apex:column value="{!case.Status}"/>
+        <apex:column value="{!case.ClosedDate}"/>
+        <apex:column headerValue="所有者">
+          <apex:outputLink value="{!URLFOR('/' + case.ownerId)}">{!case.owner.Name}</apex:outputLink>
+        </apex:column>
+        <apex:column value="{!case.JP_OpenCaseSortFomula__c}"/>
+      </apex:pageBlockTable>
+    </apex:pageBlock>
+
+  </apex:form>
+</apex:page>

@@ -1,0 +1,31 @@
+/* Add padding to the card container */
+.slds-p-around_medium {
+    padding: 10px; /* Adjust as needed */
+}
+
+/* Extend the width of each lightning-input field */
+lightning-input[data-id="field1"],
+lightning-input[data-id="field2"],
+lightning-input[data-id="field3"],
+lightning-input[data-id="field4"],
+lightning-input[data-id="field5"] {
+    width: 100%; /* Makes the fields span the full width of their container */
+    max-width: 500px; /* Optional: add a max-width if you don't want it to span too wide */
+    margin-bottom: 10px; /* Adds space between each input field */
+}
+
+    /* Custom button styling */
+    .custom-button {
+        background-color: #0079a8;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        margin-top: 10px; /* One-line gap */
+    }
+
+    .custom-button:hover {
+        background-color: #0079a8; /* Slightly lighter shade on hover */
+    }

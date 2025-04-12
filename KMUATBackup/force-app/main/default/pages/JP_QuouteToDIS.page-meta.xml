@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApexPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <availableInTouch>true</availableInTouch>
+    <confirmationTokenRequired>false</confirmationTokenRequired>
+    <description>CRM本部、村上さん依頼により作成。DIS向けの見積提示時に先方のシステム(EDI)に取り込ませる文言を生成する。</description>
+    <label>JP_QuouteToDIS</label>
+</ApexPage>

@@ -1,0 +1,31 @@
+<apex:page controller="OpportunityHistoryController" contentType="application/vnd.ms-excel#SalesForceExport.xls" cache="true">
+
+<apex:form >
+<apex:pageBlock title="Opportunity Histry Track for Probability">
+
+<apex:pageBlockTable value="{!OppHistWrapRecs}" var="ohw">
+<apex:column headerValue="Opportunity Name">
+     <apex:outputLink value="/{!ohw.oh.OpportunityId}" target="_blank">{!ohw.oh.Opportunity.Name}</apex:outputLink>
+    </apex:column>
+ <apex:column headerValue="Account Name">
+     <apex:outputLink value="/{!ohw.oh.Opportunity.AccountId}" target="_blank">{!ohw.oh.Opportunity.Account.Name}</apex:outputLink>
+    </apex:column>   
+    
+<!-- <apex:column value="{!ohw.oh.Opportunity.Name}"/> -->
+<!-- <apex:column value="{!ohw.oh.Opportunity.Account.Name}"/> -->
+<apex:column value="{!ohw.oh.NewValue}"/>
+<apex:column value="{!ohw.oh.OldValue}"/>
+<apex:column value="{!ohw.oh.Field}"/>
+<apex:column value="{!ohw.oh.CreatedDate}"/>
+<apex:column value="{!ohw.oh.CreatedBy.Name}"/>
+<apex:column headerValue="Products"> {!ohw.Products}  </apex:column>
+
+
+
+</apex:pageBlockTable>
+
+</apex:pageBlock>
+
+</apex:form>
+ 
+</apex:page>

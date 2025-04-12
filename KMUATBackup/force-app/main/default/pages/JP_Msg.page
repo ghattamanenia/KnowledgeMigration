@@ -1,0 +1,10 @@
+<apex:page standardController="JP_QuotationHeader__c">
+  <div>【追加】</div>
+  <div>・「行挿入」ボタンの追加(ボタンを押すと上に空白行が追加されます)</div>
+  <div>・上下ボタンの追加(ボタンを押すことによって上下に一段ずつ行移動できます)</div>
+<br/>
+  <div>【削除と変更】</div>
+  <div>・「並べ替え」ボタン、「No.」項目の廃止、「順」項目の編集廃止</div>
+  <div>  (明細行が大量になると編集が困難かつ動作が遅くなる為廃止します)</div>
+
+</apex:page>

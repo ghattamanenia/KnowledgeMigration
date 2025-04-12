@@ -1,0 +1,20 @@
+<apex:page controller="ProductPriceBook23">
+    <apex:pageBlock >
+        <apex:pageblockTable value="{!products}" var="product">
+            <apex:column value="{!product.prod.name}" />
+            <apex:column headerValue="Pricebook Name">           
+                <apex:repeat value="{!product.pbes}" var="pbe">
+                    <apex:outputField value="{!pbe.Pricebook2.Name}" /> <br/>
+                </apex:repeat>
+            </apex:column>  
+            <apex:column headerValue="List Price">           
+                <apex:repeat value="{!product.pbes}" var="pbe">
+                    <apex:outputField value="{!pbe.UnitPrice}" /> <br/>
+                </apex:repeat>
+            </apex:column>  
+            <apex:column value="{!product.prod.Description}" />
+            <apex:column value="{!product.prod.ProductCode}" />
+            <apex:column value="{!product.prod.Family}" />           
+        </apex:pageblockTable>
+    </apex:pageBlock>
+</apex:page>

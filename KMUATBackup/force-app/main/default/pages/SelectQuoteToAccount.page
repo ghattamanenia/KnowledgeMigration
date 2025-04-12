@@ -1,0 +1,34 @@
+<apex:page standardController="SBQQ__Quote__c" lightningStylesheets="true" extensions="QuoteAccountSelectorController" action="{!onInit}">  
+    <apex:form >
+    <!--  Kranthi Start -->
+        <apex:outputPanel id="resultbox">
+          <script>
+            function onselectbutton()
+            {
+                if('{!errorOccured}' == 'false')
+                  document.location.assign(document.getElementById('{!$Component.nextURL}').value)      
+            }
+        </script>  
+        </apex:outputPanel> 
+   <!--  <apex:pageMessages /> -->
+   <!--  Kranthi END -->
+        <apex:inputHidden id="selectedId" value="{!selectedAccountId}"/>
+        <apex:pageBlock mode="edit">
+        <apex:pageMessages id="msg"/>     
+            <apex:pageBlockButtons >
+            <!-- oncomplete="document.location.assign(document.getElementById('{!$Component.nextURL}').value)" rerender="nextURL" -->
+                <apex:commandButton action="{!onSelect}" value="Select" oncomplete="onselectbutton();" rerender="resultbox,msg,nextURL"/>
+                <apex:commandButton action="{!onCancel}" value="Cancel"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="Quote To Name">
+                <apex:pageBlockTable var="account" value="{!availableAccounts}">
+                    <apex:column >
+                        <input type="radio" name="accountSelector" value="{!account.Id}" onclick="document.getElementById('{!$Component.selectedId}').value=this.value"/>
+                    </apex:column>
+                    <apex:column value="{!account.Name}" headerValue="{!$ObjectType.Account.fields.Name.label}"/>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:inputHidden id="nextURL" value="{!nextUrl}"/>
+    </apex:form>
+</apex:page>

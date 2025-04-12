@@ -1,0 +1,56 @@
+<apex:page showHeader="false" sidebar="false" controller="CustomerCommunityArticlesListController" >
+    <apex:composition template="CustomerSupportTemplate">
+        <apex:define name="body">
+
+            <!-- Case Area -->
+            <div class="row">
+                <div class="twelve columns">
+                    <div class="panel radius inset" style="min-width: 630px;">
+                        <apex:pageMessages id="error" escape="false"/>
+                        <div class="row">
+                            <div class="twelve columns">
+                                <apex:form >
+                                    <table class="twelve" style="width:100%">
+                                        <tr style="vertical-align:right;">
+                                            <td class="six">
+                                                <h1 style="margin-top: 20px; display: inline-block; width: 100%">Knowledge Articles</h1>
+                                            </td>
+                                            <td class="six" style="min-width: 385px;">
+                                                <div class="twelve">
+                                                    <apex:inputText value="{!searchTerm}" html-placeholder="Enter search keyword" styleClass="seven searchInput"/> 
+                                                    <apex:commandButton value="Go" title="Go" action="{!searchKB}" styleClass="button large goBtn two"/>
+                                                    <apex:commandButton value="Back" title="Back" action="{!BackPage}" styleClass="button large two"/>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table style="width:100%" id="kbListTable">
+                                        <apex:repeat value="{!articles}" var="article">
+                                            <tr>
+                                                <td>
+                                                    <a href="/Support/CustomerCommunityArticle?articleId={!article.Id}" taget="_blank">{!article.Title}</a>
+                                                </td>
+                                            </tr>
+                                        </apex:repeat>
+                                    </table>
+                                </apex:form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+        </apex:define>
+    </apex:composition>
+    <script type="text/javascript">
+        if(!$("#kbListTable tr").length) {
+            $('<div/>').attr('class', 'noKb').html("No results found. Please try again.").appendTo($("#kbListTable"));
+        }
+    </script>
+    <script type = "text/javascript" src = 'https://home-c36.nice-incontact.com/inContact/ChatClient/js/embed.min.js'></script>
+<script type ="text/javascript">
+icPatronChat.init({serverHost:'https://home-c36.nice-incontact.com',bus_no:4599697,poc:'84008f40-cb38-4243-a2a9-5e256809209d',params:['FirstName','Last Name','first.last@company.com',555-555-5555]});
+</script>
+
+</apex:page>

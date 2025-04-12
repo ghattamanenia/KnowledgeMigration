@@ -1,0 +1,23 @@
+<!--
+  @description       : 
+  @author            : Sampath Arjunan
+  @group             : 
+  @last modified on  : 21-11-2024
+  @last modified by  : Sampath Arjunan
+-->
+<template>
+    <lightning-card title="Download Preference">
+        <div class="slds-p-horizontal_medium slds-p-vertical_medium">
+            <lightning-input type="checkbox" label="Email Confirmation - Send upon download completion"
+                checked={downloadPreference} onchange={handlePreferenceChange}>
+            </lightning-input>
+            <br>
+            <lightning-button label="Save" variant="brand" onclick={handleSave}></lightning-button>
+        </div>
+
+        <!-- Show a spinner while loading -->
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading"></lightning-spinner>
+        </template>
+    </lightning-card>
+</template>

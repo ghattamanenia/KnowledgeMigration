@@ -1,0 +1,268 @@
+<apex:page standardController="SBQQ__Quote__c"  action="{!verifyRecordType}" extensions="QuoteViewExtn">
+
+
+<!-- 
+<apex:detail showChatter="true" inlineEdit="true" oncomplete="checkQuotePage();" subject="{!SBQQ__Quote__c.ID}" />
+-->
+<apex:detail showChatter="true" inlineEdit="true" subject="{!SBQQ__Quote__c.ID}" oncomplete="location.reload();"/>
+
+
+<head>
+  <meta charset="utf-8"/>
+  <title>jQuery UI Dialog - Modal message</title>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css"/>
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+  <link rel="stylesheet" href="/resources/demos/style.css"/>
+  <script>
+    $(document).ready(function(){
+            $("#close").click(function(){ 
+            
+                    $("#dialog").dialog( "close" );
+                    
+            });
+    });
+    $(document).ready(function(){
+            $("#close1").click(function(){ 
+            
+                    $("#dialog1").dialog( "close" );
+                    
+            });
+    }); 
+    
+
+  </script>
+</head>
+
+
+<body>
+  <div id="dialog"  title="Error" style="height:91px;width:842px;padding:10px;margin:3px;border:1px solid Red;background-color:LightCoral;display: none;" >
+  <p>You can not add Products to this Quote since Account PriceBook has been changed.</p>
+  <p align="center">
+ <button id="close" >OK</button>
+ </p>
+</div>
+
+<div id="dialog1"  title="Error" style="height:91px;width:842px;padding:10px;margin:3px;border:1px solid Red;background-color:LightCoral;display: none;" >
+  <p>You can not Clone Quote With Products since Account PriceBook has been changed.</p>
+  <p align="center">
+ <button id="close1" >OK</button>
+ </p>
+</div>
+
+</body>
+
+
+  
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>   
+<script type="text/javascript"> 
+    var $jq = jQuery.noConflict(true);
+    var cNetTotal = {}; 
+    var cProductFamily = {}; 
+    var cProdAvailCode = {}; 
+        
+    var previousOnload = window.onload;
+
+    window.onload = function () {
+        if (previousOnload) {
+            previousOnload();
+        }
+        checkQuotePage(); 
+        //callFn();
+    }
+
+    function callFn(){
+        var pShowMore = $jq('.pShowMore');
+        var showMoreLink = $jq('.pShowMore').find('a').first();
+        var counter;
+
+        counter = 1;
+        showMoreLink.attr('counter', counter)
+
+        $jq('.pShowMore a[counter=' + counter + ']').click(function(){
+            $jq.when(setTimeout(checkQuotePage, 1300)).then(function(){
+                counter++;
+                showMoreLink .attr('counter', counter);            
+            });
+        });
+
+        showMoreLink.next().hide();       
+    }
+    
+</script> 
+       
+<apex:repeat value="{!Qlineitems}" var="con"> 
+        <script> 
+        var str1 = '{!con.ID}';
+        var res1 = str1.substring(0,15);
+        cNetTotal[res1] = '{!con.CurrencyISOCode}' + ' ' + '{!con.SBQQ__NetTotal__c}';     
+        
+        var str2 = '{!con.ID}';
+        var res2 = str2.substring(0,15);                
+        cProductFamily[res2] = '{!con.ATFE_Product_Family__c}';   
+        
+        var str3 = '{!con.ID}';
+        var res3 = str3.substring(0,15);                
+        cProdAvailCode[res3] = '{!con.ATFE_PAC__c}';   
+        
+        
+        </script> 
+</apex:repeat>  
+    
+
+<script type="text/javascript">
+
+    
+    function checkQuotePage() 
+    { 
+      $jq('.pShowMore').find('a').first().next().hide();          
+      var recordID = '{!quoteID}'; 
+      var relatedlistBody = recordID + '_00Nw0000003E9Zu_body';       
+      var relatedlistContent = document.getElementById(relatedlistBody);  
+                                      
+      var classTag = document.getElementsByClassName("bRelatedList")
+      var trValues = classTag[0].getElementsByTagName("tr");
+      var tdValues = classTag[0].getElementsByTagName("td");
+      var thValues = classTag[0].getElementsByTagName("th");
+      <!-- var cFlag = '{!salesUser}'; -->
+      <!-- cFlag was not working as intended and therefore, created a custom permission to check for COGs access instead (Luis Melo 3/9/2015) -->
+      if({!$Permission.CP_COG_access} || '{!$Profile.Name}' == 'System Administrator')
+      {
+       cFlag = 'false'; <!-- False is used here because it means it is not a sales user which was originally being checked -->
+      }
+      else
+      {
+       cFlag = 'true';
+      }
+          
+       var PricebookName  = '{!pricebookName}', 
+                    quote = '{!quoteID}',   
+              start_t_mon = document.getElementById("j_id0_j_id1_" + quote + "_00Nw0000003E9Zu_title").innerHTML;
+              
+      document.getElementById("j_id0_j_id1_" + quote + "_00Nw0000003E9Zu_title").innerHTML = "Quote Lines (" + PricebookName + ")";  
+         
+      
+            for(var iCount=1; iCount<trValues.length; iCount++) 
+            {                   
+                if(cFlag == 'false')
+                {         
+                 var newHTML = "<th scope='col' class=' zen-deemphasize'>Total Price</th> <th scope='col' class=' zen-deemphasize'>Product Family</th>";
+                 trValues[iCount].innerHTML = trValues[iCount].innerHTML + newHTML; 
+                }
+                else
+                {
+                    var newHTML = "<th scope='col' class=' zen-deemphasize'>Total Price</th> <th scope='col' class=' zen-deemphasize'>Product Family</th>";
+                     trValues[iCount].innerHTML = trValues[iCount].innerHTML + newHTML; 
+                }                                                                     
+              // break;
+            }
+            
+              var column1Count = 12;
+              var column2Count = 13;
+              
+              
+                 if(cFlag == 'false')
+                 {
+                     column1Count = 14;
+                     column2Count = 15;    
+                 }  
+            
+             
+
+            
+             for(var iCount=0; iCount<tdValues.length; iCount++) 
+             {
+                 
+                 var jHTML = tdValues[iCount].getElementsByTagName("a");
+                     for(var jCount=0; jCount<jHTML.length; jCount++) 
+                     {
+                         var idValue = jHTML[jCount].getAttribute('href').split('/');
+                         
+                                                  
+                         if (idValue[3] in cProductFamily) 
+                         {
+                          if(cFlag == 'false')
+                          {
+                          var newHTML1 = "<td class=' dataCell  '>"+cNetTotal[idValue[3]]+"</td>";                                 
+                              thValues[column1Count].innerHTML =  newHTML1; 
+
+                          
+                              column1Count = column1Count + 3;                                                        
+                              if(cProdAvailCode[idValue[3]] == 'TBD' || cProdAvailCode[idValue[3]] == 'BTO')  
+                              {                 
+                                  $jq(thValues[column2Count]).parent().css('background', '#FFFF9A');  
+                                  $jq(thValues[column2Count]).hide();                                                                                                                                                                                       
+                                  column2Count = column1Count + 1;
+                              }
+                              else if(cProdAvailCode[idValue[3]] == 'EOL')  
+                              {                 
+                                  $jq(thValues[column2Count]).parent().css('background', '#DC143C');  
+                                  $jq(thValues[column2Count]).hide();                                                                                                                                                                                       
+                                  column2Count = column1Count + 1;
+                              }
+                              else
+                              {
+                                if(cProductFamily[idValue[3]] == 'PRODUCT' )  
+                                {                              
+                                  $jq(thValues[column2Count]).parent().css('background', '#A3D1FF'); 
+                                  $jq(thValues[column2Count]).hide();                                                                                                  
+                                  column2Count = column1Count + 1;
+                                }
+                                if(cProductFamily[idValue[3]] == 'SERVICE' )  
+                                {                 
+                                  $jq(thValues[column2Count]).parent().css('background', '#9AFF9A');  
+                                  $jq(thValues[column2Count]).hide();                                                                                                                                                                                       
+                                  column2Count = column1Count + 1;
+                                }   
+                              }
+                             
+                           } 
+                           else
+                           {  
+                          var newHTML1 = "<td class=' dataCell  '>"+cNetTotal[idValue[3]]+"</td>";                                 
+                              thValues[column1Count].innerHTML =  newHTML1; 
+
+                          
+                              column1Count = column1Count + 3;                                                        
+                              if(cProdAvailCode[idValue[3]] == 'EOL' || cProdAvailCode[idValue[3]] == 'BTO')  
+                              {                 
+                                  $jq(thValues[column2Count]).parent().css('background', '#FFFF9A');  
+                                  $jq(thValues[column2Count]).hide();                                                                                                                                                                                       
+                                  column2Count = column1Count + 1;
+                              }
+                              else
+                              {
+                                if(cProductFamily[idValue[3]] == 'PRODUCT' )  
+                                {                              
+                                  $jq(thValues[column2Count]).parent().css('background', '#A3D1FF'); 
+                                  $jq(thValues[column2Count]).hide();                                                                                                  
+                                  column2Count = column1Count + 1;
+                                }
+                                if(cProductFamily[idValue[3]] == 'SERVICE' )  
+                                {                 
+                                  $jq(thValues[column2Count]).parent().css('background', '#9AFF9A');  
+                                  $jq(thValues[column2Count]).hide();                                                                                                                                                                                       
+                                  column2Count = column1Count + 1;
+                                }   
+                              }
+                                                                                  
+                           }                                                       
+                         }    
+                     }
+             }                
+              if(cFlag == 'false')
+              {
+                 $jq(thValues).parent('.headerRow').find('th').last().hide();
+              }
+              $jq(thValues).parent('.headerRow').find('th').last().hide();
+             
+             callFn();
+                                     
+    }
+    
+    
+
+    
+</script>
+
+</apex:page>

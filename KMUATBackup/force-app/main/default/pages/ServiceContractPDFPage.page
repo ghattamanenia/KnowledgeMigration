@@ -1,0 +1,215 @@
+<apex:page standardController="ServiceContract" extensions="ServiceContractDocumentController" renderAs="pdf" applyBodyTag="false" >
+
+<!-- below is for header and foooter  -->
+
+<head>
+                <style type="text/css" media="print">
+                       @page {
+                            margin-top: 4cm;
+                            padding-top: 30px;
+                margin-bottom: 3cm;
+
+            @top-center {
+                content: element(header);
+            }
+            @bottom-left {
+                content: element(footer);
+            }
+        }
+                                     div.header {
+                                      padding: 40px;
+                                      position: running(header);
+                           }
+                       div.footer {
+                                display: block;
+                             padding: 5px;
+                               position: running(footer);
+                      }
+                                     .pagenumber:before {
+                                        content: counter(page);
+                       }
+                                   .pagecount:before {
+                             content: counter(pages);
+                        }
+                    </style>
+              </head>
+              
+      <font face="arial" size="1">        
+              <div class="header">
+              
+              
+              <center>
+              <apex:image id="theIme" value="{!'/servlet/servlet.FileDownload?file='& '0151I000007GtKh'}" width="200" height="200"/>
+              </center>
+           </div>
+           <div class="footer">
+               <apex:image id="th" value="{!'/servlet/servlet.FileDownload?file='& '0151I000007GtKg'}" width="100" height="50"/>
+          </div>
+
+ <div class="content">
+<br/> <br/>
+ <center>
+<!-- ALLIED TELESIS PRICE QUOTE <br/>-->
+    Allied Telesis <br/>
+    3041 Orchard Pwy <br/>
+    San Jose CA,95134 <br/>
+    Main Office Number : (408)-519-8700<br/>
+    EIN/IRS Tax ID: 77-0165055 <br/><br/>
+    
+    </center>
+               <p>
+
+<!--
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<apex:image id="theImage" value="{!'/servlet/servlet.FileDownload?file='& '015170000017eHt'}" width="150" height="150"/>
+-->
+
+<b> COMPANY INFORMATION </b>
+
+<table border="1" cellpadding="3" width="100%">
+
+<tr>
+<td>  Company Name </td>
+<td>  {!scon.Account.Name} </td>
+</tr>
+<!--
+<tr>
+<td> Address </td>
+<td> {!scon.Account.BillingStreet}, {!scon.Account.BillingCity}, {!scon.Account.BillingState},{!scon.Account.BillingCountry},{!scon.Account.BillingpostalCode} </td>
+</tr>
+-->
+<tr>
+<td> Address </td>
+<td> {!scon.H_W_Asset_Location__c} </td>
+</tr>
+
+
+
+
+<tr>
+<td> Contact Name </td>
+<td> {!scon.Contact.Name} </td>
+</tr>
+
+<tr>
+<td> Contact Email </td>
+<td> {!scon.Contact.Email} </td>
+</tr>
+
+<tr>
+<td> Technical Contact Name </td>
+<td> {!scon.Technical_Contact__r.Name}</td>
+</tr>
+
+
+<tr>
+<td> Technical Contact Email </td>
+<td> {!scon.Technical_Contact__r.Email} </td>
+</tr>
+
+
+</table>
+
+
+<br/> <br/>
+<br/>
+<b> Confirmation: # {!currServContractNumber[0]} </b>
+<br/> <br/> <br/>
+<b> PRODUCT INFORMATION </b>
+
+   <table border="1" cellpadding="0" width="100%">
+        
+        <thead>
+        <tr>
+             <!--  <th>Contract Number</th>   -->
+              <th>Service Type</th>
+              <th>Model Number</th>
+              <th>Serial Number</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+        </tr>
+      </thead>
+      
+      <apex:repeat value="{!SCDWrapList}" var="scd">
+        
+        <tr>
+        <!--
+            <td>
+                <apex:outputText value="{!currServContractNumber}"/> 
+            </td>  -->
+            <td>
+                <apex:outputText value="{!scd.serviceType}"/> 
+            </td>
+            <td>
+                <apex:outputText value="{!scd.modelNumber}"/> 
+            </td>
+            <td>
+                <apex:outputText value="{!scd.serialNumber}"/> 
+            </td>
+            <td>
+                <apex:outputText value="{0,date,MM'/'dd'/'yyyy}" rendered="{!NADateShow}">
+                    <apex:param value="{!scd.startDate}" /> 
+                </apex:outputText>
+                
+                <apex:outputText value="{0,date,dd'/'MM'/'yyyy}" rendered="{!EMEADateShow}">
+                    <apex:param value="{!scd.startDate}" /> 
+                </apex:outputText>
+                
+                <apex:outputText value="{0,date,MM'/'dd'/'yyyy}" rendered="{!CSADateShow}">
+                    <apex:param value="{!scd.startDate}" /> 
+                </apex:outputText>
+            </td>
+            <td>
+                <apex:outputText value="{0,date,MM'/'dd'/'yyyy}" rendered="{!NADateShow}">
+                    <apex:param value="{!scd.endDate}" /> 
+                </apex:outputText>
+                
+                <apex:outputText value="{0,date,dd'/'MM'/'yyyy}" rendered="{!EMEADateShow}">
+                    <apex:param value="{!scd.endDate}" /> 
+                </apex:outputText>
+                
+                <apex:outputText value="{0,date,MM'/'dd'/'yyyy}" rendered="{!CSADateShow}">
+                    <apex:param value="{!scd.endDate}" /> 
+                </apex:outputText>
+            </td>
+        </tr>
+        
+        </apex:repeat>
+    </table>  
+
+
+ 
+ <br/>
+ 
+  <br/> <br/>
+Allied Telesis Support Center: <b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; www.alliedtelesis.com/support </b>  <br/>
+<!-- Allied Telesis Online Support Center:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b> http://support.alliedtelesis.com </b> <br/> -->
+Allied Telesis Software Download Center: <b> &nbsp;&nbsp; www.alliedtelesis.com/support/software </b> <br/>
+<br/>
+  For your local telephone support number, go to <b> www.alliedtelesis.com/support  </b> <br/>
+  <br/>
+  <!--<apex:outputLink value="https://www.salesforce.com" id="theLink">  www.salesforce.com </apex:outputLink>-->
+
+ View our terms and conditions and details of the Allied Telesis Net.Cover Service Programs at<apex:outputLink value="https://www.alliedtelesis.com/sites/default/files/documents/other/ati-net-cover-terms-conditions.pdf" id="theLink">  Click Here </apex:outputLink>  
+ <br/>
+<br/>
+
+When contacting our Technical Support Centre, please quote the confirmation number given above, along with the
+model and serial number of the product requiring service. To facilitate our troubleshooting process, please have a
+detailed description of the failure and the name and contact number of the technical person, available to assist with
+this procedure. 
+<br/>
+<br/> <p>
+Please note that you must notify Allied Telesis of any additional products added to your configuration, including
+CFCs, PSUs and modules, to ensure prompt entitlement and coverage for your SLA. </p> <br/>
+
+<br/> <br/> <br/> <br/>  
+Regards <br/>  <br/>  
+
+<b>  Allied Telesis, Inc   </b>
+   
+</p>   <br/>
+          </div>
+          
+          </font>
+ 
+</apex:page>

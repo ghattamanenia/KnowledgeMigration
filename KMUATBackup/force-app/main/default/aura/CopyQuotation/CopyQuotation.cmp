@@ -1,0 +1,12 @@
+<aura:component controller="JP_CopyQuotationForLightning" implements="force:lightningQuickAction,force:hasRecordId">
+    <aura:attribute name="recordId" type="Id"/>
+    <aura:attribute name="whichButton" type="String" />
+
+    <div aura:id="msg" />
+    
+    <p>見積書番号を引き継いでコピーしますか？<br/>
+       コピー元の見積書番号が2015、2016、2017で始まる場合は引き継がないをクリック</p><br/>
+
+    <lightning:button aura:id="button1" name="buttonname1" label="見積書番号を引き継ぐ" onclick="{!c.nameThatButton}"/>
+    <lightning:button aura:id="button2" name="buttonname2" label="見積書番号を引き継がない" onclick="{!c.nameThatButton}"/>
+</aura:component>

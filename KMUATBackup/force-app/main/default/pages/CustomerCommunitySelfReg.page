@@ -1,0 +1,247 @@
+<apex:page id="CustomerCommunitySelfReg" showHeader="false" sidebar="false" controller="CustomerCommunitySelfRegController" title="{!$Label.site.user_registration}">
+    <apex:composition template="CustomerSupportTemplate">
+        <apex:define name="body">  
+          <!-- Login Area -->
+            <div class="row">
+                <div class="twelve columns">
+                    <div class="panel radius inset">
+                        <div class="row">
+                            <div class="five columns">
+                                <p style="text-align: center;">
+                                    <img alt="" src="{!URLFOR($Resource.CommunityZip, 'Images/online-support-header-short.jpg')}" class="shadow" />
+                                </p>
+                                <br/><br/>
+                                <apex:pageMessages id="error"/>
+                            </div>
+                            <div class="seven columns signUpTableSection positionRelative">
+                                <apex:form id="theForm" forceSSL="true">
+                                    <div class="positionRelative twelve">
+                                        <h1>Register for an Account</h1>
+                                        <div class="absoluteRight"><span class="required">&#42; </span><span class="helpTxtFontSize">All the fields are required.</span></div>      
+                                        <table class="main">
+                                            <thead>
+                                                <tr>
+                                                    <th colspan="4">Users Details</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="three">
+                                                        <apex:outputLabel value="First Name" for="firstName"/><span class="required"> &#42;</span>
+                                                    </td>
+                                                    <td class="nine">
+                                                        <apex:inputText id="firstName" value="{!firstName}" label="First Name"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="three">
+                                                        <apex:outputLabel value="Last Name" for="lastName"/><span class="required"> &#42;</span>
+                                                    </td>
+                                                    <td class="nine">
+                                                        <apex:inputText id="lastName" value="{!lastName}" label="Last Name"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="three">
+                                                        <apex:outputLabel value="Company Name" for="account"/><span class="required"> &#42;</span>
+                                                    </td>
+                                                    <td class="nine">
+                                                        <apex:inputText id="accountName" value="{!accountName}" label="Company Name"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="three">
+                                                        <apex:outputLabel value="Street" for="street"/><span class="required"> &#42;</span>
+                                                    </td>
+                                                    <td class="nine">
+                                                        <apex:inputText id="street" value="{!street}" label="Street"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="three">
+                                                        <apex:outputLabel value="City" for="city"/><span class="required"> &#42;</span>
+                                                    </td>
+                                                    <td class="nine">
+                                                        <apex:inputText id="city" value="{!city}" label="City"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>    
+                                                    <td class="three">
+                                                        <apex:outputLabel value="State/Province" for="state"/><span class="required"> &#42;</span>
+                                                    </td>
+                                                    <td class="nine">
+                                                        <apex:inputText id="state" value="{!state}" label="State/Province"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="three">
+                                                        <apex:outputLabel value="Zip/Postal Code" for="zipCode"/><span class="required"> &#42;</span>
+                                                    </td>
+                                                    <td class="nine">
+                                                        <apex:inputText id="zipCode" value="{!zipCode}" label="Zip/Postal Code"/>
+                                                    </td>
+                                                </tr>                                                        
+                                                <tr>    
+                                                    <td class="three">
+                                                        <apex:outputLabel value="Country" for="country"/><span class="required"> &#42;</span>
+                                                    </td>
+                                                    <td id="countryDropdown" class="nine">
+                                                        <!-- <apex:inputText id="country" value="{!country}" label="Country"/> -->
+                                                        <apex:selectList value="{!countryCode}" id="CountryCode" label="Country" size="1">
+                                                             <apex:selectOptions value="{!countryOptions}"/>
+                                                        </apex:selectList>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="three">
+                                                        <apex:outputLabel value="Website" for="website"/><span class="required"> &#42;</span>
+                                                    </td>
+                                                    <td class="nine">
+                                                        <apex:inputText id="website" value="{!website}" label="Website"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="three">
+                                                        <apex:outputLabel value="Nickname" for="communityNickname"/><span class="required"> &#42;</span>
+                                                    </td>
+                                                    <td class="nine">
+                                                        <apex:inputText id="communityNickname" value="{!communityNickname}" label="Nickname"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="three">
+                                                        <apex:outputLabel value="Phone" for="communityPhone"/><span class="required"> &#42;</span><!--<br/>
+                                                        <label id="descr" for="phone_mask"></label>--> 
+                                                    </td>
+                                                    <td class="nine">
+                                                        <apex:inputText id="communityPhone" value="{!phone}" label="Phone" />
+                                                    </td>
+                                                </tr>                                            
+                                                <tr>
+                                                    <td class="three">
+                                                        <apex:outputLabel value="Email" for="email"/><span class="required"> &#42;</span>
+                                                    </td>
+                                                    <td class="nine">
+                                                        <apex:inputText id="email" value="{!email}" label="Email"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="three">
+                                                        <apex:outputLabel value="Time Zone" for="timeZone"/><span class="required"> &#42;</span>
+                                                    </td>
+                                                    <td class="nine" id="timeZone">
+                                                        <apex:selectList value="{!pickLabel}" label="Time Zone" size="1">
+                                                            <apex:selectOptions value="{!allSelectOptions}"/>
+                                                        </apex:selectList>
+                                                    </td>
+                                                </tr>
+                                                <!-- <tr>
+                                                    <td class="three"><apex:outputLabel value="{!$Label.site.password}" for="password"/></td>
+                                                    <td class="nine"><apex:inputSecret id="password" value="{!password}" styleClass="six"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="three"><apex:outputLabel value="{!$Label.site.confirm_password}" for="confirmPassword"/></td>
+                                                    <td class="nine"><apex:inputSecret id="confirmPassword" value="{!confirmPassword}" styleClass="six"/></td>
+                                                </tr> -->
+                                                <tr>
+                                                    <td class="three"></td>
+                                                    <td class="nine" colspan="2" style="text-align:right;">
+                                                        <apex:commandButton action="{!registerUser}" value="Submit" id="submit"/>&nbsp;&nbsp;&nbsp;
+                                                        <apex:commandButton action="{!BackPage}" value="Back" id="BackPage" immediate="true"/>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <br/>
+                                    </div>
+                                </apex:form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:define>
+    </apex:composition>
+
+    <script src="{!URLFOR($Resource.CommunityZip, 'Scripts/jquery.inputmask.js')}"></script>
+    <script src="{!URLFOR($Resource.CommunityZip, 'Scripts/jquery.bind-first-0.1.min.js')}"></script>
+    <script src="{!URLFOR($Resource.CommunityZip, 'Scripts/jquery.inputmask-multi.js')}"></script>
+    <script>
+
+    /*
+        $(selector).inputmask("communityPhone", {
+                url: "Scripts/jquery.inputmask/phone-codes/phone-codes.json", 
+                onKeyValidation: function () { //show some metadata in the console
+                    console.log($(this).inputmask("getmetadata")["name_en"]);
+                } 
+        });
+    */
+        $("[name$='communityPhone']").attr('placeholder','+_(___)___-____');
+
+        var maskList = $.masksSort($.masksLoad("{!URLFOR($Resource.CommunityZip, 'Scripts/phone-codes.json')}"), ['#'], /[0-9]|#/, "mask");
+        var maskOpts = {
+            inputmask: {
+                definitions: {
+                    '#': {
+                        validator: "[0-9]",
+                        cardinality: 1
+                    }
+                },
+                //clearIncomplete: true,
+                showMaskOnHover: false,
+                autoUnmask: true
+            },
+            match: /[0-9]/,
+            replace: '#',
+            list: maskList,
+            listKey: "mask"/*,
+            onMaskChange: function(maskObj, determined) {
+                /*if (determined) {
+                    var hint = maskObj.name_en;
+                    if (maskObj.desc_en && maskObj.desc_en != "") {
+                        hint += " (" + maskObj.desc_en + ")";
+                    }
+                    $("#descr").html(hint);
+                } else {
+                    $("#descr").html("Mask of input");
+                }
+                $(this).attr("placeholder", $(this).inputmask("getemptymask"));
+            }*/
+        };
+
+        $("[name$='CountryCode']").change(startMask);
+
+        function startMask(){
+            $("[name$='communityPhone']").inputmasks(maskOpts);
+        }
+
+    /*
+        $('#phone_mask').change(function() {
+            if ($('#phone_mask').is(':checked')) {
+                $('#customer_phone').inputmasks(maskOpts);
+            } else {
+                $('#customer_phone').inputmask("+[####################]", maskOpts.inputmask)
+                .attr("placeholder", $('#customer_phone').inputmask("getemptymask"));
+                $("#descr").html("Mask of input");
+            }
+        });
+    
+        $('#phone_mask').change();
+    */                    
+
+    /*
+        var countries = ["-- Select One --","Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antarctica", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burma", "Burundi", "Cambodia", "Cameroon", "Canada", "Cape Verde", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo, Democratic Republic", "Congo, Republic of the", "Costa Rica", "Cote d'Ivoire", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "East Timor", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Greenland", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea, North", "Korea, South", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Macedonia", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Morocco", "Monaco", "Mozambique", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "Norway", "Oman", "Pakistan", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", " Sao Tome", "Saudi Arabia", "Senegal", "Serbia and Montenegro", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "Spain", "Sri Lanka", "Sudan", "Suriname", "Swaziland", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"],
+        len = countries.length,
+        countryDropdown = $("#countryDropdown select"),
+        options = '';
+
+        for(var i=0; i<len; i++) {
+            options += '<option value="'+ countries[i] +'">' + countries[i] + '</option>';
+        }
+        countryDropdown.html(options);
+
+        // Set default timezone based on the user's location
+        $('#timeZone').find('option[value="{!selectedCountry}"]').prop('selected', true);
+
+        */
+    </script>
+</apex:page>

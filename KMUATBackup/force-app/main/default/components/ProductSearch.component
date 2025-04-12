@@ -1,0 +1,325 @@
+<apex:component controller="ProductSearchController">
+<script type="text/javascript" src="{!URLFOR($Resource.JP_StaticResources,'jquery/jquery-1.11.3.min.js')}"></script>
+
+<script type="text/javascript" src="{!URLFOR($Resource.JP_StaticResources,'jquery-ui/1.11.4/jquery-ui.js')}"></script>
+<link href="{!URLFOR($Resource.JP_StaticResources,'jquery-ui/1.11.4/jquery-ui.min.css')}" rel="stylesheet" />
+<!--
+<style type="text/css" media="screen">
+
+#loader-bg {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  left: 0px;
+  background: #B3B3B3;
+  z-index: 1;
+}
+#loader {
+  display: none;
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  margin-top: -100px;
+  margin-left: -100px;
+  text-align: center;
+  z-index: 2;
+}
+</style>
+
+ -->
+<apex:attribute name="priceListType" assignTo="{!price_list_type}" description="Price_List_Type" type="String" required="true" />
+<apex:attribute name="index" assignTo="{!listIndex}" description="Index" type="Integer" required="true" />
+<apex:attribute name="parentDistributor" assignTo="{!parentDistributorCD}" description="Parent Distributor Code" type="String" required="true" />
+<apex:attribute name="quotationDetailList" assignTo="{!detailList}" type="JP_QuotationDetailSelect[]" description="the list of QuotationDetailSelect" required="true" />
+
+<!--    <div id="loader-bg">
+      <div id="loader">
+        <img src="{!URLFOR($Resource.JP_NowLoading)}" width="80" height="80" alt="Now Loading..." />
+        <p>Now Loading...</p>
+      </div>
+    </div> -->
+
+    <apex:form >
+        <apex:pageBlock title="製品選択画面" id="compBlock" >
+            <apex:pageBlockSection columns="6" id="compSection"  >
+                <table>
+                    <tr>
+                        <td><apex:inputText label="商品コード(5桁)" value="{!productCatalogCode}" id="catalogCode"/></td>
+                        <td><apex:inputText label="カテゴリ1" value="{!category1}" id="category1"/></td>
+                        <td><apex:selectList label="価格年月" value="{!inputPriceYearMonth}" size="1" multiselect="false" id="priceYM">
+                            <apex:selectOptions value="{!PriceYearMonthList}"/>
+                        </apex:selectList></td>
+                    </tr>
+                    <tr>
+                        <td><apex:inputText label="製品名" value="{!productName}" id="proName"/></td>
+                        <td><apex:inputText label="カテゴリ2" value="{!category2}" id="category2"/></td>
+                    </tr>
+                </table>
+
+            </apex:pageBlockSection>
+
+                <div style="text-align:center;">
+                    <apex:commandButton id="searchButton" value="検索" action="{!searchProduct2}"  onclick="if(!conditionIsFilled())return false;" oncomplete="reCount();" reRender="DisPriceTable,messageArea" />
+                    <apex:commandButton id="addButton" value="商品追加" action="{!addProduct}" onclick="if(!numberCheck())return false;" oncomplete="tryMovePage();" reRender="detailBlock,messageArea"/>
+                    <apex:commandButton id="updateButton" value="商品更新" action="{!updateProduct}" onclick="if(!numberCheck()){return false;}" oncomplete="tryReflesh();" reRender="detailBlock,DisPriceTable,messageArea" />
+                </div>
+            <!-- </div> -->
+        </apex:pageBlock>
+        <apex:panelGroup id="messageArea">
+            <script language="javascript" type="text/javascript">
+                if({!messageFlag}){
+                    alert('検索条件に該当する商品がありません。');
+                }
+                if({!warningFlag}){
+                    if('{!specialProductList.size == 0}'){
+                        alert('{!spList} は特殊代理店用製品です。対象代理店以外は見積禁止です。')
+                    }
+                    if('{!piStockList.size == 0}'){
+                        alert('{!piList} は在庫誘導製品です。ATKKから出荷することはできません。')
+                    }
+                    
+                }
+            </script>
+        </apex:panelGroup>
+        <apex:pageBlock title="検索結果">
+            <div style="overflow-x: scroll;overflow-y: scroll;width:100%;max-height:400px;">
+                <apex:pageBlockTable id="DisPriceTable" value="{!wrapList}" var="wproduct" columns="16" >
+                <!-- columnsWidth=",50px,50px,140px,50px,60px,40px,60px,100px,90px,90px,50px,60px,60px,150px,200px" -->
+                    <apex:column width="10px;" id="checkColumn">
+                        <apex:param id="specialFlag" value="{!wproduct.dp.JP_IsSpecialDistributorProduct__c}"/>
+                        <apex:inputCheckbox id="Checked" onclick="count(j$(this));" value="{!wproduct.isChecked}" />
+                        <apex:param id="piFlag" value="{!wproduct.dp.JP_PiStock__c}"/>
+                    </apex:column>
+                    <!-- **********商品名**********  -->
+                    <apex:column style="width:50px;" id="codeColumn">
+                        <apex:facet name="header">{!$ObjectType.JP_DistributorPrice__c.fields.JP_ProductCatalogCode__c.label}</apex:facet>
+                        <apex:outputField id="proCode" value="{!wproduct.dp.JP_ProductCatalogCode__c}" style="width:50px;" />
+                    </apex:column>
+                    <!-- **********990コード**********  -->
+                    <apex:column style="width:50px;">
+                        <apex:facet name="header">{!$ObjectType.JP_DistributorPrice__c.fields.JP_ProductCode__c.label}</apex:facet>
+                        <apex:outputField value="{!wproduct.dp.JP_ProductCode__c}" />
+                    </apex:column>
+                    <!-- **********製品名**********  -->
+                    <apex:column style="width:140px;">
+                        <apex:facet name="header">{!$ObjectType.JP_DistributorPrice__c.fields.JP_ProductName__c.label}</apex:facet>
+                        <apex:outputField value="{!wproduct.dp.JP_ProductName__c}" style="width:140px;"/>
+                    </apex:column>
+                    <!-- **********価格年月**********  -->
+                    <apex:column style="width:50px;">
+                        <apex:facet name="header">{!$ObjectType.JP_DistributorPrice__c.fields.JP_PriceYearMonth__c.label}</apex:facet>
+                        <apex:outputField value="{!wproduct.dp.JP_PriceYearMonth__c}" />
+                    </apex:column>
+                    <!-- **********標準価格**********  -->
+                    <apex:column style="width:60px;">
+                        <apex:facet name="header">{!$ObjectType.JP_DistributorPrice__c.fields.JP_ExpirvStandardPrice__c.label}</apex:facet>
+                        <apex:outputField value="{!wproduct.dp.JP_ExpirvStandardPrice__c}" />
+                    </apex:column>
+                    <!-- **********仕切率**********  -->
+                    <apex:column style="width:40px;">
+                        <apex:facet name="header">{!$ObjectType.JP_DistributorPrice__c.fields.JP_WholeSaleRate__c.label}</apex:facet>
+                        <apex:outputField value="{!wproduct.dp.JP_WholeSaleRate__c}" />
+                    </apex:column>
+                    <!-- **********仕切価格**********  -->
+                    <apex:column style="width:60px;">
+                        <apex:facet name="header">{!$ObjectType.JP_DistributorPrice__c.fields.JP_WholeSalePrice__c.label}</apex:facet>
+                        <apex:outputField value="{!wproduct.dp.JP_WholeSalePrice__c}"/>
+                    </apex:column>
+                    <!-- **********販売状態(更新情報3)**********  -->
+                    <apex:column style="width:100px;">
+                        <apex:facet name="header">{!$ObjectType.JP_DistributorPrice__c.fields.JP_SaleStatus__c.label}</apex:facet>
+                        <apex:outputField value="{!wproduct.dp.JP_SaleStatus__c}" />
+                    </apex:column>
+                    <!-- **********キャンペーン開始日**********  -->
+                    <apex:column style="width:90px;">
+                        <apex:facet name="header">{!$ObjectType.JP_DistributorPrice__c.fields.JP_CampaignStartDate__c.label}</apex:facet>
+                        <apex:outputField value="{!wproduct.dp.JP_CampaignStartDate__c}" />
+                    </apex:column>
+                    <!-- **********キャンペーン終了日**********  -->
+                    <apex:column style="width:90px;">
+                        <apex:facet name="header">{!$ObjectType.JP_DistributorPrice__c.fields.JP_CampaignEndDate__c.label}</apex:facet>
+                        <apex:outputField value="{!wproduct.dp.JP_CampaignEndDate__c}" />
+                    </apex:column>
+                    <!-- **********価格改定日**********  -->
+                    <apex:column style="width:50px;">
+                        <apex:facet name="header">{!$ObjectType.JP_DistributorPrice__c.fields.JP_PriceChangedDate__c.label}</apex:facet>
+                        <apex:outputField value="{!wproduct.dp.JP_PriceChangedDate__c}"/>
+                    </apex:column>
+                    <!-- **********貸出価格**********  -->
+                    <apex:column style="width:60px;">
+                        <apex:facet name="header">{!$ObjectType.JP_DistributorPrice__c.fields.JP_RentCharge__c.label}</apex:facet>
+                        <apex:outputField value="{!wproduct.dp.JP_RentCharge__c}" />
+                    </apex:column>
+                    <!-- **********貸出超過金額(日)**********  -->
+                    <apex:column style="width:60px;">
+                        <apex:facet name="header">{!$ObjectType.JP_DistributorPrice__c.fields.JP_RentOverageChargesPerDay__c.label}</apex:facet>
+                        <apex:outputField value="{!wproduct.dp.JP_RentOverageChargesPerDay__c}" />
+                    </apex:column>
+                    <!-- **********カテゴリ1**********  -->
+                    <apex:column style="width:150px;">
+                        <apex:facet name="header">{!$ObjectType.JP_DistributorPrice__c.fields.JP_Category1__c.label}</apex:facet>
+                        <apex:outputField value="{!wproduct.dp.JP_Category1__c}" />
+                    </apex:column>
+                    <!-- **********カテゴリ2**********  -->
+                    <apex:column style="width:200px;">
+                        <apex:facet name="header">{!$ObjectType.JP_DistributorPrice__c.fields.JP_Category2__c.label}</apex:facet>
+                        <apex:outputField value="{!wproduct.dp.JP_Category2__c}" style="width:200px;"/>
+                    </apex:column>
+                </apex:pageBlockTable>
+            </div>
+        </apex:pageBlock>
+        <!-- ActionFunction -->
+        <apex:actionFunction name="updateSearch" action="{!searchProduct2}" reRender="DisPriceTable"/>
+    </apex:form>
+
+
+<!--jQueryUI.ボタン表示制御 -->
+<script language="javascript" type="text/javascript">
+j$= jQuery.noConflict();
+var itemList = new Array();
+var specialItemList = new Array();
+var piItemList = new Array();
+var itemListSize = 0;
+var specialItemListSize = 0;
+var piItemListSize = 0;
+
+function reCount(){
+    itemListSize = 0;
+    itemList = new Array();
+}
+
+function tryMovePage(){
+
+    messageRunner();
+    moveLastPage();
+    CloseWindow();
+    itemList = new Array();
+    specialItemList = new Array();
+    piItemList = new Array();
+    itemListSize = 0;
+    specialItemListSize = 0;
+    piItemListSize = 0;
+}
+function tryReflesh(){
+
+
+    messageRunner();
+    refleshDetails();
+
+    CloseWindow();
+    itemList = new Array();
+    specialItemList = new Array();
+    piItemList = new Array();
+    itemListSize = 0;
+    specialItemListSize = 0;
+    piItemListSize = 0;
+    
+
+}
+
+function count(item){
+    var id = item.attr('id');
+
+    if(itemList.indexOf(id) < 0){
+        itemList.push(id);
+        putSpecailPiItemintoList(item);
+    }else{
+        itemList.splice(itemList.indexOf(id),1);
+        sliceItemfromList(item);
+    }
+
+    itemListSize = itemList.length;
+    specialItemListSize = specialItemList.length;
+    piItemListSize = piItemList.length;
+
+}
+
+function numberCheck(){
+    if(itemListSize == 0){
+        alert('商品は選択されていません。');
+        return false;
+    }else{
+        if(page_mode == 'update'){
+            if(itemListSize > 1){
+                alert('商品更新は2件以上選択できません。');
+                return false;
+            }else{
+                return true;
+            }
+        }else{
+            if((parseInt(itemListSize) + parseInt("{!detailList.size}")) > 500){
+                alert('見積明細は500件超えて追加できません。');
+                return false;
+            }else{
+                return true;
+            }
+        }
+    }
+}
+
+
+function conditionIsFilled(){
+    if((j$("[Id $=catalogCode]").val() == null || j$("[Id $=catalogCode]").val() == '') &&
+        (j$("[Id $=priceYM]").val() == null || j$("[Id $=priceYM]").val() == '')){
+        alert('「製品コード」と「価格年月」どちらかを入力してください。');
+        return false;
+    }else{
+        return true;
+    }
+
+}
+
+function putSpecailPiItemintoList(item){
+
+    var proCode =item.parent('[Id $=checkColumn]').next().find("[Id $=proCode]").text();
+    var index_special = specialItemList.indexOf(proCode);
+    var index_pi = piItemList.indexOf(proCode);
+
+    if(item.prev('[Id $=specialFlag]').val() == 'true'){
+        if(index_special < 0){
+            specialItemList.push(proCode);
+        }
+    }
+    if(item.next('[Id $=piFlag]').val() == 'true'){
+        if(index_pi < 0){
+            piItemList.push(proCode);
+        }
+    }
+}
+
+function sliceItemfromList(item){
+
+    var proCode = item.parent('[Id $=checkColumn]').next().find("[Id $=proCode]").text();
+    var index_special = specialItemList.indexOf(proCode);
+    var index_pi = piItemList.indexOf(proCode);
+
+    specialItemList.splice(index_special, 1);
+    piItemList.splice(index_pi, 1);
+}
+
+function messageRunner(){
+    if(specialItemListSize > 0){
+        alert( specialItemList + 'は特殊代理店用製品です。対象代理店以外は見積禁止です。');
+    }
+    if(piItemListSize > 0){
+        alert( piItemList + 'は在庫誘導製品です。ATKKから出荷することはできません。');
+    }
+}
+
+
+
+// function loadingNow(){
+//  j$('#loader-bg ,#loader').css('display','block');
+
+//  j$('[Id $=DisPriceTable]').load(function () { //全ての読み込みが完了したら実行
+//    j$('#loader-bg').delay(900).fadeOut(800);
+//    j$('#loader').delay(600).fadeOut(300);
+//  });
+// }
+
+</script>
+
+
+</apex:component>

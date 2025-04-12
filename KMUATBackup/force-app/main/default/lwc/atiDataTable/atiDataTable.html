@@ -1,0 +1,17 @@
+<!--
+  @description       : 
+  @author            : Sampath Arjunan
+  @group             : 
+  @last modified on  : 28-11-2024
+  @last modified by  : Sampath Arjunan
+-->
+<template>
+    <lightning-layout>
+        <Lightning-layout-item padding="around-small" size="12">
+            <c-data-table-wrapper object-name={objectNameToSend} fields-to-query={fieldNamesToSend}
+            filters={filtersToSend} records-per-page={recordsPerPageToSend} disable-sort={disableSortToSend}
+            disable-search={disableSearchToSend}></c-data-table-wrapper>
+        </Lightning-layout-item>
+    </lightning-layout>
+    
+</template>

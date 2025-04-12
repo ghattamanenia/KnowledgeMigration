@@ -1,0 +1,14 @@
+<apex:page showHeader="false" sidebar="false">
+    <apex:composition template="CustomerSupportTemplate">
+        <apex:define name="body">
+          <div class="twelve columns">
+            <div class="panel radius inset">
+              <div class="row">
+                <apex:outputText styleClass="title" style="text-align: center;" value="User Name was not found."/>
+                <a href="{!$Site.Prefix}" class="btn button large">Back</a>
+              </div>
+            </div>
+          </div>
+        </apex:define>
+    </apex:composition>
+</apex:page>

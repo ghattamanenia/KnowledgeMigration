@@ -1,0 +1,48 @@
+/* Layout for the container */
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 equal-width columns */
+    gap: 10px;
+}
+
+.left-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.right-column {
+    display: contents;
+    flex-direction: column;
+}
+
+.slds-input,
+.slds-combobox {
+    margin-bottom: 10px; /* Space between input fields */
+}
+
+.slds-m-top_medium {
+    margin-top: 1rem; /* Space between button and input fields */
+}
+
+.no-results {
+    color: red;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 20px;
+}
+/* CSS to adjust the width of input fields */
+lightning-input[data-id="deviceDescription"],
+lightning-input[data-id="licenseServerId"],
+lightning-combobox[data-id="idType"] {
+    width: 250px;  /* Set a fixed width for all input fields */
+    max-width: 100%; /* Ensures it remains responsive (will not grow too wide in small containers) */
+    margin-bottom: 10px; /* Adds space between each input field */
+}
+/* Adjust Device Description to shift slightly left */
+lightning-input[data-id="deviceDescription"] {
+    margin-left: -50px;  /* Adjusts the Device Description input field to the left */
+}
+
+.slds-m-top_medium {
+    margin-top: 1rem; /* Space between button and input fields */
+}

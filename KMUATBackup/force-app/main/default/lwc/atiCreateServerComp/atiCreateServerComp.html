@@ -1,0 +1,49 @@
+<template>
+    <lightning-card title="">
+        <div class="slds-p-around_medium">
+            <!-- License Server ID (Required Field) -->
+            <div class="custom-input-container">
+                <lightning-input
+                    class="custom-input-field"
+                    type="text"
+                    label="License Server ID"
+                    value={licenseServerId}
+                    onchange={handleInputChange}
+                    data-field="licenseServerId"
+                    required>
+                </lightning-input>
+            </div>
+
+            <!-- ID Type (Picklist) -->
+            <div class="custom-idtype-combobox">
+                <lightning-combobox
+                    label="ID Type"
+                    placeholder="Select an ID Type"
+                    value={idType}
+                    options={idTypeOptions}
+                    onchange={handleInputChange}
+                    data-field="idType">
+                </lightning-combobox>
+            </div>
+
+            <!-- Device Description -->
+            <div class="custom-input-container">
+                <lightning-input
+                    class="custom-input-field"
+                    type="text"
+                    label="Device Description"
+                    value={deviceDescription}
+                    onchange={handleInputChange}
+                    data-field="deviceDescription">
+                </lightning-input>
+            </div>
+
+            <!-- Create Server Button -->
+            <lightning-button
+                label="Create Server"
+                variant="brand"
+                onclick={handleCreateServer}>
+            </lightning-button>
+        </div>
+    </lightning-card>
+</template>

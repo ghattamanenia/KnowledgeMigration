@@ -1,0 +1,209 @@
+<apex:page showHeader="false" sidebar="false" controller="CustomerCommunityHomeController" action="{!forwardToCustomAuthPage}">
+    <apex:composition template="CustomerSupportTemplate">
+        <apex:define name="body">
+<style type="text/css">
+    .hidden-login, .hidden-signup, .hidden-search-submit {
+        display: none;
+    }
+    div.row input[type="text"].searchInput {
+        width: 75% !important;
+        margin-left: 0;
+    }
+    .panel .row .columns h1 {
+        font-size: 5rem;
+    }
+    div.panel {
+        border: 0px !important;
+        background: none !important;
+        box-shadow: none !important;
+    }
+    img {
+        box-shadow: none !important;
+    }
+    div.panel p {
+        color: #333333;
+    }
+    a.forgot-password {
+        position: relative;
+        top: -16px;
+        font-weight: 200;
+        font-size: 13px;
+        left: 1rem;
+    }
+    .row input.six {
+        max-width: 288px;
+    }
+    /*Universal Button Style*/
+    a#search-submit-button {
+        float: right;
+        width: 52px;
+        height: 38px;
+        line-height: 21px;
+        top: -4px;
+    }
+
+    a#login-button {
+        float: left;
+        left: 0;
+        clear: both;
+    }
+    
+    @media only screen and (max-width:979px) { 
+        a.forgot-password {
+            top: 0;
+            left: 0;
+            display: block;
+            clear: both;
+        }
+    }
+
+    @media only screen and (max-width:479px) { 
+        div#login-area form div.row {
+            float: none;
+        }
+        div#login-area form div.row div.mobile-three {
+            float: none;
+        }
+    }
+    @media only screen and (min-width:480px) and (max-width:767px) { 
+        a.new-button{
+            width: 133px;
+        }
+        a#signup-button {
+            margin-right: 0;
+        }
+    }
+
+    @media only screen and (min-width:768px) and (max-width:979px) { 
+
+    }
+
+    @media only screen and (min-width:980px) and (max-width:1199px) { 
+
+    }
+
+    @media only screen and (min-width:768px) {
+        div.row input.six {
+            width: 288px;
+        }
+    }
+    div.image-container {
+        margin-bottom: 3rem;
+    }
+</style>
+<script type="text/javascript">
+    jQuery('document').ready(function(){
+        jQuery('#signup-button').click(function(){
+            jQuery('.hidden-signup').click();
+        });
+        jQuery('#login-button').click(function(){
+            jQuery('.hidden-login').click();
+        });
+        jQuery('#search-submit-button').click(function(){
+            jQuery('.hidden-search-submit').click();
+        });
+    });
+</script>
+            
+            <!-- Login Area -->
+            <div class="row" id="login-area">
+                <div class="twelve columns">
+                    <div class="panel radius inset">
+                        <div class="row">
+                            <div class="four columns image-container" style="text-align: center">
+                                <img alt="" src="http://www.alliedtelesis.com/sites/default/files/slide-images/salesforce-image.png" />
+                            </div>
+                            <div class="eight columns">
+                                <h1>Support Portal</h1>
+                               <!-- <p>Our interactive support center is your direct link to answers you need. Search our knowledge base, check support tickets, learn about RMAs and contact Allied Telesis technical experts.</p>-->
+
+                                <apex:form forceSSL="true">
+                                    <apex:pageMessages id="error"/>
+                                    <div class="row">
+                                    <div class="two mobile-one columns">
+                                        <apex:outputLabel styleClass="right inline" style="font-size: 110%; margin-top: 7px; font-weight: bold;" value="Username:" for="username"/>
+                                    </div>
+                                    <div class="ten mobile-three columns">
+                                        <apex:inputText id="username" value="{!username}" label="Username" styleClass="six"  />
+                                    </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="two mobile-one columns">
+                                            <apex:outputLabel styleClass="right inline" style="font-size: 110%; font-weight: bold;" value="Password:" for="password"/>
+                                        </div>
+                                        <div class="ten mobile-three columns">
+                                            <apex:inputSecret id="password" value="{!password}" label="Password" styleClass="six"  />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="two mobile-one columns">
+                                            <label class="right inline"></label>
+                                        </div>
+                                        <div class="ten mobile-three columns login-button-wrapper">
+                                            <apex:commandButton action="{!login}" id="LogIn" styleClass="large btn button hidden-login" value="Log In" />
+                                            <apex:commandButton action="{!selfreg}" id="SelfReg" styleClass="large btn button hidden-signup" value="Sign Up" immediate="true" />
+                                            <a href="javascript:;" id="login-button" class="new-button blue-grey">Submit</a>
+                                            <a href="javascript:;" id="signup-button" class="new-button orange">Sign-Up</a>
+                                            <a href="/Support/CustomerCommunityForgotPwd" class="forgot-password" style="" >Forgot your password?</a>
+                                        </div>
+                                    </div>
+
+                                </apex:form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End of Login Area -->
+
+            <!-- KB Area -->
+            <div class="row">
+
+                <div class="six columns">
+                    <div class="panel callout radius">
+                        <h2>Service Announcements</h2>
+                        <p style="margin-top: 1rem">
+                            Our interactive support center is your direct link to answers you need. Search our knowledge base, check support tickets, learn about RMAs and contact Allied Telesis technical experts.
+                        </p>
+                        <section class="three-buttons">
+                            <a class="new-button blue-grey outline" href="http://www.alliedtelesis.com/library/search//type/document">Resource Library</a>
+                            <a class="new-button blue-grey outline" href="https://www.alliedtelesis.com/us/en/support/software">Software Library</a>
+                            <a class="new-button blue-grey outline" href="https://www.alliedtelesis.com/us/en/support/gpl-code">Open Source</a>
+                        </section>
+                    </div>
+                </div>
+
+                <div class="six columns">
+                    <hr class="show-for-small" />
+                    <div class="panel radius inset">
+                        <h2>Knowledge Base</h2><br/>
+                        <h5>Top Articles</h5>
+                        <ul class="kb-articles-container">
+                           <!-- <apex:repeat value="{!publicArticle}" var="article"> -->
+                           <apex:repeat value="{!qa}" var="article">
+                                <li>
+                                    <a href="/Support/CustomerCommunityArticle?articleId={!article.Id}" target="_blank">{!article.title}</a>
+                                </li>
+                            </apex:repeat>
+                        </ul>
+                        <!-- <div style="text-align:right;">
+                            <a href="/Support/CustomerCommunityArticlesList">Full List</a>
+                        </div> -->
+                        <apex:form >
+                            <div class="twelve">
+                                <apex:inputText id="search-input" value="{!searchTerm}" styleClass="nine searchInput" html-placeholder="Enter search keyword"/> 
+                                <apex:commandButton value="Go" title="Go" action="{!searchKB}" styleClass="two button large goBtn hidden-search-submit"/>
+                                <a class="new-button green narrow" href="javascript:;" id="search-submit-button">Go</a>
+                            </div>
+                        </apex:form>
+                    </div>
+                </div>
+            </div>
+            <!-- End of KB Area -->
+        </apex:define>
+    </apex:composition>
+    <script type = "text/javascript" src = 'https://home-c36.nice-incontact.com/inContact/ChatClient/js/embed.min.js'></script>
+<script type ="text/javascript">
+icPatronChat.init({serverHost:'https://home-c36.nice-incontact.com',bus_no:4599697,poc:'84008f40-cb38-4243-a2a9-5e256809209d',params:['FirstName','Last Name','first.last@company.com',555-555-5555]});
+</script>
+</apex:page>

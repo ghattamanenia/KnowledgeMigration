@@ -1,0 +1,95 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" standardController="JP_QuotationHeader__c">
+
+    <apex:includeScript value="https://s.oproarts.com/js/jquery-1.12.4.min.js" />
+    <apex:includeScript value="https://s.oproarts.com/js/live_ff-1.32.js" />
+
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+         
+        if('{!JP_QuotationHeader__c.JP_QuotationStatus__c}' != '承認済'){ 
+                document.getElementById("errMsg_approval").style.display="block";
+            }else if('{!$User.JP_Class__c}' != 'A110_IN' && '{!$User.JP_Class__c}' != 'A111_OUT' && '{!$User.JP_Class__c}' != 'A121_課長' && '{!$User.JP_Class__c}' != 'A131_部長' && '{!$User.JP_Class__c}' != 'A141_本部長' && '{!$User.JP_Class__c}' != 'A151_取締役'){ 
+                document.getElementById("errMsg_permission").style.display="block";
+            }else{ 
+                document.getElementById("isAvailable").style.display="block";
+                output();
+            }
+        });
+
+        function submit(url) {
+            if (sforce && sforce.one) {
+                sforce.one.getVersion('22.0', function (s1) {
+                    s1.navigateToURL(url);
+                });
+            } else {
+                window.location.replace(url);
+            }
+        }
+
+        function output() {
+            var url = OPROARTS.Live.fF.action({
+
+                // tp: 配備済みテンプレートの名称を指定します。複数指定することもできます。
+                // このパラメータを省略することはできません。
+                // ※ 出力形式がエクセルブックの場合、テンプレート作成時に指定したエクセルブックの拡張子を付与してください。
+                tp:[
+                    'Excel_HospitalSegmentFormat.xlsx'
+                ],
+
+                // fe: フォントの埋め込むかどうかを指定します。true もしくは false で指定します。
+                // 実行するメソッドが 'toBuildUrl().pdf()' または 'toBuildUrl().pdfPreview()' の場合に有効です。
+                // また、テンプレートで埋め込み可能なフォントが使用されている必要があります。
+                fe:false,
+
+
+                // createsAttach: 作成されたドキュメントをオブジェクトに添付するかどうかを指定します。true もしくは false で指定します。
+                // 添付できないオブジェクトの場合、このパラメータを true で指定しないでください。
+                createsAttach:true,
+
+                // createsTask: 作成されたドキュメントを活動履歴に登録するかどうかを指定します。true もしくは false で指定します。
+                // 活動履歴に登録できないオブジェクトの場合、このパラメータを true で指定しないでください。
+                // このパラメータに true を指定した場合、次の追加パラメータを指定することができます。
+                // - taskSubject: 活動履歴の件名
+                // - taskComment: 活動履歴のコメント
+                // 無指定の場合は、システムの初期値が適用されます。
+                createsTask:true,
+
+                // title: ダウンロード・添付・活動履歴のファイル名を指定します。
+                title:'',
+
+                // objectId: 帳票オブジェクトのIDを指定します。
+                objectId: '{!JSENCODE(JP_QuotationHeader__c.Id)}',
+
+                // OPROARTS Live - Force.com API に必要な諸パラメータです。
+                // このパラメータを編集しないでください。
+                _type: 'live.forward',
+                api:['{!JSENCODE($Organization.Id)}','{!JSENCODE($User.Id)}','{!JSENCODE($Api.Session_ID)}','{!JSENCODE($Api.Partner_Server_URL_220)}']
+
+            }).url('https://www.oproarts.com/liveffb/action').toBuildUrl().excelMerge();
+            // 作成するドキュメントの形式のメソッドを呼び出します。
+            // Live for Salesforceのテンプレートの場合は以下が指定できます。
+                // - 'toBuildUrl().pdf()'   : pdfファイルを出力します。
+                // - 'toBuildUrl().opr()'   : oprファイルを出力します。 ※OPRO X Browser をクライアントPCにインストールしてください。
+                // - 'toBuildUrl().print()' : odpファイルを出力します。※OPRO X Browser をクライアントPCにインストールしてください。
+                // - 'toBuildUrl().pdfPreview()' : pdfファイル(プレビュー)を出力します。※この出力はカウントされません。
+                // - 'toBuildUrl().oprPreview()' : oprファイル(プレビュー)を出力します。※この出力はカウントされません。
+            // Live XLS for Salesforceのテンプレートの場合は以下が指定できます。
+                // - 'toBuildUrl().excelMerge()' : xlsx, xlsmファイルを出力します。
+
+            submit(url);
+        }
+    </script>
+    
+    <div id="errMsg_approval" style="display:none">
+        <p>未承認または申請中の見積書は出力できません。</p>
+    </div>
+    <div id="errMsg_permission" style="display:none">
+        <p>クラス項目がA110_IN,A111_OUT,A121_課長,A131_部長,A141_本部長,A151_取締役以外はExcel見積書は出力できません。</p>
+    </div>
+    <div id="isAvailable" style="display:none">
+        <h1>しばらくお待ちください。</h1>
+        <p>ダウンロードが始まらない場合は以下リンクをクリックしてください。</p>
+        <a onclick="output()" href="#">ダウンロード</a>
+    </div>
+</apex:page>

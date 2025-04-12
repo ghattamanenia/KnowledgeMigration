@@ -1,0 +1,20 @@
+<apex:page standardController="JP_RequestInformation__c">
+<strong style="font-size:medium;">JPY 
+  <apex:outputtext value="{0, number, ###,###}">
+    <apex:param value="{! JP_RequestInformation__c.JP_Option_Amount__c}"></apex:param>
+  </apex:outputtext>
+</strong><br />
+<br />
+0の場合: <br/>
+各明細の請求金額は、標準分割ルールにしたがって等分されます。<br />
+<br />
+SO明細合計と一致している場合: <br/>
+任意入力金額機能が使われ、SO明細総計と釣り合っています。<br />
+<br />
+SO明細合計と不一致の場合:<br/>
+<strong style="color:red;">
+　SO明細が複数存在する場合: 任意入力金額機能は使えません。<br/>
+　SO明細が1つだけの場合:　　SO明細の金額を任意入力金額総計と同額にしてください。<br/>
+</strong><br />
+<br />
+</apex:page>

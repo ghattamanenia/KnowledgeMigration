@@ -1,0 +1,59 @@
+<apex:page controller="SFSupportCreateCommentController" tabStyle="Salesforce_Support__tab" title="Salesforce Support">
+  <apex:stylesheet value="{!URLFOR($Resource.SFSupportCSS)}"/>
+  <style type="text/css">
+    .btn {
+      font-size: 13px !important;
+      padding: 6px 20px !important;
+    }
+    .userComment {
+      margin: 20px 20px 0 20px;
+    }
+    .btnBottom {
+      margin: 20px 0 20px 20px;
+    }
+    body .bPageBlock .pbTitle h2.mainTitle {
+      margin-left: 27px;
+    }    
+  </style>
+  <apex:includeScript value="{!$Resource.JQuery}"/>  
+  <apex:form styleClass="createComment">
+    <apex:pageBlock title="New Comment">
+      <apex:inputTextarea id="userComment" value="{!userComment}" styleClass="requiredField userComment"/>
+      <div class="btnBottom">
+        <input type="button" id="submitBtn" class="btn submitBtn" onclick="validateComments();" value="Submit" style="margin-right: 10px;"/>
+        <apex:commandButton action="{!CancelComment}" id="CancelComment"  value="Cancel" immediate="true" /> 
+      </div>
+      <apex:actionFunction name="SubmitComment" action="{!SubmitComment}"/>      
+    </apex:pageBlock>
+  </apex:form>
+  <script type="text/javascript">
+    // TODO: Combine this with other validations after make it to modular  
+    function validateComments() {
+      var $requiredField = $jq('.requiredField'),
+          $submitBtn = $jq('.submitBtn'),
+          $errorMsg = $jq('<div class="errorMsg"><strong>Error:</strong> You must enter a comment.</div>').css('margin-left', '20px');
+      
+      $requiredField.on('keyup', function() { 
+        $this = $jq(this);       
+        if($this.val()) {
+          $this.removeClass('errorField');
+          $this.siblings('.errorMsg').remove(); 
+        }
+      }); 
+
+      if($requiredField.val() == '') {
+        if(!$requiredField.hasClass('errorField')) {
+          $errorMsg.insertAfter($requiredField.addClass('errorField'));
+        }
+        $submitBtn.removeAttr('disabled', 'disabled').removeClass('submitting').val('Submit');
+        return;
+      }
+      else if($requiredField.val()) {
+        $requiredField.removeClass('errorField');
+        $requiredField.siblings('.errorMsg').remove();
+        $submitBtn.attr('disabled', 'disabled').addClass('submitting').val('Submitting...');        
+        SubmitComment();
+      }     
+    }
+  </script>  
+</apex:page>

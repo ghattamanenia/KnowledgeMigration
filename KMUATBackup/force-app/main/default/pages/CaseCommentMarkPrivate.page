@@ -1,0 +1,7 @@
+<apex:page standardController="Case_Comment__c" recordSetVar="casecom" extensions="CaseCommFlowVFController" lightningStylesheets="true">
+    
+    <flow:interview name="Case_comments_Mark_Private" finishLocation="/{!caseid}" buttonLocation="both">
+        <apex:param name="SelectedRecordIds" value="{!SelectedRecordIDs}"/>
+    </flow:interview>
+    
+</apex:page>

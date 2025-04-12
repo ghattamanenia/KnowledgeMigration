@@ -1,0 +1,483 @@
+<apex:page showHeader="false" sidebar="false" controller="CustomerCommunityCaseEditController" action="{!forwardToCustomAuthPage}" >
+    <apex:composition template="CustomerSupportTemplate">
+        <apex:define name="body">
+
+            <div class="row">
+                <div class="twelve columns">
+                    <div class="panel radius inset">
+                    <apex:pageMessages id="error" escape="false"/>                             
+                        <div class="row container">
+                            <apex:form >
+                                <div class="twelve columns">
+                                    <table class="twelve marginOffset">
+                                        <tr>
+                                            <td>
+                                                <h1>My Support Case Detail:&nbsp;{!caseNumber}</h1>
+                                            </td>
+                                            <td style="text-align: right;">
+                                                <apex:commandButton action="{!SaveCase}" id="SaveCase" styleClass="large btn button" value="Save Case"/>&nbsp;&nbsp;&nbsp;<apex:commandButton action="{!BackPage}" id="BackPage" styleClass="large btn button" value="Back" immediate="true"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <div class="right helpTxtPos">
+                                        <span class="required">&#42; </span><span class="helpTxtFontSize">Required fields</span>
+                                    </div>
+                                    <table class="twelve main">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="4">Request Details</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="three">
+                                                    <apex:outputLabel value="Case Title" for="caseTitle"/><span class="required"> &#42;</span>
+                                                </td>
+                                                <td class="three">
+                                                    <apex:inputText id="caseTitle" value="{!caseTitle}" label="Case Title" required="true" />
+                                                </td>
+                                                <td class="three">
+                                                    <apex:outputLabel value="How may we help you?" for="caseDescription"/><span class="required"> &#42;</span>
+                                                </td>
+                                                <td class="three">
+                                                    <apex:inputTextarea id="caseDescription" value="{!caseDescription}" label="How may we help you?" required="true" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="three">Case Status</td>
+                                                <td class="three">{!IF(caseDetail.Status == "New" || caseDetail.Status == "Closed" , caseDetail.Status, "Open")}</td>
+                                                <td class="three">Case Status Comments</td>
+                                                <td class="three">{!caseStatusComments}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="three">Impact</td>
+                                                <td class="three">{!caseImpact}</td>
+                                                <td class="three">Urgency</td>
+                                                <td class="three">{!caseUrgency}</td>
+                                                <!-- <td class="three">Impact</td>
+                                                <td class="three">
+                                                    <apex:selectList id="impact" value="{!caseImpact}" label="Impact" size="1">
+                                                        <apex:selectOption itemValue="High" itemLabel="High" />
+                                                        <apex:selectOption itemValue="Medium" itemLabel="Medium" />
+                                                        <apex:selectOption itemValue="Low" itemLabel="Low" />
+                                                    </apex:selectList>
+                                                </td>
+                                                <td class="three">Urgency</td>
+                                                <td class="three">
+                                                    <apex:selectList id="urgency" value="{!caseUrgency}" label="Urgency" size="1">
+                                                        <apex:selectOption itemValue="High" itemLabel="High" />
+                                                        <apex:selectOption itemValue="Medium" itemLabel="Medium" />
+                                                        <apex:selectOption itemValue="Low" itemLabel="Low" />
+                                                    </apex:selectList>
+                                                </td> -->
+                                            </tr>
+                                            <tr>
+                                                <td class="three">Case Opened Date</td>
+                                                <td class="three">{!caseCaseOpenDate}</td>
+                                                <td class="three">Case Closed Date</td>
+                                                <td class="three">{!caseClosedDate}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="three">Case First Response Date</td>
+                                                <td class="three">{!caseFirstResponseDate}</td>
+                                                <td class="three">Case Resolution</td>
+                                                <td class="three">{!caseResolution}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="twelve">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="4">General Details</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="three"><apex:outputLabel value="New or Existing Installation?" for="caseNewExistingInstallation" /><span class="required {!showfield}"> &#42;</span></td>
+                                                <td class="three"><apex:selectList id="caseNewExistingInstallation" value="{!caseNewExistingInstallation}" label="New or Existing Installation?" size="1" required="{!showfield}">
+                                                        <apex:selectOption itemValue="" itemLabel="--None--" />
+                                                        <apex:selectOption itemValue="New" itemLabel="New" />
+                                                        <apex:selectOption itemValue="Existing" itemLabel="Existing" />
+                                                    </apex:selectList>
+                                                </td>
+                                                <td class="three"><apex:outputLabel value="Is it reproducible?" for="caseReproducible" /></td>
+                                                <td class="three"><apex:selectList id="caseReproducible" value="{!caseReproducible}" label="Is it reproducible?" styleClass="reproducible" size="1">
+                                                        <apex:selectOption itemValue="" itemLabel="--None--" />
+                                                        <apex:selectOption itemValue="Yes" itemLabel="Yes" />
+                                                        <apex:selectOption itemValue="No" itemLabel="No" />
+                                                    </apex:selectList>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="three"><apex:outputLabel value="Any recent changes?" for="caseRecentChanges" /></td>
+                                                <td class="three"><apex:selectList id="caseRecentChanges" value="{!caseRecentChanges}" label="Any recent changes?" size="1">
+                                                        <apex:selectOption itemValue="" itemLabel="--None--" />
+                                                        <apex:selectOption itemValue="Yes" itemLabel="Yes" />
+                                                        <apex:selectOption itemValue="No" itemLabel="No" />
+                                                    </apex:selectList>
+                                                </td>
+                                                <td class="three"><apex:outputLabel value="Steps to reproduce the issue" for="caseReproSteps" /></td>
+                                                <td class="three"><apex:inputTextarea id="caseReproSteps" value="{!caseReproSteps}" label="Reproduce Steps"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="three"><apex:outputLabel value="Specific Circumstances" for="caseSpecificCircumstances" /></td>
+                                                <td class="three"><apex:inputTextarea id="caseSpecificCircumstances" value="{!caseSpecificCircumstances}" /></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="twelve">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="4">Severity Information</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="three">
+                                                    <apex:outputLabel value="Is the network down?" for="caseNetworkDown"/><span class="required {!showfield}"> &#42;</span>
+                                                </td>
+                                                <td class="three"><apex:selectList id="caseNetworkDown" value="{!caseNetworkDown}" label="Is the network down?" size="1" required="{!showfield}">
+                                                        <apex:selectOption itemValue="" itemLabel="--None--" />
+                                                        <apex:selectOption itemValue="Yes" itemLabel="Yes" />
+                                                        <apex:selectOption itemValue="No" itemLabel="No" />
+                                                    </apex:selectList>
+                                                </td>
+                                                <td class="three">
+                                                    <apex:outputLabel value="Is there a workaround?" for="caseWorkaround"/><span class="required {!showfield}"> &#42;</span></td>
+                                                <td class="three"><apex:selectList id="caseWorkaround" value="{!caseWorkaround}" label="Is there a workaround?" size="1" required="{!showfield}">
+                                                        <apex:selectOption itemValue="" itemLabel="--None--" />
+                                                        <apex:selectOption itemValue="Yes" itemLabel="Yes" />
+                                                        <apex:selectOption itemValue="No" itemLabel="No" />
+                                                    </apex:selectList>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="three">
+                                                    <apex:outputLabel value="Have services degraded?" for="caseServicesDegraded"/><span class="required {!showfield}"> &#42;</span>
+                                                </td>
+                                                <td class="three"><apex:selectList id="caseServicesDegraded" value="{!caseServicesDegraded}" size="1" label="Have services degraded?" required="{!showfield}">
+                                                        <apex:selectOption itemValue="" itemLabel="--None--" />
+                                                        <apex:selectOption itemValue="Yes" itemLabel="Yes" />
+                                                        <apex:selectOption itemValue="No" itemLabel="No" />
+                                                    </apex:selectList>
+                                                </td>
+                                                <td class="three">&nbsp;</td>
+                                                <td class="three">&nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                            <td class="three">
+                                                <apex:outputLabel value="RMA Request (In the event of Hardware Failure)" for="RMARequest"/>
+                                            </td>
+                                            <td class="three">
+                                              <apex:inputcheckbox id="rmareq" styleClass="rmarequest" value="{!rmarequest}" label="RMA Request (In the event of Hardware Failure)" onclick="showHide(),showHideBillingAddress()"/>  
+                                              
+                                             </td> 
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <!-- 
+                                    
+                                    Below code is added by Neha -->
+                                    
+                                    <div id="termssection" style="display:none">
+                                    <apex:panelgrid rendered="{!showEMEAterms}">
+                                    <input type="checkbox" id="EMEAterms" name="EMEAterms" onclick="showHide(),showHideBillingAddress()" > </input>
+                                    <label for="terms"> By submitting this RMA request, you are agreeing to the terms and conditions  <a href="https://alliedtelesis.my.site.com/Support/CustomerCommunityArticle?articleId=ka01I000000j76IQAQ" target="_blank"> <u> RMA Terms and Conditions EMEA </u> </a> </label>  
+                                    <br/> <br/>
+                                    </apex:panelgrid>
+                                    
+                                    <apex:panelgrid rendered="{!showNAterms}">
+                                    <input type="checkbox" id="NAterms" name="NAterms" onclick="showHide(),showHideBillingAddress()" > </input>
+                                    <label for="terms"> By submitting this RMA request, you are agreeing to the terms and conditions  <a href="https://alliedtelesis.my.site.com/Support/CustomerCommunityArticle?articleId=ka01I000000Fo5mQAC" target="_blank"> <u> RMA Terms and Conditions NA </u> </a> </label>  
+                                    <br/> <br/>
+                                    </apex:panelgrid>
+                                    </div>
+                                    
+                                    
+                                    <table class="twelve" id="sectable" style="display:none"> <span class="required"> </span>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="4"> Billing Address </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="three">
+                                                <apex:outputLabel value="Billing Address Company Name" for="BillingCompanyName"/>
+                                            </td>
+                                            <td class="three">
+                                                <apex:inputText id="BillingCompanyName" value="{!BillingCompanyName}" label="Billing Address Company Name"/>
+                                            </td>
+                                            
+                                            
+                                            <td class="three">
+                                                <apex:outputLabel value="Billing Street" for="BillingStreet"/>
+                                            </td>
+                                            <td class="three">
+                                                <apex:inputText id="BillingStreet" value="{!BillingStreet}" label="Billing Street"/>
+                                            </td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            
+                                            <td class="three">
+                                                <apex:outputLabel value="Billing City" for="BillingCity"/>
+                                            </td>
+                                            <td class="three">
+                                                <apex:inputText id="BillingCity" value="{!BillingCity}" label="Billing City"/>
+                                            </td>
+                                          
+                                           
+                                            <td class="three">
+                                                <apex:outputLabel value="Billing State/ Province" for="BillingState"/>
+                                            </td>
+                                            <td class="three">
+                                                <apex:inputText id="BillingState" value="{!BillingState}" label="Billing State/ Province"/>
+                                            </td>
+                                        </tr>
+                                        
+                                        <tr>
+                                        
+                                           <td class="three">
+                                                <apex:outputLabel value="Billing Country" for="BillingCountry"/>
+                                            </td>
+                                            <td class="three">
+                                                <apex:inputText id="BillingCountry" value="{!billingcountry}" label="Billing Country"/>
+                                            </td>
+                                            
+                                            
+                                            
+                                            <td class="three">
+                                                <apex:outputLabel value="Billing Zip/Postal Code" for="BillingZipCode"/>
+                                            </td>
+                                            <td class="three">
+                                                <apex:inputText id="BillingZipCode" value="{!billingzipcode}" label="Billing Zip/Postal Code"/>
+                                            </td>
+                                        
+                                        </tr>
+                                        
+                                        <tr>
+                                         
+                                            <td class="three">
+                                                <apex:outputLabel value="VAT Number (Required in EMEA only)" for="VAT Number"/>
+                                            </td>
+                                            <td class="three">
+                                                <apex:inputText id="VATNumber" value="{!vatnumber}" label="VAT Number "/>
+                                            </td>
+                                            
+                                          
+                                            <td class="three">
+                                                <apex:outputLabel value="Please check if Shipping address is different from Billing Address" for="Addressisdiff"/>
+                                            </td>
+                                            <td class="three">
+                                                <apex:inputCheckbox id="AddressDiff" value="{!billingadddif}" label="Please check if Billing address is different from Shipping Address" onclick="showHideBillingAddress()"/>
+                                            </td>
+                                            
+                                        </tr>
+                                       
+                                    </tbody>
+                                </table>
+                                
+                                 
+                                
+                                <table class="twelve" id="billingtable" style="display:none"> <span class="required">  </span>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="4"> Shipping Address </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="three">
+                                                <apex:outputLabel value="Shipping Address Company Name" for="ShippingCompanyName"/>
+                                            </td>
+                                            <td class="three">
+                                                <apex:inputText id="ShippingCompanyName" value="{!ShippingCompanyName}" label="Shipping Address Company Name"/>
+                                            </td>
+                                            
+                                            <td class="three">
+                                                <apex:outputLabel value="Shipping Street" for="ShippingStreet"/>
+                                            </td>
+                                            <td class="three">
+                                                <apex:inputText id="ShippingStreet" value="{!ShippingStreet}" label="Shipping Street"/>
+                                            </td>
+                                            
+                                         </tr>
+                                         
+                                         <tr>
+                                            
+                                            <td class="three">
+                                                <apex:outputLabel value="Shipping City" for="ShippingCity"/>
+                                            </td>
+                                            <td class="three">
+                                                <apex:inputText id="ShippingCity" value="{!ShippingCity}" label="Shipping City"/>
+                                            </td>
+                                          
+                                           
+                                            <td class="three">
+                                                <apex:outputLabel value="Shipping State/ Province" for="ShippingState"/>
+                                            </td>
+                                            <td class="three">
+                                                <apex:inputText id="ShippingState" value="{!ShippingState}" label="Shipping State/ Province"/>
+                                            </td>
+                                            
+                                         </tr>
+                                         
+                                         <tr>
+                                         
+                                           <td class="three">
+                                                <apex:outputLabel value="Shipping Zip/ Postal Code" for="ShippingZipCode"/>
+                                            </td>
+                                            <td class="three">
+                                                <apex:inputText id="ShippingZipCode" value="{!shippingzipcode}" label="Shipping Zip/Postal Code"/>
+                                            </td>
+                                            
+                                            <td class="three">
+                                                <apex:outputLabel value="Shipping Country" for="shippingcountry"/>
+                                            </td>
+                                            <td class="three">
+                                                <apex:inputText id="shippingcountry" value="{!shippingcountry}" label="Shipping Country"/>
+                                            </td>
+                                        
+                                         </tr>
+                                         
+                                         <tr>
+                                            <td class="three">
+                                                <apex:outputLabel value="Shipping Contact Name" for="Name"/>
+                                            </td>
+                                            <td class="three">
+                                                <apex:inputText id="Name" value="{!Name}" label="Shipping Contact Name"/>
+                                            </td>
+                                            
+                                        
+                                            
+                                            <td class="three">
+                                                <apex:outputLabel value="Shipping Contact Phone Number" for="Phone Number"/>
+                                            </td>
+                                            <td class="three">
+                                                <apex:inputText id="PhoneNumber" value="{!phonenumber}" label="Shipping Contact Phone Number"/>
+                                            </td>
+                                        </tr>
+                                        
+                                        
+                                       
+                                    </tbody>
+                                </table>   
+                                    
+                                    
+                                    
+                                    <!-- End of Neha code changes -->
+                                    
+                                
+                                
+                                   <!-- <table class="twelve">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="4">Product Information</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                               
+                                                <td class="three">RMA Number</td>
+                                                <td class="three">{!caseRMANumber}</td>
+                                                <td class="three">RMA Status</td>
+                                                <td class="three">{!caseRMAStatus}</td> 
+                                            </tr>
+                                            <tr>
+                                                <td class="three">Warranty</td>
+                                                <td class="three">{!caseWarranty}</td>
+                                                <td class="three" colspan="2"></td>
+                                            </tr>
+                                        </tbody> 
+                                    </table>  -->
+                                    <b> <apex:outputText > If your case is for more than one product, you can enter these in the comments field or as a file attachment after you Submit the Case. </apex:outputText> </b>
+                                        <br/>
+                                    <div class="twelve">
+                                        <div class="right">
+                                            <apex:actionfunction name="SaveCase" action="{!SaveCase}" />
+                                           <!-- <apex:commandButton action="{!SaveCase}" styleClass="large btn button" value="Save Case"/>&nbsp;&nbsp;&nbsp;<apex:commandButton action="{!BackPage}" styleClass="large btn button" value="Back" immediate="true" onclick="StartSaving();return false;"/>  -->
+                                            <apex:commandButton styleClass="large btn button" value="Save Case" onclick="StartSaving();return false;"/>&nbsp;&nbsp;&nbsp;<apex:commandButton action="{!BackPage}" styleClass="large btn button" value="Back" immediate="true"/>
+                                        
+                                        </div>
+                                    </div>
+                                </div>
+                            </apex:form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:define>
+    </apex:composition>
+    <script type="text/javascript">
+        if($('.false').length) {
+            $('.false').remove();
+        }
+
+
+        /* An user attempts enternig an invalid case id or account id */
+        if({!showpage} == false) {
+            $('.container').remove(); /* Remove the container for the contents */
+            $('<a/>').attr({
+                href: "{!$Site.Prefix}/CustomerCommunityLoggedin",
+                class: "btn button large topRight"
+            }).text("Home").appendTo('.panel.radius.inset');
+            $('.message.errorM3').addClass('eleven');
+        }
+        
+        function showHide() 
+         {
+            
+            var x = $('[id$=rmareq]').is(':checked');
+            var t=$('[id$=NAterms]').is(':checked');
+            var y=$('[id$=EMEAterms]').is(':checked');
+            if(x==true && (t==true || y==true))
+            {
+                document.getElementById("sectable").style.display = "block";
+                
+            }
+            else
+            {
+                document.getElementById("sectable").style.display="none";
+                
+            }
+            
+            if(x==true)
+            document.getElementById("termssection").style.display = "block";
+            else
+            document.getElementById("termssection").style.display = "none";
+            
+            
+         }
+         
+         function showHideBillingAddress()
+         {
+             var y = $('[id$=AddressDiff]').is(':checked');
+             var x = $('[id$=rmareq]').is(':checked');
+             var t=$('[id$=NAterms]').is(':checked');
+             var z=$('[id$=EMEAterms]').is(':checked');
+             if(y==true && x==true && (t==true || z==true))
+             document.getElementById("billingtable").style.display = "block";
+             else
+             document.getElementById("billingtable").style.display="none";
+             
+         }
+         
+         function StartSaving() 
+         {
+            
+              var x = $('[id$=rmareq]').is(':checked');
+              var t=$('[id$=NAterms]').is(':checked');
+              var z=$('[id$=EMEAterms]').is(':checked');
+              if(x==true && (t==false && z==false)) 
+              {
+                 alert('Please check the terms and conditions before submitting the RMA case');
+                 return;
+              }  
+               
+               SaveCase();
+               
+         }
+         
+    </script>   
+</apex:page>

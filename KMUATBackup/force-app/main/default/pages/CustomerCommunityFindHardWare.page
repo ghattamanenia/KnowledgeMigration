@@ -1,0 +1,233 @@
+<apex:page showHeader="false" sidebar="false" controller="CustomerCommunityFindHWController" readonly="true" action="{!forwardToCustomAuthPage}">
+ 
+    <script src="../../soap/ajax/31.0/connection.js" type="text/javascript">
+    </script>
+    <script src="../../soap/ajax/31.0/apex.js" type="text/javascript"></script>
+ <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"/>
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+  
+  <style>
+  .ui-autocomplete-category {
+    font-weight: bold;
+    padding: .2em .4em;
+    margin: .8em 0 .2em;
+    line-height: 1.5;
+  }
+  table tbody td, table thead th, table tbody td a, table thead th a {
+      font-family: Roboto;
+  }
+  td.create-button-cell {
+      text-align: center;
+  }
+  </style>
+ <script>
+  var j$ = jQuery.noConflict();
+  j$.widget( "custom.catcomplete", j$.ui.autocomplete, {
+    _create: function() {
+      this._super();
+      this.widget().menu( "option", "items", "> :not(.ui-autocomplete-category)" );
+    },
+    _renderMenu: function( ul, items ) {
+      var that = this,
+        currentCategory = "";
+      j$.each( items, function( index, item ) {
+        var li;
+        if ( item.category != currentCategory ) {
+          ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
+          currentCategory = item.category;
+        }
+        li = that._renderItemData( ul, item );
+        if ( item.category ) {
+          li.attr( "aria-label", item.category + " : " + item.label );
+        }
+      });
+    }
+  });
+  </script>
+ <script>
+    var j$ = jQuery.noConflict();
+    j$(function() {
+  
+      // Build out the array for autocomplete
+     var accid = "{!$CurrentPage.parameters.AccId}";
+    
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.CustomerCommunityFindHWController.getHWList}',accid ,
+            function(result, event){
+                if (event.status) {
+                    
+                   
+                      // Assign the array for autocomplete
+                      j$('[id$=keyword]').catcomplete({
+                        delay:0,
+                        source: result
+                      });
+                  
+                } else {
+                    alert("Error Initializing Hardware Model Names for AutoComplete.");
+                }
+            }, 
+            {escape: true}
+        );
+         
+     
+
+    });
+  </script>
+  
+    <apex:composition template="CustomerSupportTemplate">
+        <apex:define name="body">
+            <div class="row">
+                <div class="twelve columns" id="page-container">
+
+                      <apex:pageMessages id="error"/>
+                      <div class="row container">
+                            <div class="twelve columns">
+                              <apex:form >  
+                              <style>
+                                .bPageBlock {
+                                    border-top: 4px !important;
+                                }
+                                a#create-case-button {
+                                    height: 42px;
+                                    top: 3px;
+                                }
+                                a#search-registered-button {
+                                    padding: 15px;
+                                    height: 42px;
+                                    top: 3px;
+                                }
+                                a.create-product-case-button {
+                                    top: 0 !important;
+                                }
+                            </style>
+                            
+                            <apex:pageBlock >
+                               <table class="twelve">
+                                <thead>
+                                    <tr>
+                                        <th colspan="4">Search for Registered Product</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>
+                                    <tr>
+                                         <td style="width:200px"> 
+                                              <apex:inputText style="width: 200px;" id="keyword" value="{!searchtxt}" />
+                                         </td>
+                                         <td>
+                                             <apex:commandLink styleClass="btn hidden-button hidden-registered-search large left"  value="Search" action="{!Search_Hardware}" rerender="hw_details,error"/>
+                                             <apex:commandButton action="{!Create_Case_noHW}" value="Add Hardware Product &amp; Create a Case" styleClass="hidden-button hidden-create-case-button large right"></apex:commandButton>
+                                             <a id="search-registered-button" href="javascript:;" class="green new-button">Search</a>
+                                             <a id="create-case-button" href="javascript:;" class="two-row blue-grey new-button">Add Hardware Product Create a Case</a>
+                                         </td>
+                                     </tr>
+                                     <tr style="background-color:white">
+                                         <td colspan="2" style="padding-top:0px">
+                                             <span style="font-size:10pt">(Search by product model or serial number)</span>
+                                        </td>
+                                     </tr>    
+                                 </tbody> 
+                               </table>                                
+                            </apex:pageBlock>
+     
+                              
+                               <apex:pageBlock id="hw_details" >
+                                <h1 class="twelve">My Products </h1> <br> </br>
+                                <td>Note: Please click on the product model to check the service contract status.</td>
+                                
+                                 <!--  <apex:outputText > <b style = "color:red" >Note: Please click on the product model to check the service contract status.</b></apex:outputText>-->
+                                <table class="twelve" style="margin-top: 10px;" >
+                                  <thead>
+                                    <tr>
+                                      <th class="four">Product Model</th>
+                                      <th class="four">Serial Number</th>
+                                      <th class="four"></th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <!-- Hardware Asset Repeater -->
+                                    <apex:repeat value="{!HW_Assets}" var="Asset__c" >
+                                      <tr>
+                                        <td class="four"><apex:outputLink value="/Support/CustomerCommunityContractDetails?HwId={!Asset__c.Id}&Accid={!Asset__c.Account__c }" >{!Asset__c.Name}</apex:outputLink></td>
+                                        <td class="four">{!Asset__c.Serial_Number__c}</td>
+                                        <!-- <td>{!Asset__c.Account__c}</td> -->
+                                        <td class="four create-button-cell">
+                                          <apex:commandLink styleClass="btn hidden-button hidden-create-product-case-button large right" action="{!Create_Case_for_Prod}" value="Create Case for this product">
+                                            <apex:param assignTo="{!HW_SerialNo}" name="SerailNo" value="{!Asset__c.Serial_Number__c}"/>
+                                            <apex:param assignTo="{!HW_id}" name="HWid" value="{!Asset__c.Id}"/>
+                                            <apex:param assignTo="{!HW_name}" name="prodModel" value="{!Asset__c.Name}"/>
+                                          </apex:commandLink>
+                                         <a href="javascript:;" class="create-product-case-button two-row blue-grey new-button">Create Case<br />for this Product</a>
+                                        </td>
+                                      </tr>
+                                    </apex:repeat>
+                                    <!-- End Hardware Asset Repeater -->
+                                  </tbody>
+                                </table>
+                               </apex:pageBlock>
+                                <div class="twelve">
+                                  <apex:commandButton action="{!BackPage}" id="BackPage" styleClass="large button right" value="Back"/>
+                                <!---    <apex:commandButton action="{!Create_Case_noHW}" value="Add Hardware Product & Create a Case" styleClass="button large"></apex:commandButton> -->
+                                  <apex:commandButton action="{!Create_Case}" value="Create Case Without a Product" styleClass="button large"></apex:commandButton>
+                                </div>
+                              </apex:form>
+                            </div>
+                        </div>
+
+                </div>
+            </div>
+        </apex:define>
+    </apex:composition>
+    <script type="text/javascript">
+        /* An user attempts enternig an invalid case id or account id */
+        if(!{!showpage}) {
+            $('.container').remove(); /* Remove the container for the contents */
+            $('<a/>').attr({
+                href: "{!$Site.Prefix}/CustomerCommunityLoggedin",
+                class: "btn button large topRight"
+            }).text("Home").appendTo('#page-container');
+            $('.message.errorM3').addClass('eleven');
+        }    
+
+        jQuery('document').ready(function(){
+            jQuery('#create-case-button').click(function(){
+                jQuery('.hidden-create-case-button').click();
+            });
+            jQuery('.create-product-case-button').click(function(e){
+                var btn = jQuery(this);
+                btn.siblings('.hidden-button').click();
+            });
+            jQuery('#search-registered-button').click(function(){
+                jQuery('.hidden-registered-search').click();
+            });
+            jQuery('#search-submit-button').click(function(){
+                jQuery('.hidden-search-submit').click();
+            });
+        });
+    </script>    
+</apex:page>
+      
+<!-- <apex:form >
+     <apex:pageBlock > 
+           <apex:pageBlockTable value="{!HW_Assets }" var="Assets" columns="3" >          
+               
+                <apex:column headerValue="Name">
+                    <apex:outputText value="{!Assets.Name}" ></apex:outputText>
+               </apex:column>
+                <apex:column headerValue="Serial Number">
+                 <apex:outputText value="{!Assets.Serial_Number__c}" ></apex:outputText>
+               </apex:column>
+                <apex:column headerValue="create new case">
+                <apex:commandLink action="{!Create_Case}" value="Create Case" >
+                    <apex:param assignTo="{!HW_SerialNo}" name="SerailNo" value="{!Assets.Serial_Number__c}"/>
+                    <apex:param assignTo="{!HW_id}" name="HWid" value="{!Assets.Id}"/>
+                </apex:commandLink>
+            </apex:column>                    
+         </apex:pageBlockTable>
+   </apex:pageBlock> 
+
+   <apex:commandLink action="{!Create_Case_noHW}" value="Create Case without Hardware Asset">
+                </apex:commandLink>
+</apex:form> -->

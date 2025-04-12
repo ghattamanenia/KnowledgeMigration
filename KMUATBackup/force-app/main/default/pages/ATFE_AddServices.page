@@ -1,0 +1,55 @@
+<apex:page controller="ATFE_Services" tabStyle="Opportunity" action="{!GetProductDetails}">
+    <apex:sectionHeader title="Select Services"/>
+    <br/>
+    <apex:form >
+        <br/>
+        <div align="center">
+            <apex:commandButton action="{!process}" value="Select"/> &nbsp;&nbsp;
+            <apex:commandButton action="{!cancel}" value="Cancel"/>
+        </div>
+        <br/> 
+        <apex:pageBlock id="Results" >
+            <apex:pageMessages />
+            <apex:pageBlockTable value="{!services}" var="ser" >
+                <apex:column width="25px">
+                    <apex:inputCheckbox value="{!ser.checked}"/>
+               </apex:column>
+               <apex:column value="{!ser.prod.Product2.Name}"/>
+               <apex:column value="{!ser.prod.Product2.ProductCode}"/>
+               <apex:column value="{!ser.prod.Product2.Description }"/>
+               <apex:column value="{!ser.prod.Product2.Family }"/>
+               <apex:column value="{!ser.prod.UnitPrice }"/>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+    <!-- CODE DUMP -->
+    <!-- 
+    <apex:panelGrid columns="4">
+    <apex:commandLink action="{!previous}" rendered="{!hasPrevious}">Previous</apex:commandlink>
+    <apex:commandLink action="{!next}" rendered="{!hasNext}">Next</apex:commandlink>
+    </apex:panelGrid>  -->
+    <!--<apex:pageBlock title="Find Products" >   
+        <table >
+            <tr>
+                <td width="200px;"><b>By Keyword</b></td>
+                <td><b>By Field Filter</b></td>
+            </tr>
+            <tr>
+                <td width="200px;"><input type="text" /></td>
+                <td  width="200px;">
+                    <apex:selectList value="{!searchExpr}"  title="Field 1" size="1" >            
+                        <apex:selectOptions value="{!ProductFieldDetails}"/>        
+                    </apex:selectList></td>
+                <td  width="200px;">
+                    <apex:selectList value="{!expression}"  title="Operator 1" size="1" >            
+                        <apex:selectOptions value="{!LogicalOptions}"/>        
+                    </apex:selectList>
+                </td>
+                <td  width="200px;"><apex:inputText value="{!searchValue}" /></td>
+            </tr>
+            <tr>
+                <td><apex:commandButton value="Search"  rerender="Results"/></td>
+            </tr>
+        </table>
+    </apex:pageBlock>-->
+</apex:page>

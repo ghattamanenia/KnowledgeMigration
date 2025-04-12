@@ -1,0 +1,36 @@
+<apex:page showHeader="true" sidebar="true" tabStyle="Opportunity" standardController="Opportunity" extensions="ATFE_ChoosePricebookController">
+    <apex:form id="form01">
+        <apex:outputpanel id="other_description" rendered="{!show_other_description}">
+            Please choose a pricebook from the list below.<br/>
+            You can select one Pricebook for one Opportunity.<br/><br/>
+
+            If you change the pricebook, Opportunity's items, the pricebook related, is going to delete.<br/>
+            When you can't find the pricebook you want to use, please contact to Administrator.<br/><br/><br/>
+        </apex:outputpanel>
+        <apex:outputpanel id="jp_description" rendered="{!show_jp_description}">
+            価格表を選択するウィザードです。<br/>
+            価格表を変更すると、この商談からすべての既存商品が削除されます。<br/><br/>
+
+            価格表は1商談に1つのみ選択でき、単一の価格表のみから商品を追加できます。<br/>
+            選択した通貨の商品がない場合は、組織のシステム管理者に連絡して、新しい価格表を作ってもらってください。<br/><br/><br/>
+        </apex:outputpanel>
+        <apex:pageBlock >
+        <apex:pageMessages id="msg"/>
+            <apex:facet name="header"><B>{!opportunity.Name}    {!headerVal}</B></apex:facet>
+            <apex:pageblockSection columns="1">
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel style="bold" value="{!smallHeader}" for="ListVal"/>
+                <apex:selectList value="{!selectValue}" multiselect="false" size="1">
+                    <apex:selectOptions value="{!createListVal}"/>
+                </apex:selectList>
+            </apex:pageBlockSectionItem>
+            </apex:pageblockSection>
+            <apex:pageblockButtons location="bottom">
+                <apex:commandButton value="次へ"          action="{!openNext}"       disabled="{!NextBtn}"        rendered="{!NextBtnRender}"/>
+                <apex:commandButton value="戻る"          action="{!backBfr}"        disabled="{!BackBfrBtn}"     rendered="{!backBtnRender}"/>
+                <apex:commandButton value="{!PrbBtnName}" action="{!endPrbStartQuo}" disabled="{!EndPrbStartQuo}" rendered="{!endPrbStartQuoBtnRender}"/>
+                <apex:commandButton value="{!cancelName}" action="{!cancel}" immediate="true"/>
+            </apex:pageblockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,17 @@
+<apex:page showHeader="false" sidebar="false"  standardController="JP_QuotationCondition__c" extensions="JP_QuotationConditionList">
+    
+    <apex:pageBlock >
+        <div style="height:400px;overflow-y:scroll;" >
+        <!--<div style="overflow:scroll;width:880px;height:600px;"> overflow-y:scroll;-->  
+        <apex:pageBlockTable value="{!QuotationConditionList}" var="conditions">
+
+            <apex:column value="{!conditions.JP_QuotationConditionCode__c}"/>
+            <apex:column value="{!conditions.name}"/>
+            <apex:column value="{!conditions.JP_QuotationCondition__c}"/>
+            <apex:column value="{!conditions.JP_DisplayOrder__c}"/>
+
+        </apex:pageBlockTable>
+        </div>    
+    </apex:pageBlock>
+
+</apex:page>

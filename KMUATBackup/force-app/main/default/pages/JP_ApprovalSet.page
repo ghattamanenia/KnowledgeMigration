@@ -1,0 +1,40 @@
+<apex:page standardcontroller="JP_QuotationHeader__c" extensions="JP_ApprovalSetController" >
+    <apex:slds />
+    <script src='/canvas/sdk/js/publisher.js'></script>
+<style>
+    .mypage {
+        font-family: "ProximaNovaSoft-Regular", Calibri; 
+        font-size: 110%;
+        /*padding-top: 12px;*/
+        height: 30px;
+    }
+    .mypage button {
+        -webkit-appearance: button;
+        border-radius: 3px;
+        display: block;
+        padding: 12px;
+        margin: 8px 0;
+        width: 100%;
+        background: #eee;
+        border: solid 1px #ccc;
+      }
+
+</style>
+
+    <apex:outputPanel id="out">
+        <apex:pageMessages />
+    </apex:outputPanel>
+
+    <apex:form style="text-align: center;  margin-top: 5px;">
+        <apex:actionFunction name="approvalset" action="{!approvalSet}" status="status" reRender="out" />
+        <apex:actionStatus id="status" />
+    </apex:form>
+    
+    <apex:outputPanel id="hoge">
+        <script>
+            window.onload = function(){
+                approvalset();
+            }            
+        </script>
+    </apex:outputPanel>
+</apex:page>

@@ -1,0 +1,11 @@
+<aura:component controller="JP_CreateOpportunityForLightning" implements="force:lightningQuickAction,force:hasRecordId" >
+	<aura:attribute name="recordId" type="Id"/>
+
+    <div aura:id="msg" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doCheck}" />
+    
+    <lightning:button label="新規" onclick="{!c.doCreateNew}" class="slds-m-top_medium" />
+    <lightning:button label="更新" onclick="{!c.doCreateUpdate}" class="slds-m-top_medium" />
+    
+</aura:component>

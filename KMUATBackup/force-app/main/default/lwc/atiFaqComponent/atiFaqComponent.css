@@ -1,0 +1,26 @@
+.faq-item {
+    margin-bottom: 1rem;
+}
+
+.faq-question {
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+.faq-answer {
+    margin-left: 1.5rem;
+    font-family: Arial, sans-serif;
+    color: #555;
+}
+
+.icon-toggle {
+    margin-right: 0.5rem;
+    transform: rotate(0deg);
+    transition: transform 0.2s ease-in-out;
+}
+
+.icon-toggle[aria-expanded="true"] {
+    transform: rotate(90deg);
+}

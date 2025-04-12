@@ -1,0 +1,194 @@
+<apex:page showHeader="false" sidebar="false" controller="ServiceConsoleSearchController">
+    <apex:includeScript value="/soap/ajax/29.0/connection.js"/>
+    <apex:includeScript value="/support/console/29.0/integration.js"/>
+    
+    <script type="text/javascript">
+        var PrimeId, SubId, SubName, PrimeName;
+        var ResultId = "scc-pt-0";
+
+        function callOpenPrimaryTab() {
+            sforce.console.openPrimaryTab(undefined, 
+               '/' + PrimeId, true, PrimeName);
+        }
+
+        function callOpenSubtab() {
+            sforce.console.openSubtab(ResultId, '/' + SubId, true, SubName);
+        }
+
+        function callOpenSubtabByPrimaryTabName(PName, Id, Name) {
+            sforce.console.openSubtabByPrimaryTabName(PName, '/' + Id, true, 'case', null, openSuccess);
+        }
+
+        var setResult = function setResult(result) {
+        //  alert('Primary Tab IDs: ' + result.id);
+            ResultId = result.id;
+            sforce.console.openSubtab(result.id, '/' + SubId, true, SubName, openSuccess);
+        }
+
+        function openSuccess(result) {
+            //Report whether we succeeded in opening the subtab
+            if (result.success == true) {
+                alert('subtab successfully opened, id:');
+            } else {
+                alert('subtab cannot be opened');
+            }
+        }
+
+        function testGetFocusedPrimaryTabId() {
+            sforce.console.getFocusedPrimaryTabId(showTabId2);
+        }
+        var showTabId2 = function showTabId(result) {
+            //Display the tab ID
+            alert('Tab ID: ' + result.id);
+            sforce.console.openSubtab(result.id, 'www.salesforce.com', true, 'sf');
+        };
+
+        //function openSubtab(Id, PId, Name, PName) {
+        function OpenTab(Id, Name) {
+            PrimeId = Id;
+            PrimeName = Name;
+
+            callOpenPrimaryTab();
+        }
+
+        function OpenSubtabByPrimaryTabName(Id, PId, Name, PName) {
+            SubId = Id;
+            PrimeId = PId;
+            SubName = Name;
+            PrimeName = PName;
+
+            callOpenPrimaryTab();
+        }
+
+        /*
+        function openPrimaryTab() {
+            sforce.console.openPrimaryTab(undefined, 
+               'http://www.salesforce.com', true, 'salesforce');
+        }
+
+        
+        //The callback function that openSubtab will call once it's got the ID for its primary tab
+        var callOpenSubtab=function callOpenSubtab(result) {
+            sforce.console.openSubtab(result.id, 
+               'http://www.yahoo.com', true, 'yahoo');
+        };
+        
+        function openSubtab() {
+            sforce.console.getEnclosingPrimaryTabId(callOpenSubtab);
+        }
+
+        //Sets the title of the current tab to "SFDC"
+        function setTitle() {
+            sforce.console.setTabTitle('SFDC');
+        }
+        
+        //The callback function that closeTab will call once it's got the ID for its tab
+        var callCloseTab= function callCloseTab(result) {
+            sforce.console.closeTab(result.id);
+        }
+        
+        function closeTab() {
+            sforce.console.getEnclosingTabId(callCloseTab);
+        }
+        */
+    </script>
+    <style>
+        .bPageBlock .pbTitle {
+            width:100%;
+        }
+    </style>
+<!--
+    <A HREF="#" onClick="openPrimaryTab();return false">Open A Primary Tab</A> 
+    <p/><A HREF="#" onClick="openSubtab();return false">Open A Subtab</A> 
+    <p/><A HREF="#" onClick="setTitle();return false">Set Title to SFDC</A> 
+    <p/><A HREF="#" onClick="closeTab();return false">Close This Tab</A> 
+
+    -->
+    <apex:pageMessages />
+    <apex:form >
+        <table id="ServiceSearch" style="padding:10px;" >
+            <tr>
+                <td>
+                    <apex:inputText id="keyword" value="{!keyword}" />
+                </td>
+                <td style="text-align:right" colspan="2">
+                    <apex:commandButton value="Search" id="SearchButton" action="{!search}" />
+                </td>
+            </tr>
+        </table>
+
+    </apex:form>
+
+    
+    <apex:pageBlock id="caseResultsBlock" title="Cases {!casesCount}" tabStyle="Case" mode="String" >
+        <apex:pageBlockTable value="{!cases}" var="caseResult" id="caseResultsTable" styleClass="pageBlockStyle" border="1">
+            <apex:column headerValue="Number" headerClass="pageBlockStyle">
+                <apex:outputLink value="javascript;" onclick="OpenTab('{!caseResult.Id}', '{!caseResult.CaseNumber}');return false">
+                    {!caseResult.CaseNumber}
+                </apex:outputLink>
+            </apex:column>
+            <apex:column headerValue="Title" headerClass="pageBlockStyle">
+                <apex:outputField value="{!caseResult.Request_Title__c}" />
+            </apex:column>
+            <apex:column headerValue="Account" headerClass="pageBlockStyle">
+                <apex:outputField value="{!caseResult.Account.Name}" />
+            </apex:column>
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+    
+    <apex:pageBlock id="accountResultsBlock" title="Accounts {!acctCount}" tabStyle="Account">
+        <apex:pageBlockTable value="{!acct}" var="accountResult" id="AccountResultsTable" styleClass="pageBlockStyle" border="1">
+            <!--<apex:column headerValue="ID" headerClass="pageBlockStyle">
+                <apex:outputField value="{!accountResult.Id}" />
+            </apex:column>-->
+            <apex:column headerValue="Name" headerClass="pageBlockStyle">
+                <apex:outputLink value="javascript;" onclick="OpenTab('{!accountResult.Id}', '{!accountResult.Name}');return false">
+                    {!accountResult.Name}
+                </apex:outputLink>
+            </apex:column>
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+    
+    <apex:pageBlock id="hwassetsResultsBlock" title="H/W Assets {!hwassetCount}" tabStyle="Asset__c">
+        <apex:pageBlockTable value="{!hwasset}" var="hwassetResult" id="hwassetsResultsTable" styleClass="pageBlockStyle" border="1">
+            <apex:column headerValue="Name" headerClass="pageBlockStyle">
+                <apex:outputLink value="javascript;" onclick="OpenTab('{!hwassetResult.Id}', '{!hwassetResult.Name}');return false">
+                    {!hwassetResult.Name}
+                </apex:outputLink>
+            </apex:column>
+            <apex:column headerValue="S/N" headerClass="pageBlockStyle">
+                <apex:outputField value="{!hwassetResult.Serial_Number__c}" />
+            </apex:column>
+            <apex:column headerValue="Account" headerClass="pageBlockStyle">
+                <apex:outputField value="{!hwassetResult.Account__r.Name}" />
+            </apex:column>
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+    
+    <apex:pageBlock id="sassetResultsBlock" title="Service Assets {!sassetCount}" tabStyle="Service_Asset__c">
+        <apex:pageBlockTable value="{!sasset}" var="sassetResult" id="sassetResultsTable" styleClass="pageBlockStyle" border="1">
+            <apex:column headerValue="Name" headerClass="pageBlockStyle">
+                <apex:outputLink value="javascript;" onclick="OpenTab('{!sassetResult.Id}', '{!sassetResult.Name}');return false">
+                    {!sassetResult.Name}
+                </apex:outputLink>
+            </apex:column>
+            <apex:column headerValue="Account" headerClass="pageBlockStyle">
+                <apex:outputField value="{!sassetResult.Account__r.Name}" />
+            </apex:column>
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+    
+    <apex:pageBlock id="contactResultsBlock" title="Contacts {!contactCount}" tabStyle="Contact">
+        <apex:pageBlockTable value="{!contact}" var="contactResult" id="contactResultsTable" styleClass="pageBlockStyle" border="1">
+            <apex:column headerValue="Name" headerClass="pageBlockStyle">
+                <apex:outputLink value="javascript;" onclick="OpenTab('{!contactResult.Id}', '{!contactResult.Name}');return false">
+                    {!contactResult.Name}
+                </apex:outputLink>
+            </apex:column>
+            <apex:column headerValue="Account" headerClass="pageBlockStyle">
+                <apex:outputField value="{!contactResult.Account.Name}" />
+            </apex:column>
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+    
+</apex:page>

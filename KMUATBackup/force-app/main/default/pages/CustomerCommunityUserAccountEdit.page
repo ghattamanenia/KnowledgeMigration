@@ -1,0 +1,78 @@
+<apex:page id="CustomerCommunitySelfReg" showHeader="false" sidebar="false" controller="CustomerCommunityUAEditController" title="{!$Label.site.user_registration}" action="{!forwardToCustomAuthPage}" >
+    <apex:composition template="CustomerSupportTemplate">
+        <apex:define name="body">  
+          <!-- Login Area -->
+            <div class="row">
+                <div class="twelve columns">
+                    <div class="panel radius inset">
+                        <div class="row">
+                            <div class="five columns">
+                                <p><img alt="" src="http://alliedtelesis.com/images/support/online-support-header-short.jpg" class="shadow" /></p>
+                                <br /><br />
+                                <apex:pageMessages id="error"/>
+                            </div>
+                            <div class="seven columns">
+                                <apex:form id="theForm" forceSSL="true">
+                                    <div class="positionRelative ten">
+                                        <h1 class="title">Edit your Account</h1> 
+                                        <div class="absoluteRight"><span class="required title">&#42; </span><span class="helpTxtFontSize">All the fields are required.</span></div>      
+                                        <table class="twelve main">
+                                            <thead>
+                                                <tr>
+                                                    <th colspan="4">User Details</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="five">
+                                                        <apex:outputLabel value="First Name" for="firstName"/><span class="required"> &#42;</span>
+                                                    </td>
+                                                    <td class="five">
+                                                        <apex:inputText id="firstName" value="{!firstName}" label="First Name" required="true"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="five">
+                                                        <apex:outputLabel value="Last Name" for="lastName"/><span class="required"> &#42;</span>
+                                                    </td>
+                                                    <td class="five">
+                                                        <apex:inputText id="lastName" value="{!lastName}" label="Last Name" required="true"/>
+                                                    </td>
+                                                </tr>
+                                                <!--<tr>
+                                                    <td class="three"><apex:outputLabel value="{!$Label.site.community_nickname}" for="communityNickname"/></td>
+                                                    <td class="three"><apex:inputText id="communityNickname" value="{!communityNickname}" label="{!$Label.site.community_nickname}"/></td>
+                                                </tr>-->
+                                                <tr>
+                                                    <td class="five">
+                                                        <apex:outputLabel value="{!$Label.site.email}" for="email"/><span class="required"> &#42;</span>
+                                                    </td>
+                                                    <td class="five">
+                                                        <apex:inputText id="email" value="{!email}" label="{!$Label.site.email}" required="true"/>
+                                                    </td>
+                                                </tr>
+                                                <!--<tr>
+                                                    <td class="three"><apex:outputLabel value="{!$Label.site.password}" for="password"/></td>
+                                                    <td class="three"><apex:inputSecret id="password" value="{!password}"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="three"><apex:outputLabel value="{!$Label.site.confirm_password}" for="confirmPassword"/></td>
+                                                    <td class="three"><apex:inputSecret id="confirmPassword" value="{!confirmPassword}"/></td>
+                                                </tr>-->
+                                                <tr>
+                                                    <td class="two"><apex:outputText value=""/></td>
+                                                    <td class="five" colspan="2" style="text-align:right;"><apex:commandButton action="{!Save}" value="Save" id="Save" styleClass="button large"/>&nbsp;&nbsp;&nbsp;<apex:commandButton action="{!BackPage}" value="Back" id="BackPage" immediate="true" styleClass="button large"/></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <br/>
+                                    </div>
+                                </apex:form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:define>
+    </apex:composition>
+</apex:page>

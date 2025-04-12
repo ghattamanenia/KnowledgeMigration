@@ -1,0 +1,34 @@
+<apex:page controller="NewOpportunityCtrl" showHeader="true" lightningStylesheets="true">
+    <apex:slds />
+
+    <apex:form >
+        <div class="slds-scope">
+            <div align="center">
+                <apex:outputPanel rendered="{!if((currentUserIsAccOwner == false && currentUserHasEditForOppties == false && $Profile.Name !='System Administrator' && $Profile.Name!='Service Ops'),true,false)}">
+                    <apex:pageMessage severity="error" strength="1" summary="Only the Account Owner and Account Team members with the appropriate access can create Opportunities."/>
+                </apex:outputPanel>
+            </div>
+            <div align="center">
+                <apex:outputPanel rendered="{!acc.Freeze_Account__c ==true}">
+                    <apex:pageMessage severity="error" strength="1" summary="New Opportunities cannot be created on Frozen Account." />
+                </apex:outputPanel>
+            </div>
+            
+            <div align="center">
+                <apex:outputPanel >
+                   <br/><br/><br/><br/>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!if((currentUserIsAccOwner == false && currentUserHasEditForOppties == false && $Profile.Name !='System Administrator' && $Profile.Name!='Service Ops'),false,true)}">
+                    <!--<apex:pageMessage severity="Success" strength="1" summary="All validation has been verified,Please click the next button to proceed further." />--> 
+                    <span> <b>All validation has been verified,Please click the next button to proceed further. </b></span><br/><br/>
+                    <apex:commandButton styleClass="slds-button slds-button_success" value="Next" action="{!validateAndRedirect}" rendered="{!acc.Freeze_Account__c ==false}" />
+                </apex:outputPanel>
+                
+                <apex:outputPanel >
+                    &nbsp;&nbsp;<apex:commandButton styleclass="slds-button slds-button_destructive" value="Cancel" action="{!onCancel}" />
+                </apex:outputPanel>
+                 
+            </div>
+        </div>
+    </apex:form>
+</apex:page>

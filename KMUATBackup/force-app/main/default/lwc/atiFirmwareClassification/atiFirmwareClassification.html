@@ -1,0 +1,154 @@
+<!--
+  @description       : 
+  @author            : Kalaivani Sampath
+  @group             : 
+  @last modified on  : 22-12-2024
+  @last modified by  : Sampath Arjunan
+-->
+<template>
+    <lightning-card>
+        <lightning-tabset>
+            <!-- Current Releases Tab -->
+            <lightning-tab label="Current Releases">
+                <template if:true={currentFirmware}>
+                    <template if:true={currentFirmware.length}>
+                        <ul class="firmware-list">
+                            <template for:each={currentFirmware} for:item="firmware">
+                                <li key={firmware.Id} class="firmware-item">
+                                    <div class="firmware-header">
+                                        <button 
+                                            class="expand-collapse-btn" 
+                                            title={firmware.iconTitle} 
+                                            onclick={handleFirmwareClick} 
+                                            data-id={firmware.Id}>
+                                            <lightning-icon 
+                                            icon-name={firmware.iconName} 
+                                            size="xx-small" 
+                                            alternative-text={firmware.iconTitle}>
+                                        </lightning-icon>
+                                        </button>
+                                        <span class="firmware-name">{firmware.Name}</span><br>
+                                        <span class="firmware-headerf-field">Version: {firmware.Version__c}   Date Available: {firmware.Effective_Date__c} </span>
+                        
+                                    </div>
+
+                                    <template if:true={firmware.isExpanded}>
+                                        <ul class="software-list">
+                                            <template for:each={firmware.software} for:item="software">
+                                                <li key={software.Id} class="software-item">
+                                                    <div class="software-row">
+                                                        <div class="software-icon">
+                                                            <lightning-icon 
+                                                                icon-name="standard:connected_apps" 
+                                                                alternative-text="Software" 
+                                                                size="xx-small">
+                                                            </lightning-icon>
+                                                        </div>
+                                                        <div class="software-details">
+                                                            <a 
+                                                                href="javascript:void(0)" 
+                                                                data-id={software.Software__c} 
+                                                                onclick={handleSoftwareClick}
+                                                                class="software-link">
+                                                                {software.Software__r.Name}
+                                                            </a>
+                                                        </div>
+                                                        <!-- <div class="software-action">
+                                                            <lightning-button-icon 
+                                                                icon-name="utility:forward" 
+                                                                alternative-text="View Details"
+                                                                value={software.Software__c} 
+                                                                size="medium" 
+                                                                onclick={handleSoftwareClick}>
+                                                            </lightning-button-icon>
+                                                        </div> -->
+                                                    </div>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </template>
+                                </li>
+                            </template>
+                        </ul>
+                    </template>
+                    <template if:false={currentFirmware.length}>
+                        <p class="no-products-text">There are no current products available at this time.</p>
+                    </template>
+                </template>
+            </lightning-tab>
+
+            <!-- Archived Versions Tab -->
+            <lightning-tab label="Archived Versions">
+                <template if:true={archivedFirmware}>
+                    <template if:true={archivedFirmware.length}>
+                        <ul class="firmware-list">
+                            <template for:each={archivedFirmware} for:item="firmware">
+                                <li key={firmware.Id} class="firmware-item">
+                                    <div class="firmware-header">
+                                        <button 
+                                            class="expand-collapse-btn" 
+                                            title={firmware.iconTitle} 
+                                            onclick={handleFirmwareClick} 
+                                            data-id={firmware.Id}>
+                                            <lightning-icon 
+                                                icon-name={firmware.iconName} 
+                                                size="xx-small" 
+                                                alternative-text={firmware.iconTitle}>
+                                            </lightning-icon>
+                                        </button>
+                                        <span class="firmware-name">{firmware.Name}</span><br>
+                                        <span class="firmware-headerf-field">Version: {firmware.Version__c}   Date Available: {firmware.Effective_Date__c} </span>
+                                    </div>
+
+                                    <template if:true={firmware.isExpanded}>
+                                        <ul class="software-list">
+                                            <template if:true={firmware.software}>
+                                                <template for:each={firmware.software} for:item="software">
+                                                    <li key={software.Id} class="software-item">
+                                                        <div class="software-row">
+                                                            <div class="software-icon">
+                                                                <lightning-icon 
+                                                                    icon-name="standard:connected_apps" 
+                                                                    alternative-text="Software" 
+                                                                    size="xx-small">
+                                                                </lightning-icon>
+                                                            </div>
+                                                            <div class="software-details">
+                                                                <a 
+                                                                    href="javascript:void(0)" 
+                                                                    data-id={software.Software__c} 
+                                                                    onclick={handleSoftwareClick}
+                                                                    class="software-link">
+                                                                    {software.Software__r.Name}
+                                                                </a>
+                                                            </div>
+                                                            <!-- <div class="software-action">
+                                                                <lightning-button-icon 
+                                                                    icon-name="utility:forward" 
+                                                                    alternative-text="View Details"
+                                                                    value={software.Software__c} 
+                                                                    size="medium" 
+                                                                    onclick={handleSoftwareClick}>
+                                                                </lightning-button-icon>
+                                                            </div> -->
+                                                        </div>
+                                                    </li>
+                                                </template>
+                                            </template>
+                                            <template if:false={firmware.software}>
+                                                <li>Loading...</li>
+                                            </template>
+                                        </ul>
+                                    </template>
+                                </li>
+                            </template>
+                        </ul>
+                    </template>
+                    <template if:false={archivedFirmware.length}>
+                        <p class="no-products-text">There are no archived products available at this time.</p>
+                    </template>
+                </template>
+            </lightning-tab>
+        </lightning-tabset>
+    </lightning-card>
+</template>

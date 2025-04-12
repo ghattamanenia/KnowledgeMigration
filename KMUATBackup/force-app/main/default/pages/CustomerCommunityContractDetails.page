@@ -1,0 +1,76 @@
+<apex:page showHeader="false" sidebar="false" controller="CustomerCommunityContrctController" action="{!forwardToCustomAuthPage}">
+ <apex:composition template="CustomerSupportTemplate">
+
+ <apex:define name="body">
+            <div class="row">
+                <div class="twelve columns">
+                    <div class="panel radius inset">
+                      <apex:pageMessages id="error"/>
+                        <div class="row container">
+                        
+                           <apex:form > 
+                                    <table class="twelve">
+                                        <tr>
+                                            <td>
+                                                <h1>Hardware : &nbsp;{!HW_Asset.Name}</h1> 
+                                            </td>
+                                           
+                                        </tr>
+                                    </table>
+                                    
+                               
+                               
+                                
+                                 <apex:pageBlock rendered="{!showerror }" >
+                                <apex:outputText escape=""> <b style = "color:red !important;" >{!NoContractFound}</b></apex:outputText>
+                                 
+                                </apex:pageBlock>
+                                
+                                
+                              
+                              <apex:pageBlock rendered="{!showdetails }">
+                             <table class="twelve">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="4">Contract Details</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="three">Contract Number</td>
+                                            <td class="three">{!ServContrct}</td>
+                                            <td class="three">Service</td>
+                                            <td class="three">{!ServAsst}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="three">Start Date</td>
+                                            <td class="three">{!startDate}</td>
+                                            <td class="three">Hardware</td>
+                                            <td class="three">{!HW_Asset.Name}</td>
+                                            
+                                        </tr>
+                                        <tr>
+                                            
+                                            <td class="three">End Date</td>
+                                            <td class="three">{!enddate}</td>
+                                            <td class="three">Hardware Serial Number </td>
+                                            <td class="three">{!HW_Asset.Serial_Number__c}</td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                              </apex:pageBlock>
+                               <div class="twelve">
+                               
+                                 <apex:commandButton action="{!Create_Case_for_Prod}" value="Create Case for this product" styleClass="button large"></apex:commandButton>
+                                  <apex:commandButton action="{!BackPage}" id="BackPage" styleClass="large button " value="Back"/>
+                                 
+                                </div>
+                               </apex:form>
+                        </div>
+                      </div>
+                     </div>
+                    </div>
+</apex:define>
+</apex:composition>
+</apex:page>

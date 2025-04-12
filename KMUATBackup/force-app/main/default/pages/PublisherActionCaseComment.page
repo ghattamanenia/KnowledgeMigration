@@ -1,0 +1,41 @@
+<apex:page standardController="Case" extensions="PublisherActionCaseCommentController" showHeader="false">
+
+    <script type='text/javascript' src='/canvas/sdk/js/publisher.js'/> 
+    <style>
+        .requiredInput .requiredBlock, .requiredBlock {background-color: white;} 
+        .custompubblock div {display: inline-block;} 
+        .custompublabel {width:54px;} 
+    </style>
+    <script> 
+        function refreshFeed() { 
+            Sfdc.canvas.publisher.publish({name : 'publisher.refresh', payload : {feed:true}}); 
+        }
+    </script>  
+
+    <div>
+        <apex:form >
+            <apex:actionFunction action="{!createCaseComment}" name="createCaseComment" rerender="out" oncomplete="refreshFeed();"/> 
+
+            <apex:outputPanel id="out" > 
+                <div class="custompubblock"> 
+                    <div>Case:&nbsp;</div><apex:inputField value="{!theCaseComment.Case__c}" />
+                </div>
+                <apex:inputField value="{!theCaseComment.Comment__c}" style="width:538px;height:92px;margin-top:4px;" />
+                <div class="custompubblock" style="margin-top:5px;"> 
+                    <div>Public:&nbsp;</div><apex:inputField value="{!theCaseComment.Public__c}" />&nbsp;&nbsp;&nbsp; 
+                </div> 
+            </apex:outputPanel>
+
+        </apex:form>
+
+        <br/>
+
+        <button type="button" onclick="createCaseComment();" 
+        style="position:fixed;bottom:0px;right:0px;padding:5px 10px; 
+        font-size:13px; font-weight:bold; line-height: 
+        18px;background-color:#0271BF;background-image:-moz-linear-gradient(#2DADDC, #0271BF);background-repeat:repeat-x;border-color:#096EB3;" 
+        id="addcasebutton">Create Case Comment</button> 
+
+    </div>
+    
+</apex:page>

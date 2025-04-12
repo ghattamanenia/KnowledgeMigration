@@ -1,0 +1,64 @@
+<apex:page id="CustomerCommunitySelfReg" showHeader="false" sidebar="false" controller="CustomerCommunityUserAccountController" action="{!forwardToCustomAuthPage}" >
+    <apex:composition template="CustomerSupportTemplate">
+        <apex:define name="body">  
+          <!-- Login Area -->
+            <div class="row">
+                <div class="twelve columns" style="margin-top: 16px">
+                        <div class="row">
+                            <div class="five columns">
+                                <p><img alt="" src="{!URLFOR($Resource.CommunityZip, 'Images/online-support-header-short.jpg')}" /></p>
+                                <br /><br />
+                                <apex:pageMessages id="error"/>
+                            </div>
+                            <div class="seven columns">
+                                <apex:form id="theForm" forceSSL="true">
+                                    <h1>Account Details</h1>        
+                                    <table class="ten main">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="4">User Details</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="five"><apex:outputLabel value="First Name" for="firstName"/></td>
+                                                <td class="five"><apex:outputLabel value="{!firstName}" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="five"><apex:outputLabel value="Last Name" /></td>
+                                                <td class="five"><apex:outputLabel value="{!lastName}" /></td>
+                                            </tr>
+                                            <!--<tr>
+                                                <td class="three"><apex:outputLabel value="{!$Label.site.community_nickname}" for="communityNickname"/></td>
+                                                <td class="three"><apex:outputLabel value="{!communityNickname}" /></td>
+                                            </tr>-->
+                                            <tr>
+                                                <td class="five"><apex:outputLabel value="{!$Label.site.email}" for="email"/></td>
+                                                <td class="five"><apex:outputLabel value="{!email}" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="five"><apex:outputLabel value="{!$Label.site.password}" for="password"/></td>
+                                                <td class="five"><apex:commandButton action="{!ChangePassword}" value="Change" id="ChangePassword" styleClass="button large"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="five"><apex:outputText value=""/></td>
+                                                <td class="five" colspan="2"><apex:commandButton action="{!EditAccount}" value="Edit Account" id="EditAccount" styleClass="button large"/>&nbsp;&nbsp;&nbsp;<apex:commandButton action="{!BackPage}" value="Back" id="BackPage" styleClass="button large"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <br/>
+                                </apex:form>
+                            </div>
+                        </div>
+
+                </div>
+            </div>
+<style type="text/css">
+    form table.main {
+        border: 0px;
+        margin-top: 15px;
+    }
+    </style>
+        </apex:define>
+    </apex:composition>
+</apex:page>

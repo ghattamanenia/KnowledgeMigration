@@ -1,0 +1,1473 @@
+<apex:page showHeader="true" sidebar="false" standardController="JP_QuotationHeader__c" extensions="JP_QuotationHeaderController" tabStyle="JP_QuotationHeader__c">
+
+<script type="text/javascript" src="{!URLFOR($Resource.JP_StaticResources,'jquery/jquery-1.11.3.min.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.JP_StaticResources,'jquery-ui/1.11.4/jquery-ui.js')}"></script>
+<link href="{!URLFOR($Resource.JP_StaticResources,'jquery-ui/1.11.4/jquery-ui.min.css')}" rel="stylesheet" />
+
+<apex:outputPanel id="out">
+    <apex:pageMessages id="msg" escape="false"/>
+</apex:outputPanel>
+<style>
+.required1{
+    color:#0000FF;
+    width: 70px;di
+    font-size:14px;
+    font-weight:Bold;
+}
+
+/* ALLIEDTELESIS-416 20191126 Terrasky Mod Start */
+/* 全体的な文字サイズ */
+body,span{
+    font-size:14px;
+}
+
+/* ラベル */
+.bPageBlock .detailList .labelCol{
+    width:10%;
+}
+
+/* データ */
+.bPageBlock .detailList .labelCol {
+    width:10%;
+}
+
+/* タブのスタイル */
+.activeTab {
+    background-color: #f1f1f1; 
+    color:black;
+    font-size:20px;
+    background-image:none
+}
+
+.inactiveTab { 
+    background-color: #ADCDAD; 
+    color:black;font-size:12px;
+    background-image:none
+}
+
+.background { 
+    background-color: #ADCDAD; 
+    font-size:12px; 
+    color:black
+}
+
+/* リンクボタン化 */
+a{ text-decoration: none; }
+a:link.lnk2btn{ text-decoration: none; color: black; }
+a:visited.lnk2btn{ text-decoration: none; color: black; }
+a:hover.lnk2btn{ text-decoration: none; color: black; }
+a:active.lnk2btn{ text-decoration: none; color: black; }
+/* ALLIEDTELESIS-416 20191126 Terrasky Mod End */
+
+/* Loading icon */
+.loader {
+    display: none;
+    background: url('/img/loading32.gif') scroll no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+/* Overlay */
+.overlay {
+    display: none;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    position: fixed;
+    opacity: 0.3;
+    -moz-opacity: 0.3;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
+    filter: alpha(opacity=30);
+    -khtml-opacity: 0.3;
+    background: #000;
+    z-index: 1000;
+}
+</style>
+
+<script type="text/javascript">
+jQuery.noConflict();
+
+//コンポーネントページモード
+var page_mode;
+var selectedCatalogCode;
+function pageMode(mode,code){
+    page_mode = mode;
+    jQuery("[Id $=searchButton]").hide();
+    jQuery("[Id $=addButton]").hide();
+    jQuery("[Id $=updateButton]").hide();
+    if(page_mode == 'insert'){
+        jQuery("[Id $=searchButton]").show();
+        jQuery("[Id $=addButton]").show();
+    }else{
+        jQuery("[Id $=searchButton]").show();
+        jQuery("[Id $=updateButton]").show();
+        selectedCatalogCode = code.parent('td').parent('[Id $=productCodeTr]').find("[Id $=productCatalogCode]").val();
+        jQuery("[Id $=catalogCode]").val(selectedCatalogCode);
+    /*
+        if(proCode != null && proCode !=''){
+            updateSearch();
+        }
+      */
+    }
+}
+
+function updateSearchAction(){
+
+    if(selectedCatalogCode != null && selectedCatalogCode !=''){
+        updateSearch();
+    }
+}
+
+jQuery(function() {
+    //ダイアログを表示（追加）
+    jQuery( "#comp1" ).dialog({
+        modal: true,
+        autoOpen: false,
+        width: '1024px',
+        close: function(){
+            jQuery("[Id $=catalogCode]").val('');
+            jQuery("[Id $=category1]").val('');
+            jQuery("[Id $=proName]").val('');
+            jQuery("[Id $=category2]").val('');
+            jQuery("[Id $=priceYM]").val('');
+            jQuery('table[Id $=DisPriceTable] tbody td').remove();
+            listSize = 0;
+            items = new Array();
+        },
+        buttons: {
+        "キャンセル":function() {
+            jQuery( this ).dialog( "close" );
+        }
+    }
+    });
+});
+
+// Enterキー制御
+jQuery(function(){
+    jQuery("input").keydown(function(e) {
+        if ((e.which && e.which === 13) || (e.keyCode && e.keyCode === 13)) {
+            return false;
+        } else {
+            return true;
+        }
+    });
+});
+
+function enterBtnFalse(){
+    // Enterキー制御
+    jQuery(function(){
+        jQuery("input").keydown(function(e) {
+            if ((e.which && e.which === 13) || (e.keyCode && e.keyCode === 13)) {
+                return false;
+            } else {
+                return true;
+            }
+        });
+    });
+}
+
+function CloseWindow(){
+    jQuery( "#comp1" ).dialog( "close" );
+}
+
+function popup_modeless(url){
+    var newWin = window.open(
+        url,
+        "pop",
+        "width=900, height=500,scrollbars=0"
+    );
+    newWin.focus();
+}
+
+jQuery(document).ready(function(){
+    deactivateTheItem();
+    companyItem();
+    allQuotationDetailInputControl();
+    productError();
+});
+
+
+//自動計算項目の非活性化
+function deactivateTheItem(){
+    jQuery('[id$=_disabled]').attr('disabled','disabled').css('color','black');
+}
+
+//ボタン押下時にDisabledを解除する
+function submitDisabledFalse(){
+    jQuery('[id$=_disabled]').removeAttr('disabled');
+    jQuery('[id$=_sp]').removeAttr('disabled');
+    allQuotationDetailEnabled();
+    columnEnable(jQuery(collonEscape('#{!$Component.form.mitumori_msi.TotalStandardAmount}')), true);
+    columnEnable(jQuery(collonEscape('#{!$Component.form.mitumori_msi.DiscountAmount}')), true);
+    columnEnable(jQuery(collonEscape('#{!$Component.form.mitumori_msi.TotalAmount}')), true);
+}
+
+//宛先項目の非活性化
+function companyItem(){
+    var QuotationDistCD = jQuery('[id$=DistributorCode_disabled]').val();
+    if(QuotationDistCD != '{!$Label.JP_SpotDistributorCode}'){
+        jQuery('[id$=companyname_disabled]').attr('disabled','disabled').css('color','black');
+    }else{
+        jQuery('[id$=companyname_disabled]').removeAttr('disabled');    
+    }
+}
+
+//単価チェックボックスによる入力可制御
+function tankaChkReady(){
+    if(jQuery('[id$=tanka]').prop("checked")){
+        jQuery('[id$=SpecialWholeSaleTRate_sp]').each(function(){
+            var elm1 = jQuery(this);
+            elm1.attr('disabled','disabled').css('color','black');
+        });
+        jQuery('[id$=SpeciaUnitPrice_sp]').each(function(){
+            var elm2 = jQuery(this);
+            elm2.removeAttr('disabled');
+        });
+    }else{
+        jQuery('[id$=SpeciaUnitPrice_sp]').each(function(){
+            var elm3 = jQuery(this);
+            elm3.attr('disabled','disabled').css('color','black');
+        });
+        jQuery('[id$=SpecialWholeSaleTRate_sp]').each(function(){
+            var elm4 = jQuery(this);
+            elm4.removeAttr('disabled');
+        });
+    }
+}
+
+//単価チェックボックスによる入力可制御
+function tankaChk(){
+    if(jQuery('[id$=tanka]').prop("checked")){
+        jQuery('[id$=SpeciaUnitPrice_sp]').removeAttr('disabled');
+        jQuery('[id$=SpecialWholeSaleTRate_sp]').attr('disabled','disabled').css('color','black');
+    }else{
+        jQuery('[id$=SpeciaUnitPrice_sp]').attr('disabled','disabled').css('color','black');
+        jQuery('[id$=SpecialWholeSaleTRate_sp]').removeAttr('disabled');
+    }
+}
+
+// 見積明細背景色変更
+function changeBG() {
+    var baseId = '{!$Component.form.mitumori_msi.inputArea.detailBlock}';
+    changeProductNameBG(baseId);
+    changeSpeciaUnitPrice(baseId);
+    changeDiscountLimitPrice(baseId);
+    changePercentDiscount(baseId);
+    changeProductCodeAndSalesStatus(baseId);
+}
+
+// 商品名項目背景色変更
+function changeProductNameBG(baseId) {
+    var i = 0;
+    while (document.getElementById(baseId + ':' + i + ':productName') != undefined) {
+        var id = collonEscape('#' + baseId + ':' + i + ':');
+        if (jQuery(id + 'requiredMaintenanceFlag').val() == 'true') {
+            jQuery(id + 'productName').css('background-color', 'DeepSkyBlue');
+        } else {
+            jQuery(id + 'productName').css('background-color', '');
+        }
+        ++i;
+    }
+}
+
+// 特別仕切単価背景色変更
+function changeSpeciaUnitPrice(baseId) {
+    var i = 0;
+    while (document.getElementById(baseId + ':' + i + ':SpeciaUnitPrice_sp') != undefined) {
+        var id = collonEscape('#' + baseId + ':' + i + ':');
+        var specialUnitPrice = toInt(jQuery(id + 'SpeciaUnitPrice_sp'));
+        var percentDiscount = toInt(jQuery(id + 'PercentDiscount'));
+        var discountLimitPrice = toInt(jQuery(id + 'DiscountLimitPrice'));
+        var unitPrice = toInt(jQuery(id + 'UnitPrice'));
+
+        if ((specialUnitPrice < percentDiscount || specialUnitPrice < discountLimitPrice) && specialUnitPrice != 0) {
+            jQuery(id + 'SpeciaUnitPrice_sp').css('background-color', 'red');
+            jQuery(id + 'SpeciaUnitPrice_sp').css('color', 'white');
+        } else if (specialUnitPrice < unitPrice && specialUnitPrice >= percentDiscount && specialUnitPrice >= discountLimitPrice) {
+            jQuery(id + 'SpeciaUnitPrice_sp').css('background-color', 'YellowGreen');
+        } else {
+            jQuery(id + 'SpeciaUnitPrice_sp').css('background-color', '');
+        }
+        ++i;
+    }
+}
+
+// 値引限度額背景色変更
+function changeDiscountLimitPrice(baseId) {
+    var i = 0;
+    while (document.getElementById(baseId + ':' + i + ':DiscountLimitPrice') != undefined) {
+        var id = collonEscape('#' + baseId + ':' + i + ':');
+        var specialUnitPrice = toInt(jQuery(id + 'SpeciaUnitPrice_sp'));
+        var discountLimitPrice = toInt(jQuery(id + 'DiscountLimitPrice'));
+
+        if (specialUnitPrice < discountLimitPrice && specialUnitPrice != 0 ) {
+            jQuery(id + 'DiscountLimitPrice').css('background-color', 'red');
+            jQuery(id + 'DiscountLimitPrice').css('color', 'white');
+        } else {
+            jQuery(id + 'DiscountLimitPrice').css('background-color', '');
+        }
+        ++i;
+    }
+}
+
+// 仕切5%減背景色変更
+function changePercentDiscount(baseId) {
+    var i = 0;
+    while (document.getElementById(baseId + ':' + i + ':PercentDiscount') != undefined) {
+        var id = collonEscape('#' + baseId + ':' + i + ':');
+        var specialUnitPrice = toInt(jQuery(id + 'SpeciaUnitPrice_sp'));
+        var percentDiscount = toInt(jQuery(id + 'PercentDiscount'));
+        var discountLimitPrice = toInt(jQuery(id + 'DiscountLimitPrice'));
+        var unitPrice = toInt(jQuery(id + 'UnitPrice'));
+
+        if (specialUnitPrice < percentDiscount && specialUnitPrice != 0 ) {
+            jQuery(id + 'PercentDiscount').css('background-color', 'red');
+            jQuery(id + 'PercentDiscount').css('color', 'white');
+        } else if (specialUnitPrice < unitPrice && specialUnitPrice >= percentDiscount && specialUnitPrice >= discountLimitPrice) {
+            jQuery(id + 'PercentDiscount').css('background-color', 'YellowGreen');
+        } else {
+            jQuery(id + 'PercentDiscount').css('background-color', '');
+        }
+        ++i;
+    }
+}
+
+// 製品コード・販売状態背景色変更
+function changeProductCodeAndSalesStatus(baseId) {
+    var i = 0;
+    while (document.getElementById(baseId + ':' + i + ':PercentDiscount') != undefined) {
+        var id = collonEscape('#' + baseId + ':' + i + ':');
+        var PiStock = jQuery(id + 'PiStock');
+
+        if (PiStock.val() == "true") {
+            jQuery(id + 'productCatalogCode').css('background-color', 'Yellow');
+            jQuery(id + 'SalesStatus').css('background-color', 'Yellow');
+        } else {
+            jQuery(id + 'productCatalogCode').css('background-color', '');
+            jQuery(id + 'SalesStatus').css('background-color', '');
+        }
+        ++i;
+    }
+}
+
+// 数値変換
+function toInt(val) {
+    var dest = 0;
+    if (val.val() != '') {
+        var num = val.val().replace(/,/g, '');
+        if (jQuery.isNumeric(num)) {
+            dest = parseInt(num, 10);
+        }
+    }
+
+    return dest;
+}
+
+// 実数変換
+function toFloat(val) {
+    var dest = 0;
+    if (val.val() != '' && val.val().match(/^-?[0-9]+\.[0-9]+$/)) {
+        dest = parseFloat(val.val());
+    }
+
+    return dest;
+}
+
+// :をjQueryセレクタで使用できるようエスケープ
+function collonEscape(val){
+    return val.replace(/:/g, '\\:');
+}
+
+//行を取得する
+function getRowNo(id){
+    var idArr = id.split(':');
+    var len = idArr.length;
+    return idArr[len-2];
+}
+    
+// 商品情報をセットする
+// @param rowNum アクションが発火した明細一覧行番号
+function setProductInfo(rowNum) {
+    var autosumflg = document.getElementById('{!$Component.form.mitumori_msi.autosumflg}').checked;
+    var id = collonEscape('#{!$Component.form.mitumori_msi.inputArea.detailBlock}' + ':' + rowNum + ':');
+    var productcode = document.getElementById('{!$Component.form.mitumori_msi.inputArea.detailBlock}' + ':' + rowNum + ':productCatalogCode').value;
+    var quantity = document.getElementById('{!$Component.form.mitumori_msi.inputArea.detailBlock}' + ':' + rowNum + ':quantity').value;
+    // 商品コードと数量が入力されていれば検索
+    // 20160421 登録外商品（ｚ）及びコメント行（-）の時も動作する様に修正
+    if ((autosumflg == true && productcode != '') || productcode == 'z' || productcode == '-' || productcode == '****') {
+        startLoading();
+        // disabled解除
+        allQuotationDetailEnabled();
+        document.getElementById('selectedRowNum').value = rowNum;
+        searchProductInfo(rowNum);
+
+        // disabled再設定
+        allQuotationDetailInputControl();
+    } else{
+        document.getElementById('{!$Component.form.mitumori_msi.inputArea.detailBlock}' + ':' + rowNum + ':quotationDetail').value = '';
+    }
+        // setDefaultQuotationDetail (); // Alliedtelesis-462 コメントアウト
+}
+
+/**
+ * 商品関連エラー
+ */
+function productNotFound() {
+    var rowNum = document.getElementById('selectedRowNum');
+    var productCode = document.getElementById('{!$Component.form.mitumori_msi.inputArea.detailBlock}:' + rowNum.value + ':errProductCatalogCode');
+    var errCode = document.getElementById('{!$Component.form.mitumori_msi.inputArea.detailBlock}:' + rowNum.value + ':errCode');
+    var msg = '\'' + productCode.value + '\'';
+
+  //alert(rowNum.value);
+  //alert(productCode.value);
+  //alert(errCode.value + msg.value);
+
+
+    if (errCode.value == '1') {
+        // 該当製品なし
+        msg += '{!$Label.JP_DistributorPriceNotFound}';
+        alert(msg);
+    } else if (errCode.value == '2') {
+        // 特殊代理店製品
+        msg += '{!$Label.JP_SpecialProduct}';
+        alert(msg);
+    } else if (errCode.value == '3') {
+        // PI在庫誘導製品
+        msg += '{!$Label.JP_PIStock}';
+        alert(msg);
+    }
+
+    productCode.value = '';
+    errCode.value = '';
+    rowNum.value = '';
+}
+
+/**
+ * 仕切表を元に計算　商品関連エラー
+ */
+function productNotFoundbyMath() {
+
+    var msg = '';
+    var i = 0;
+    
+    while (document.getElementById('{!$Component.form.mitumori_msi.inputArea.detailBlock}:' + i + ':errCode') != undefined) {
+        var rowNum = i;
+        var productCode = document.getElementById('{!$Component.form.mitumori_msi.inputArea.detailBlock}:' + i + ':errProductCatalogCode');
+        var errCode = document.getElementById('{!$Component.form.mitumori_msi.inputArea.detailBlock}:' + i + ':errCode');
+
+        if (errCode.value == '1') {
+            // 該当製品なし
+            msg += '\'' + productCode.value + '\',';
+        }
+        ++i;
+    }
+    
+    if(msg != ''){
+        msg += '{!$Label.JP_DistributorPriceNotFound}';
+        alert(msg);
+    }
+    
+    productCode.value = '';
+    errCode.value = '';
+    rowNum.value = '';
+}
+
+/**
+ * 順入力チェック
+ * @param val 順項目エレメント
+ */
+function checkSortVal(val) {
+    var num = parseInt(val.value, 10);
+    var msgArea = document.getElementById('DetailErrMessage');
+    if (!isFinite(val.value) || (num < 1 || num > 500)) {
+        msgArea.innerHTML = '{!$Label.JP_SortInputRange}';
+        val.value = '';
+    } else {
+    msgArea.innerHTML = '';
+    }
+}
+
+/**
+ * 全明細情報有効化
+ */
+function allQuotationDetailEnabled() {
+    jQuery(collonEscape('#{!$Component.form.mitumori_msi.inputArea.detailBlock}')).find('input').removeAttr('disabled');
+}
+
+/**
+ * 全明細情報入力制御
+ */
+function allQuotationDetailInputControl() {
+    columnEnable(jQuery(collonEscape('#{!$Component.form.mitumori_msi.TotalStandardAmount}')), false);
+    columnEnable(jQuery(collonEscape('#{!$Component.form.mitumori_msi.DiscountAmount}')), false);
+    columnEnable(jQuery(collonEscape('#{!$Component.form.mitumori_msi.TotalAmount}')), false);
+
+    var i = 0;
+    while (document.getElementById('{!$Component.form.mitumori_msi.inputArea.detailBlock}:' + i + ':productCatalogCode') != undefined) {
+        quotationDetailInputControl(i);
+        ++i;
+    }
+
+    // 背景色制御
+    changeBG();
+}
+
+/**
+ * 明細情報入力制御（行単位）
+ * @param rowNum 行番号
+ */
+function quotationDetailInputControl(rowNum) {
+    var id = collonEscape('#{!$Component.form.mitumori_msi.inputArea.detailBlock}:' + rowNum + ':');
+    var detailsNo = jQuery(id + 'detailsNo');
+    var productCatalogCode = jQuery(id + 'productCatalogCode');
+    var productName = jQuery(id + 'productName');
+    var StandardPrice = jQuery(id + 'StandardPrice');
+    var quantity = jQuery(id + 'quantity');
+    var Unit = jQuery(id + 'Unit');
+    var WholeSaleRate = jQuery(id + 'WholeSaleRate');
+    var SpecialWholeSaleTRate_sp = jQuery(id + 'SpecialWholeSaleTRate_sp');
+    var UnitPrice = jQuery(id + 'UnitPrice');
+    var SpeciaUnitPrice_sp = jQuery(id + 'SpeciaUnitPrice_sp');
+    var DiscountLimitPrice = jQuery(id + 'DiscountLimitPrice');
+    var PercentDiscount = jQuery(id + 'PercentDiscount');
+    var OverLimitDiscount = jQuery(id + 'OverLimitDiscount');
+    var WholeSalePriceMulQuantity = jQuery(id + 'WholeSalePriceMulQuantity');
+    var SpecialUnitPriceMulQuantity = jQuery(id + 'SpecialUnitPriceMulQuantity');
+    var StandardMinusSpecial = jQuery(id + 'StandardMinusSpecial');
+    var DeterminedAmount = jQuery(id + 'DeterminedAmount');
+    var QuotationDescription = jQuery(id + 'QuotationDescription');
+    var QuotationRemarks = jQuery(id + 'QuotationRemarks');
+    var SalesStatus = jQuery(id + 'SalesStatus');
+    var ReleaseScheduled = jQuery(id + 'ReleaseScheduled');
+    var SalesEndScheduled = jQuery(id + 'SalesEndScheduled');
+    var DistributorProCode = jQuery(id + 'DistributorProCode');
+    var PriceYearMonth = jQuery(id + 'PriceYearMonth');
+    var AppGroupID = jQuery(id + 'AppGroupID');
+    var tankaChecked = jQuery('[id$=tanka]').prop("checked");
+
+    if (productCatalogCode.val() == '****') {
+        // 登録外商品
+        columnEnable(productCatalogCode, true);
+        columnEnable(productName, true);
+        columnEnable(StandardPrice, true);
+        columnEnable(quantity, true);
+        columnEnable(Unit, true);
+        columnEnable(WholeSaleRate, true);
+        columnEnable(UnitPrice, true);
+        columnEnable(DiscountLimitPrice, true);
+        columnEnable(PercentDiscount, false);
+        columnEnable(OverLimitDiscount, false);
+        columnEnable(WholeSalePriceMulQuantity, false);
+        columnEnable(SpecialUnitPriceMulQuantity, false);
+        columnEnable(StandardMinusSpecial, false);
+        columnEnable(DeterminedAmount, false);
+        columnEnable(QuotationDescription, true);
+        //20161101 add start
+        columnEnable(QuotationRemarks, true);
+        //20161101 add end
+        columnEnable(SalesStatus, true);
+        columnEnable(ReleaseScheduled, true);
+        columnEnable(SalesEndScheduled, true);
+        columnEnable(DistributorProCode, true);
+        columnEnable(PriceYearMonth, true);
+        columnEnable(AppGroupID, true);
+
+        if (tankaChecked) {
+            columnEnable(SpeciaUnitPrice_sp, true);
+            columnEnable(SpecialWholeSaleTRate_sp, false);
+        } else {
+            columnEnable(SpeciaUnitPrice_sp, false);
+            columnEnable(SpecialWholeSaleTRate_sp, true);
+        }
+    } else if (productCatalogCode.val() == '-') {
+        // メモ
+        columnEnable(productCatalogCode, true);
+        columnEnable(productName, true);
+        columnEnable(StandardPrice, false);
+        columnEnable(quantity, false);
+        columnEnable(Unit, false);
+        columnEnable(WholeSaleRate, false);
+        columnEnable(SpecialWholeSaleTRate_sp, false);
+        columnEnable(UnitPrice, false);
+        columnEnable(SpeciaUnitPrice_sp, false);
+        columnEnable(DiscountLimitPrice, false);
+        columnEnable(PercentDiscount, false);
+        columnEnable(OverLimitDiscount, false);
+        columnEnable(WholeSalePriceMulQuantity, false);
+        columnEnable(SpecialUnitPriceMulQuantity, false);
+        columnEnable(StandardMinusSpecial, false);
+        columnEnable(DeterminedAmount, false);
+        columnEnable(QuotationDescription, false);
+        //20161101 add start
+        columnEnable(QuotationRemarks, true);
+        //20161101 add end
+        columnEnable(SalesStatus, false);
+        columnEnable(ReleaseScheduled, false);
+        columnEnable(SalesEndScheduled, false);
+        columnEnable(DistributorProCode, false);
+        columnEnable(PriceYearMonth, false);
+        columnEnable(AppGroupID, false);
+    } else {
+        // 通常
+        columnEnable(productCatalogCode, true);
+        columnEnable(productName, false);
+        columnEnable(StandardPrice, false);
+        columnEnable(quantity, true);
+        columnEnable(Unit, true);
+        columnEnable(WholeSaleRate, false);
+        columnEnable(UnitPrice, false);
+        columnEnable(DiscountLimitPrice, false);
+        columnEnable(PercentDiscount, false);
+        columnEnable(OverLimitDiscount, false);
+        columnEnable(WholeSalePriceMulQuantity, false);
+        columnEnable(SpecialUnitPriceMulQuantity, false);
+        columnEnable(StandardMinusSpecial, false);
+        columnEnable(DeterminedAmount, false);
+        columnEnable(QuotationDescription, true);
+        //20161101 add start
+        columnEnable(QuotationRemarks, true);
+        //20161101 add end
+        columnEnable(SalesStatus, false);
+        columnEnable(ReleaseScheduled, false);
+        columnEnable(SalesEndScheduled, false);
+        columnEnable(DistributorProCode, false);
+        columnEnable(PriceYearMonth, false);
+        columnEnable(AppGroupID, false);
+
+        if (tankaChecked) {
+            columnEnable(SpeciaUnitPrice_sp, true);
+            columnEnable(SpecialWholeSaleTRate_sp, false);
+        } else {
+            columnEnable(SpeciaUnitPrice_sp, false);
+            columnEnable(SpecialWholeSaleTRate_sp, true);
+        }
+    }
+}
+
+/**
+ * 項目の有効化
+ * @param val 対象項目
+ * @param flg true:有効 false：無効
+ */
+function columnEnable(val, flg) {
+    if (flg == true) {
+        val.removeAttr('disabled');
+    } else {
+        val.attr('disabled','disabled').css('color','black');
+    }
+}
+
+/**
+ * 1行追加ボタン処理
+ * @param listSize 現在の明細件数
+ */
+function onClickAddRow(listSize) {
+    // alert(addRowErrCheck(listSize));
+    if (addRowErrCheck(listSize)) {
+        startLoading();
+        addRow();
+    }
+}
+
+/**
+ * 10行追加ボタン処理
+ * @param listSize 現在の明細件数
+ */
+function onClickAddRow10(listSize) {
+    // alert(addRowErrCheck(listSize));
+    if (addRowErrCheck(listSize)) {
+        startLoading();
+        addRow10();
+    }
+}
+
+/**
+ * 見積代理店変更時処理
+ */
+function changeDairiten() {
+    changeDairiten();
+}
+
+/**
+ * 行追加時エラーチェック
+ * @param listSize 現在の明細件数
+ */
+function addRowErrCheck(listSize) {
+    if (parseInt(listSize, 10) >= parseInt('{!MAX_QDETAILORIGINALLISTSIZE}')) {
+        alert('{!$Label.JP_MaxRowDetails}');
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * 製品エラー
+ */
+function productError() {
+    if (document.getElementById('isProductError').value == 'true') {
+        alert('{!$Label.JP_InvalidProduct}');
+        document.getElementById('isProductError').value = false;
+    }
+}
+
+/**
+ * Loading icon & Overlay
+ */
+function startLoading(){
+    jQuery('.loadingBox').show();
+}
+
+function endLoading(){
+    jQuery('.loadingBox').hide();
+}
+
+/**
+ * 金額計算
+ */
+function autoCalcAmounts(){
+    var autosumflg = document.getElementById('{!$Component.form.mitumori_msi.autosumflg}').checked;
+    var tankaflg = document.getElementById('{!$Component.form.mitumori_msi.tanka}').checked;
+    if(autosumflg == true){
+        startLoading();
+        allCalcAmounts();
+    }
+}
+</script>
+<!--
+<apex:outputPanel style="position:relative;" rendered="{!DispQuatationEdit}">
+    <apex:sectionHeader subtitle="{!$Label.JP_QuatationEdit}"></apex:sectionHeader>
+</apex:outputPanel>-->
+    <apex:form id="form">
+        <!-- hidden -->
+        <input type="hidden" value="" id="selectedRowNum" />
+        <input type="hidden" value="{!isProductError}" id="isProductError" />
+        <!-- actionFunction -->
+        <apex:actionFunction action="{!searchProductInfo}" name="searchProductInfo" rerender="productCatalogCode,productName,quotationDetail,StandardPrice,WholeSaleRate,SpecialWholeSaleTRate_sp,UnitPrice,SpeciaUnitPrice_sp,LoweLimitPrice,DiscountLimitPrice,PercentDiscount,OverLimitDiscount,WholeSalePriceMulQuantity,SpecialUnitPriceMulQuantity,StandardMinusSpecial,DeterminedAmount,SalesStatus,ReleaseScheduled,SalesEndScheduled,DistributorProCode,PriceYearMonth,AppGroupID,TotalStandardAmount,DiscountAmount,TotalAmount,errProductCatalogCode,errCode,selectedRowNum,quantity,Unit,OverLimitDiscount,WholeSalePriceMulQuantity,StandardMinusSpecial,DeterminedAmount,QuotationDescription,QuotationRemarks,requiredMaintenanceFlag,PiStock" oncomplete="allQuotationDetailInputControl();enterBtnFalse();productNotFound();endLoading()">
+            <apex:param name="rowNum" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="changeDispPageNumList" action="{!changeDispPageNumList}" rerender="inputArea,pageInfo" oncomplete="allQuotationDetailInputControl();enterBtnFalse();endLoading();;" />
+        <apex:actionFunction name="moveLastPage" action="{!moveLastPage}" rerender="inputArea,pageInfo,TotalStandardAmount,DiscountAmount,TotalAmount" oncomplete="allQuotationDetailInputControl();enterBtnFalse()" />
+        <apex:actionFunction name="refleshDetails" action="{!refleshDetails}" rerender="inputArea,pageInfo,TotalStandardAmount,DiscountAmount,TotalAmount" oncomplete="allQuotationDetailInputControl();enterBtnFalse()" />
+        <!-- 20151217 terrasky update -->
+        <apex:actionFunction name="allCalcAmounts" action="{!allCalcAmounts}" rerender="productCatalogCode,quotationDetail,StandardPrice,WholeSaleRate,SpecialWholeSaleTRate_sp,UnitPrice,SpeciaUnitPrice_sp,DiscountLimitPrice,PercentDiscount,OverLimitDiscount,WholeSalePriceMulQuantity,SpecialUnitPriceMulQuantity,StandardMinusSpecial,DeterminedAmount,pageInfo,TotalStandardAmount,DiscountAmount,TotalAmount" oncomplete="allQuotationDetailInputControl();enterBtnFalse();endLoading();" />
+        <!-- 20151217 terrasky update -->
+        <apex:actionFunction name="addRow" action="{!addRow}" rerender="inputArea,pageInfo,TotalStandardAmount,DiscountAmount,TotalAmount,addRowBtn,addRow10Btn" oncomplete="allQuotationDetailInputControl();enterBtnFalse();endLoading();" />
+        <apex:actionFunction name="addRow10" action="{!addRow10}" rerender="inputArea,pageInfo,TotalStandardAmount,DiscountAmount,TotalAmount,addRowBtn,addRow10Btn" oncomplete="allQuotationDetailInputControl();enterBtnFalse();endLoading();" />
+        <apex:actionFunction name="changeDairiten" action="{!doChangeQuotationDistCD}" rerender="kokyakujyoho,mitumorijyokenText,inputArea,PaymentCondition_disabled,kakakuhyoYM,compo1" oncomplete="deactivateTheItem();companyItem();allQuotationDetailInputControl();enterBtnFalse();endLoading();"/>
+        <!-- 20211119 Alliedtelesis-462 Add start -->
+        <apex:actionFunction name="setDefaultQuotationDetail" action="{!setDefaultQuotationDetail}"/>
+        <!-- 20211119 Alliedtelesis-462 Add end -->
+        <apex:pageBlock id="mitumori_Jouhou" mode="detail" title="{!$Label.JP_QuatationEditDetail}">
+            <!--ボタン-->
+            <apex:pageBlockButtons location="top">
+            <!-- 20151029 -->
+            <!-- <apex:commandButton id="button1" immediate="false" value="{!$Label.JP_PreSave}" onclick="submitDisabledFalse();startLoading();" action="{!doRecSave}" rendered="{!DispPreSave}"  oncomplete="deactivateTheItem();companyItem();enterBtnFalse();endLoading();"> -->
+            <apex:commandButton id="button1" immediate="false" value="{!$Label.JP_PreSave}" onclick="submitDisabledFalse();startLoading();" action="{!doRecSave}" rendered="{!DispPreSave}"  oncomplete="deactivateTheItem();allQuotationDetailInputControl();companyItem();enterBtnFalse();endLoading();" reRender="form,out">
+                <apex:param name="presave" assignTo="{!presaveFlg}" value="1"/>
+            </apex:commandButton>
+            <apex:commandButton id="button2" immediate="false" value="{!$Label.JP_Save}" onclick="submitDisabledFalse();startLoading();" action="{!doRecSave}" rendered="{!DispSave}">
+            </apex:commandButton>
+            <apex:commandButton id="button3" immediate="false" value="{!$Label.JP_Cancel}" action="{!doCancel}" rendered="true">
+            </apex:commandButton>
+            </apex:pageBlockButtons>
+            <!--基本情報-->
+            <apex:pageBlockSection columns="3" id="kihonjyohou" title="{!$Label.JP_QuatationEdit_Info}" collapsible="true" >
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.JP_QuotationHeader__c.fields.JP_QuotationNo__c.label}" />
+                    <apex:OutputField value="{!QHeader.JP_QuotationNo__c}" id="QuotationNo" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.JP_QuotationHeader__c.fields.JP_QuoteOutputDate__c.label}" />
+                    <apex:OutputField value="{!QHeader.JP_QuoteOutputDate__c}" id="QuoteOutputDate"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.JP_QuotationHeader__c.fields.Name.label}" />
+                    <apex:inputField value="{!QHeader.Name}" id="inp5" style="margin-right:200px;"/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.JP_QuotationHeader__c.fields.JP_QuotationStatus__c.label}" />
+                    <apex:OutputField value="{!QHeader.JP_QuotationStatus__c}" id="QuotationStatus"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.JP_QuotationHeader__c.fields.JP_QuotationExpireDate__c.label}" />
+                    <apex:OutputField value="{!QHeader.JP_QuotationExpireDate__c}" id="QuotationExpireDate"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.JP_QuotationHeader__c.fields.JP_PlannedDeliveryDate__c.label}" />
+                    <apex:inputField value="{!QHeader.JP_PlannedDeliveryDate__c}" id="PlannedDeliveryDate" style="margin-right:200px;" />
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.JP_QuotationHeader__c.fields.JP_QuotationActive__c.label}" />
+                    <apex:inputField value="{!QHeader.JP_QuotationActive__c}" id="QuotationActive"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.JP_QuotationHeader__c.fields.JP_QuotationEffectiveTerm__c.label}" />
+                    <apex:inputField value="{!QHeader.JP_QuotationEffectiveTerm__c}" id="QuotationEffectiveTerm"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.JP_QuotationHeader__c.fields.JP_PaymentCondition__c.label}" />
+                    <apex:inputField value="{!QHeader.JP_PaymentCondition__c}" id="PaymentCondition_disabled" style="margin-right:200px;" />
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputPanel style="display: none;">
+                        <apex:inputField value="{!QHeader.JP_PreSave__c}" id="presave"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            <!--顧客＆担当情報-->
+            <!-- ALLIEDTELESIS-416 20191126 Terrasky Mod Start -->
+            <apex:tabPanel id="tabMain" switchType="client" tabClass="activeTab" inactiveTabClass="inactiveTab">
+            <!-- <apex:tabPanel id="tabMain" switchType="client" > -->
+            <!-- ALLIEDTELESIS-416 20191126 Terrasky Mod End -->
+
+                <!--顧客情報-->
+                <apex:tab id="tabCl" label="{!$Label.JP_ClientInfo}"  switchType="client"  style="font-size:14px;">
+                    <apex:pageBlockSection columns="2" id="kokyakujyoho" collapsible="false">
+                        <!-- 郵便番号 -->
+                        <!--<apex:inputField value="{!QHeader.JP_Postcode__c}" id="post_cnt_disabled" style="width:80px;"/>-->
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLink value="{!$Label.JP_ZipURL}" target="_blank">{!$ObjectType.JP_QuotationHeader__c.fields.JP_Postcode__c.label}</apex:outputLink>
+                            <apex:inputField id="post_cnt_disabled" value="{!QHeader.JP_Postcode__c}" style="width:80px"/>
+                        </apex:pageBlockSectionItem>
+                        <!-- 部署 -->
+                        <apex:inputField value="{!QHeader.JP_Department1__c}" id="Department1_cnt_disabled" style="width:100px;"/>
+                        <!-- 都道府県 -->
+                        <apex:inputField value="{!QHeader.JP_Adress1__c}" id="Adress1_cnt_disabled"  style="width:400px;"/>
+                        <!-- 部署2 -->
+                        <apex:inputField value="{!QHeader.JP_Department2__c}" id="Department2_cnt_disabled" style="width:200px;"/>
+                        <!-- 市区町村番地 -->
+                        <apex:inputField value="{!QHeader.JP_Adress2__c}" id="Adress2_cnt_disabled" style="width:400px;"/>
+                        <!-- 見積顧客 -->
+                        <apex:inputField value="{!QHeader.JP_QuotationContact__c}">
+                            <apex:actionSupport action="{!doChangeContact}" event="onchange" rerender="kokyakujyoho,mitumorijyokenText" oncomplete="deactivateTheItem();companyItem();enterBtnFalse()"/>
+                        </apex:inputField>
+                        <!-- ビル名 -->
+                        <apex:inputField value="{!QHeader.JP_Building__c}" id="Building_cnt_disabled" style="width:400px;"/>
+                        <!-- 敬称％表示位置 -->
+                        <apex:inputField value="{!QHeader.JP_Title__c}" id="title_cnt_disabled"/>
+                        <!-- 見積代理店コード -->
+                        <apex:inputField value="{!QHeader.JP_DistributorCode__c}" id="DistributorCode_disabled"/>
+                        <!-- 電話 -->
+                        <apex:inputField value="{!QHeader.JP_TelNo__c}" id="TelNo_cnt_disabled" style="width:100px;"/>
+                        <!-- 見積代理店 -->
+                        <apex:inputField value="{!QHeader.JP_QuotationDistCD__c}" id="QuotationDistCD" style="width:200px;" onchange="startLoading();changeDairiten();"/>
+                            <!-- <apex:actionSupport action="{!doChangeQuotationDistCD}" event="onchange" rerender="kokyakujyoho,mitumorijyokenText,inputArea,PaymentCondition_disabled,kakakuhyoYM,compo1" oncomplete="deactivateTheItem();companyItem();allQuotationDetailInputControl();enterBtnFalse();endLoading();"/> -->
+                        <!-- </apex:inputField> -->
+                        <!-- FAX -->
+                        <apex:inputField value="{!QHeader.JP_FaxNo__c}" id="FaxNo_cnt_disabled" style="width:100px;"/>                      
+                        <!-- 宛先会社名 -->
+                        <apex:inputField value="{!QHeader.JP_Company__c}" id="companyname_disabled" style="width:200px;"/>
+                    </apex:pageBlockSection>
+                </apex:tab>
+
+                <!--自社情報-->
+                <apex:tab id="company" label="{!$Label.JP_Company}"  switchType="client"  style="font-size:14px;">
+                    <apex:pageBlockSection columns="2" id="jisyajyoho" collapsible="false">
+                        <!-- 自社・郵便番号 -->
+                        <!--<apex:inputField id="clum1_disabled" value="{!QHeader.JP_ATKK_Postcode__c}" style="width:80px;" taborderhint="1"/>-->
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLink value="{!$Label.JP_ZipURL}" target="_blank">{!$ObjectType.JP_QuotationHeader__c.fields.JP_ATKK_Postcode__c.label}</apex:outputLink>
+                            <apex:inputField id="clum1_disabled" value="{!QHeader.JP_ATKK_Postcode__c}" style="width:80px"/>
+                        </apex:pageBlockSectionItem>
+                        <!-- 営業out -->
+                        <apex:inputField value="{!QHeader.JP_Outside__c}" taborderhint="7">
+                            <apex:actionSupport action="{!doChangeOutuser}" event="onchange" rerender="jisyajyoho" oncomplete="deactivateTheItem();companyItem();enterBtnFalse()"/>
+                        </apex:inputField>
+                        <!-- 自社・都道府県 -->
+                        <apex:inputField id="clum3_disabled" value="{!QHeader.JP_ATKK_Address1__c}" style="width:350px;" taborderhint="2"/>
+                        <!-- outメールアドレス -->
+                        <apex:outputField id="clum8_disabled" value="{!QHeader.JP_OutMailAddress__c}"/>
+                        <!-- 自社・市区町村番地 -->
+                        <apex:inputField id="clum5_disabled"  value="{!QHeader.JP_ATKK_Address2__c}" style="width:350px;" taborderhint="3"/>
+                        <!-- 営業in -->
+                        <apex:inputField value="{!QHeader.JP_Inside__c}" taborderhint="8"/>
+                        <!-- 自社・ビル名 -->
+                        <apex:inputField id="clum7_disabled" value="{!QHeader.JP_ATKK_Building__c}" style="width:350px;" taborderhint="4"/>
+                        <!-- inメールアドレス -->
+                        <apex:inputField id="clum4_disabled" value="{!QHeader.JP_InMailAddress__c}"/>
+                        <!-- 自社・会社名 -->
+                        <apex:inputField id="clum2_disabled" value="{!QHeader.JP_ATKK_Company__c}" style="width:350px;" taborderhint="5"/>
+                        <!-- 自社・電話 -->
+                        <apex:inputField id="clum6" value="{!QHeader.JP_atkkTellNo__c}" style="width:100px;" taborderhint="9"/>
+                        <!-- 部署 -->
+                        <apex:selectList label="{!$Label.JP_Department}" id="atkk_busho" value="{!QHeader.JP_atkkDepartment1__c}" size="1" style="width:350px;">
+                            <apex:selectOptions value="{!DepartmentList}" />
+                            <apex:actionSupport action="{!doChangeDepaertment}" event="onchange" rerender="jisyajyoho" oncomplete="deactivateTheItem();companyItem();enterBtnFalse()"/>
+                        </apex:selectList>
+                        <!-- 自社・FAX -->
+                        <apex:inputField id="clum9" value="{!QHeader.JP_atkkFaxNo__c}" style="width:100px;" taborderhint="10"/>
+                        <apex:outputText value=""/>
+                        <!-- 工事見積フラグ -->
+                        <apex:inputField value="{!QHeader.JP_ProServiceQuotationFlag__c}" taborderhint="11"/>
+                    </apex:pageBlockSection>
+                </apex:tab>
+
+                <!--見積条件-->
+                <apex:tab id="tab2" label="{!$Label.JP_QuotationConditon}"  switchType="client"  style="font-size:14px;">
+                    <!--見積条件更新-->
+                    <apex:pageBlockSection columns="2" collapsible="false">
+                        <apex:pageBlockSection columns="1" id="mitumorijyokenText">
+                            <!-- 備考 -->
+                            <apex:outputPanel style="width:50px;height:150px;">
+                                <apex:outputText value="{!$Label.JP_ConditionRemarks}" escape="false"/>
+                            </apex:outputPanel>
+                            <!--見積条件-->
+                            <apex:inputField value="{!QHeader.JP_QuotationCondition__c}" id="QuotationCondition" style="width:400px;height:150px;text-align:left;vertical-align:top;"/>
+                        </apex:pageBlockSection>
+                    
+                        <!--見積条件選択欄-->
+                        <apex:outputPanel layout="block">
+                            <apex:outputPanel layout="block">
+                                <!-- 見積条件更新ボタン -->
+                                <apex:commandButton id="button4" immediate="false" value="{!$Label.JP_ConditionUpdate}" action="{!doCondition}" reRender="mitumorijyokenText" oncomplete="deactivateTheItem();companyItem();enterBtnFalse()" />
+                                <apex:outputText value=""/>
+                                <apex:outputText value=""/>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="block" style="border:1px solid #999999;border-bottom-left-radius:0px;border-bottom-right-radius:0px;margin:5px;padding:5px 5px;">
+                                <apex:pageBlockSection columns="2" id="mitumorijyoken" collapsible="false">
+                                    <!-- 見積条件（定型文の一覧はこちら）ボタン -->
+                                    <apex:commandButton immediate="false" value="{!$Label.JP_ConditionList}" action="{!doConditionList}" oncomplete="popup_modeless('{!urlLink}')" reRender="mitumorijyokenText"></apex:commandButton><apex:outputText value=""/>
+                                    <!--<apex:inputCheckbox label="{!$Label.JP_DistCondition}" value="{!inputDairiten}" id="chkdairiten"/>-->
+                                    <!-- 見積条件1 -->
+                                    <apex:selectList label="" id="Mitumorijyoken1" value="{!inputMitumorijyoken1}" size="1" style="width:160px">
+                                        <apex:selectOptions value="{!QuotationConditionList}" />
+                                    </apex:selectList>
+                                    <!-- 見積条件5 -->
+                                    <apex:selectList label="" id="Mitumorijyoken5" value="{!inputMitumorijyoken5}" size="1" style="width:160px">
+                                        <apex:selectOptions value="{!QuotationConditionList}" />
+                                    </apex:selectList>
+                                    <!-- 見積条件2 -->
+                                    <apex:selectList label="" id="Mitumorijyoken2" value="{!inputMitumorijyoken2}" size="1" style="width:160px">
+                                        <apex:selectOptions value="{!QuotationConditionList}" />
+                                    </apex:selectList>
+                                    <!-- 見積条件6 -->
+                                    <apex:selectList label="" id="Mitumorijyoken6" value="{!inputMitumorijyoken6}" size="1" style="width:160px">
+                                        <apex:selectOptions value="{!QuotationConditionList}" />
+                                    </apex:selectList>
+                                    <!-- 見積条件3 -->
+                                    <apex:selectList label="" id="Mitumorijyoken3" value="{!inputMitumorijyoken3}" size="1" style="width:160px">
+                                        <apex:selectOptions value="{!QuotationConditionList}" />
+                                    </apex:selectList>
+                                    <!-- 見積条件7 -->
+                                    <apex:selectList label="" id="Mitumorijyoken7" value="{!inputMitumorijyoken7}" size="1" style="width:160px">
+                                        <apex:selectOptions value="{!QuotationConditionList}" />
+                                    </apex:selectList>
+                                    <!-- 見積条件4 -->
+                                    <apex:selectList label="" id="Mitumorijyoken4" value="{!inputMitumorijyoken4}" size="1" style="width:160px">
+                                        <apex:selectOptions value="{!QuotationConditionList}" />
+                                    </apex:selectList>
+                                    <!-- 見積条件8 -->
+                                    <apex:selectList label="" id="Mitumorijyoken8" value="{!inputMitumorijyoken8}" size="1" style="width:160px">
+                                        <apex:selectOptions value="{!QuotationConditionList}" />
+                                    </apex:selectList>
+                                </apex:pageBlockSection>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                    </apex:pageBlockSection>
+                </apex:tab>
+
+                <!--特価申請-->
+                <apex:tab id="tab3" label="{!$Label.JP_SpecialPriceTab}"  switchType="client"  style="font-size:14px;">
+                    <apex:pageBlockSection columns="2" id="tokkasinsei" collapsible="false">
+
+                        <apex:pageBlockSection columns="1" collapsible="false">
+                            <!-- 備考 -->
+                            <apex:outputPanel style="width:200px;">
+                                <apex:outputText value="{!$Label.JP_SpecialRemarks}" escape="false"/>
+                            </apex:outputPanel>
+                            <apex:outputText value=""/>
+                            <!-- 商談名 -->
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel escape="true" value="{!$ObjectType.JP_QuotationHeader__c.fields.JP_OpportunityNo__c.label}" styleClass="required1"/>
+                                <apex:inputField value="{!QHeader.JP_OpportunityNo__c}" style="width:200px"/>
+                            </apex:pageBlockSectionItem>
+                            <!-- 在庫提案 -->
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel escape="true" value="{!$ObjectType.JP_QuotationHeader__c.fields.JP_ZaikoTeian__c.label}" styleClass="required1"/>
+                                <apex:inputField value="{!QHeader.JP_ZaikoTeian__c}" />
+                            </apex:pageBlockSectionItem>
+                            <!-- 商談番号 -->
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel escape="true" value="{!$ObjectType.JP_QuotationHeader__c.fields.JP_OpportunityNumber__c.label}" styleClass="required1"/>
+                                <apex:outputField value="{!QHeader.JP_OpportunityNumber__c}" style="width:200px"/>
+                            </apex:pageBlockSectionItem>
+                            <!-- E/U会社名 -->
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel escape="true" value="{!$ObjectType.JP_QuotationHeader__c.fields.JP_E_U_CompanyName__c.label}" styleClass="required1"/>
+                                <apex:inputField value="{!QHeader.JP_E_U_CompanyName__c}" style="width:200px"/>
+                            </apex:pageBlockSectionItem>
+                            <!-- 流通 -->
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel escape="true" value="{!$ObjectType.JP_QuotationHeader__c.fields.JP_Distributor__c.label}" styleClass="required1"/>
+                                <apex:inputField value="{!QHeader.JP_Distributor__c}" style="width:200px"/>
+                            </apex:pageBlockSectionItem>
+                            <!-- 納期 -->
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel escape="true" value="{!$ObjectType.JP_QuotationHeader__c.fields.JP_DeliveryDateForApproval__c.label}" styleClass="required1"/>
+                                <apex:inputField value="{!QHeader.JP_DeliveryDateForApproval__c}" style="width:200px"/>
+                            </apex:pageBlockSectionItem>
+                            <!-- 納入経路 -->
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel escape="true" value="{!$ObjectType.JP_QuotationHeader__c.fields.JP_DeliveryRoute__c.label}" styleClass="required1"/>
+                                <apex:inputField value="{!QHeader.JP_DeliveryRoute__c}" style="width:200px"/>
+                            </apex:pageBlockSectionItem>
+                            <!-- 案件概要 -->
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel escape="true" value="{!$ObjectType.JP_QuotationHeader__c.fields.JP_OpportunitySummary__c.label}" styleClass="required1"/>
+                                <apex:inputField value="{!QHeader.JP_OpportunitySummary__c}" style="width:280px" taborderhint="1"/>
+                            </apex:pageBlockSectionItem>
+                        </apex:pageBlockSection>
+
+                        <apex:pageBlockSection columns="1" collapsible="false">
+                            <!-- コンペ情報の詳細 -->
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel escape="true" value="{!$ObjectType.JP_QuotationHeader__c.fields.JP_CompetitionInfoDetail__c.label}" styleClass="required1"/>
+                                <apex:inputField value="{!QHeader.JP_CompetitionInfoDetail__c}" style="width:280px" taborderhint="2"/>
+                            </apex:pageBlockSectionItem>
+                            <!-- 値引金額の根拠 -->
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel escape="true" value="{!$ObjectType.JP_QuotationHeader__c.fields.JP_DiscountReason__c.label}" styleClass="required1"/>
+                                <apex:inputField value="{!QHeader.JP_DiscountReason__c}" style="width:280px" taborderhint="3"/>
+                            </apex:pageBlockSectionItem>
+                            <!-- 特価による今後の案件の展開、メリット等 -->
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel escape="true" value="{!$ObjectType.JP_QuotationHeader__c.fields.JP_BusinessPotential__c.label}" style="width:80px" styleClass="required1"/>
+                                <apex:inputField value="{!QHeader.JP_BusinessPotential__c}" style="width:280px" taborderhint="4"/>
+                            </apex:pageBlockSectionItem>
+                            <!-- その他申請理由 -->
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel escape="true" value="{!$ObjectType.JP_QuotationHeader__c.fields.JP_OtherRequestReason__c.label}"/>
+                                <apex:inputField value="{!QHeader.JP_OtherRequestReason__c}" style="width:280px" taborderhint="5"/>
+                            </apex:pageBlockSectionItem>
+                            
+                        </apex:pageBlockSection>
+                        
+                    </apex:pageBlockSection>
+                </apex:tab>
+            </apex:tabPanel>
+        </apex:pageBlock>
+
+        <apex:pageBlock id="mitumori_msi" mode="detail" title="{!$Label.JP_QuatationDetailList}">
+            <span id="DetailErrMessage" style="font-weight:bold; color:red;" />
+            <table style="border-collapse: collapse !important; border-spacing: 0px !important;">
+                <!--明細ボタン部-->
+                <tr>
+                    <!-- 行追加ボタン -->
+                    <td>
+                        <apex:outputPanel id="addRowBtn" rendered="{!DispSave}"><input type="button" class="btn" value="{!$Label.JP_AddRow}" onclick="onClickAddRow({!qDetailOriginalList.size});"/>
+                        </apex:outputPanel>
+                        <!-- <apex:commandButton value="{!$Label.JP_AddRow}" id="addRowBtn" onclick="onClickAddRow({!qDetailOriginalList.size});" rerender="inputArea,pageInfo" rendered="{!DispSave}"/>-->
+                    </td>
+                    <!-- 10行追加ボタン -->
+                    <td>
+                        <apex:outputPanel id="addRow10Btn" rendered="{!DispSave}"><input type="button" class="btn" value="{!$Label.JP_AddRow10}" onclick="onClickAddRow10({!qDetailOriginalList.size});"/>
+                        </apex:outputPanel>
+                    </td>
+                    <!-- 行削除ボタン -->
+                    <td>
+                        <apex:commandButton value="{!$Label.JP_DelRow}" id="delRowBtn" action="{!deleteRows}" reRender="inputArea,pageInfo,TotalStandardAmount,DiscountAmount,TotalAmount,addRowBtn" onclick="startLoading();" oncomplete="allQuotationDetailInputControl();enterBtnFalse();endLoading();" rendered="{!DispSave}"/>
+                        <!-- 20151029 -->
+                        <!--<td><apex:commandButton value="{!$Label.JP_Sort}" id="sortRowBtn" action="{!sortRows}" reRender="inputArea,pageInfo" onclick="startLoading();" oncomplete="allQuotationDetailInputControl();enterBtnFalse();endLoading();" rendered="{!DispSave}"/></td> -->
+                    </td>
+                    <!-- 並べ替えボタン -->
+                    <!-- ALLIEDTELESIS-416 20191224 Terrasky mod 
+                    <td colspan="2">
+                        <apex:commandButton value="{!$Label.JP_Sort}" id="sortRowBtn" action="{!sortRows}" reRender="inputArea,pageInfo" onclick="startLoading();" oncomplete="allQuotationDetailInputControl();enterBtnFalse();endLoading();" rendered="{!DispSave}">
+                            <apex:param name="presave" assignTo="{!presaveFlg}" value="0"/>
+                        </apex:commandButton>
+                    </td>
+                    -->
+                    <td colspan="2"></td>
+                    
+                    <!-- 20151217 terrasky update -->
+                    <!-- 金額自動計算フラグ -->
+                    <td colspan="2">
+                        <apex:outputlabel value="{!$Label.JP_AutoSum}" style="width:50px;font-size:14px;font-weight:Bold;text-align:right"/>
+                        <apex:inputCheckbox id="autosumflg" value="{!autoSumflg}" />
+                    </td>
+                    <!-- 金額計算ボタン -->
+                    <td>
+                        <!-- 20211122 Alliedtelesis-462 update -->
+                        <apex:commandButton value="{!$Label.JP_CalcAmount}" id="calcAmountBtn" action="{!allCalcAmounts}" reRender="productCatalogCode,StandardPrice,WholeSaleRate,SpecialWholeSaleTRate_sp,UnitPrice,SpeciaUnitPrice_sp,DiscountLimitPrice,PercentDiscount,OverLimitDiscount,WholeSalePriceMulQuantity,SpecialUnitPriceMulQuantity,StandardMinusSpecial,DeterminedAmount,pageInfo,TotalStandardAmount,DiscountAmount,TotalAmount,quotationDetail" onclick="startLoading();" oncomplete="allQuotationDetailInputControl();enterBtnFalse();endLoading();" rendered="{!DispSave}" />
+                        <!-- 20211122 Alliedtelesis-462 update -->
+                    </td>
+                    <!-- 20151217 terrasky update -->
+                    <!-- 20160205 terrasky update -->
+                    <!-- 価格年月混在許可 -->
+                    <td colspan="3">
+                        <apex:outputLabel escape="true" value="{!$Label.JP_AllowMixPriceYearMonth}" style="width:50px;font-size:14px;font-weight:Bold;text-align:right"/>
+                        <apex:inputCheckbox id="mixPriceYearMonth" value="{!QHeader.JP_AllowMixOfPriceYearMonth__c}" />
+                    </td>
+                    <!-- 20160205 terrasky update -->
+<!-- ALLIEDTELESIS-462 20210125 Terrasky add start -->
+<!-- 見積明細の完了予定日は保留                     <td colspan="4">
+                        <apex:outputLabel escape="true" value="{!$ObjectType.JP_QuotationDetail__c.fields.JP_CompletionScheduled__c.label}" style="width:50px;font-size:14px;font-weight:Bold;text-align:right"/>
+                        <apex:inputField value="{!QDetailDummy.obj.JP_CompletionScheduled__c}" style="width:70px;" id="completionScheduledTemp"/>
+                        <apex:commandButton value="全ての明細に設定" id="allSetCompletionScheduled" action="{!allSetCompletionScheduled}" reRender="inputArea" onclick="startLoading();" oncomplete="allQuotationDetailInputControl();enterBtnFalse();endLoading();" rendered="{!DispSave}" />
+                        <apex:commandButton value="選択した明細に設定" id="selectSetCompletionScheduled" action="{!selectSetCompletionScheduled}" reRender="inputArea" onclick="startLoading();" oncomplete="allQuotationDetailInputControl();enterBtnFalse();endLoading();" rendered="{!DispSave}" />
+                    </td> -->
+<!-- ALLIEDTELESIS-462 20210125 Terrasky add end -->
+                </tr>
+                <!--製品検索・価格表-->
+                <tr>
+                    <!--20151015 削除
+                    <td><apex:outputlabel value="{!$Label.JP_UnitPrice}" style="width:50px;font-size:14px;font-weight:Bold;text-align:right"/>
+                        <apex:inputCheckbox id="tanka" value="{!inputUnitPrice}" onchange="allCalcAmounts();startLoading();"/>
+                    </td>
+                    -->
+                    <!-- 単価フラグ -->
+                    <td><apex:outputlabel value="{!$Label.JP_UnitPrice}" style="width:50px;font-size:14px;font-weight:Bold;text-align:right"/>
+                        <!-- 20151217 terrasky update -->
+                        <apex:inputField id="tanka" value="{!QHeader.JP_InputUnitPrice__c}" onchange="allCalcAmounts();"/>
+                        <!-- 20151217 terrasky update -->
+                    </td>
+                    <!-- 製品検索ボタン -->
+                    <td>
+                        <apex:commandButton value="{!$Label.JP_ProductSearch}" onclick="jQuery('#comp1').dialog('open');pageMode('insert',jQuery(this));" reRender="dummy">
+                        </apex:commandButton>
+                    </td>
+                    <!-- <td style="width:10px"></td> -->
+                    <!-- 価格年月ラベル -->
+                    <td colspan="2">
+                        <apex:outputlabel value="{!$Label.JP_PriceYearMonth}" style="width:50px;font-size:14px;font-weight:Bold;text-align:right"/>
+                    </td>
+                    <!--価格表年月選択リスト-->
+                    <td><apex:selectList id="kakakuhyoYM" value="{!inputPriceYearMonth}" size="1" style="width:120px">
+                        <apex:selectOptions value="{!PriceYearMonthList}" /></apex:selectList>
+                    </td>
+                    <!-- 仕切表を元に計算 -->
+                    <td>
+                        <apex:commandButton value="{!$Label.JP_DistributorPriceClc}" action="{!doPriceYM}" rerender="inputArea,pageInfo,TotalStandardAmount,DiscountAmount,TotalAmount" onclick="startLoading()" oncomplete="allQuotationDetailInputControl();enterBtnFalse();productNotFoundbyMath();endLoading();"  />
+                    </td>
+                    <td style="width:30px"></td>
+                    <!-- 通常仕切り合計ラベル -->
+                    <td>
+                        <apex:outputlabel value="{!$ObjectType.JP_QuotationHeader__c.fields.JP_TotalStandardAmount__c.label}" style="font-size:14px;font-weight:Bold;text-align:right"/>
+                    </td>
+                    <!-- 通常仕切合計値 -->
+                    <td>
+                        <apex:inputField value="{!QHeader.JP_TotalStandardAmount__c}" style="width:100px;" id="TotalStandardAmount" />
+                    </td>
+                    <!-- [-] -->
+                    <td>
+                        <apex:outputlabel value=" - " style="width:50px;font-size:14px;font-weight:Bold;text-align:center"/>
+                    </td>
+                    <!-- 出精値引ラベル -->
+                    <td>
+                        <apex:outputlabel value="{!$ObjectType.JP_QuotationHeader__c.fields.JP_DiscountAmount__c.label}" style="width:50px;font-size:14px;font-weight:Bold;text-align:right"/>
+                    </td>
+                    <!-- 出精値引値 -->
+                    <td>
+                        <apex:inputField value="{!QHeader.JP_DiscountAmount__c}" style="width:100px;" id="DiscountAmount" />
+                    </td>
+                    <!-- [=] -->
+                    <td>
+                        <apex:outputlabel value=" = " style="width:50px;font-size:14px;font-weight:Bold;text-align:center"/>
+                    </td>
+                    <!-- 総計ラベル -->
+                    <td>
+                        <apex:outputlabel value="{!$ObjectType.JP_QuotationHeader__c.fields.JP_TotalAmount__c.label}" style="width:50px;font-size:14px;font-weight:Bold;text-align:right"/>
+                    </td>
+                    <!-- 総計値 -->
+                    <td>
+                        <apex:inputField value="{!QHeader.JP_TotalAmount__c}" style="width:100px;" id="TotalAmount" />
+                    </td>
+                </tr>
+                <tr>
+                    <!-- 表示件数選択リスト -->
+                    <td colspan="15" style="vertical-align:middle">
+                        <apex:selectList value="{!pageSize}" size="1" onchange="startLoading();changeDispPageNumList();" >
+                            <apex:selectOption itemLabel="20件" itemValue="20" />
+                            <apex:selectOption itemLabel="50件" itemValue="50" />
+                            <apex:selectOption itemLabel="100件" itemValue="100" />
+                        </apex:selectList>
+                        <apex:commandLink action="{!doPrev}" rerender="inputArea,pageInfo" onclick="startLoading();" oncomplete="allQuotationDetailInputControl();enterBtnFalse();endLoading();">
+                            <apex:image value="{!$Resource.prev}" />
+                        </apex:commandLink>
+                        <apex:outputText value="{!nowPageNum} / {!totalPage}" id="pageInfo" />
+                        <apex:commandLink action="{!doNext}" rerender="inputArea,pageInfo" onclick="startLoading();" oncomplete="allQuotationDetailInputControl();enterBtnFalse();endLoading();">
+                            <apex:image value="{!$Resource.next}" />
+                        </apex:commandLink>
+                    </td>
+                </tr>
+            </table>
+            <!--見積明細-->
+            <div style="overflow: scroll;width:100%;">
+                <apex:pageBlockSection columns="1" id="inputArea">
+                    <!-- ALLIEDTELESIS-416 Terrasky Mod Start -->
+                    <apex:variable value="0" var="rowIndex" />
+                    <apex:variable value="0" var="rowIndex2" />
+                    <apex:variable value="0" var="rowIndex3" />
+                    <!-- ALLIEDTELESIS-416 Terrasky Mod End -->
+
+                    <apex:pageBlockTable value="{!QDetailList}" var="qd" id="detailBlock">
+
+                        <!-- ALLIEDTELESIS-416 Terrasky Mod Start -->
+                        <!-- 1行挿入 -->
+                        <apex:column headerValue="アクション" >
+                            <!--<apex:outputPanel id="addRowBtn" rendered="{!DispSave}"><input type="button" class="btn" value="{!$Label.JP_AddRow}" onclick="onClickAddRow({!qDetailOriginalList.size});startLoading();"/>> -->
+                            <apex:commandLink value="行挿入" action="{!insertRow}" rerender="inputArea" oncomplete="allQuotationDetailInputControl();" styleClass="btn lnk2btn" style="white-space: nowrap;">
+                                <apex:param name="vf_rownumber" value="{!rowIndex}" />
+                            </apex:commandLink>
+                            <apex:variable var="rowIndex" value="{!VALUE(rowIndex) + 1}" />
+                        </apex:column>
+                        <!-- 並び替え -->
+                        <apex:column headerValue="">
+                            <!-- ▲[１行上へ] -->
+                            <apex:commandLink value="▲" action="{!upRow}" rerender="inputArea" oncomplete="allQuotationDetailInputControl();">
+                                <apex:param name="vf_rownumber2" value="{!rowIndex2}" />
+                            </apex:commandLink>
+                            <apex:variable var="rowIndex2" value="{!VALUE(rowIndex2) + 1}" />
+                        </apex:column>
+                        <apex:column headerValue="">
+                            <!-- ▼[１行下へ] -->
+                            <apex:commandLink value="▼" action="{!downRow}" rerender="inputArea" oncomplete="allQuotationDetailInputControl();">
+                                <apex:param name="vf_rownumber3" value="{!rowIndex3}" />
+                            </apex:commandLink>
+                            <apex:variable var="rowIndex3" value="{!VALUE(rowIndex3) + 1}" />
+                        </apex:column>
+                        
+
+                        <!-- ALLIEDTELESIS-416 Terrasky Mod End -->
+
+                        <!-- テーブル先頭チェックボックス -->
+                        <apex:column styleClass="shortColumn">
+                            <apex:facet name="header" >{!$Label.JP_Select}</apex:facet>
+                            <apex:inputCheckbox value="{!qd.selected}" />
+
+                            <!-- hidden項目 -->
+                            <apex:inputHidden value="{!qd.obj.JP_RequiredMaintenanceFlag__c}" id="requiredMaintenanceFlag" />
+                            <apex:inputHidden value="{!qd.obj.JP_PiStock__c}" id="PiStock" />
+                            <apex:inputHidden value="{!qd.errProductCatalogCode}" id="errProductCatalogCode" />
+                            <apex:inputHidden value="{!qd.errCode}" id="errCode" />
+                        </apex:column>
+                        <!--
+                        <apex:column styleClass="shortColumn">
+                            <apex:facet name="header" >{!$ObjectType.JP_QuotationDetail__c.fields.JP_DetailsID__c.label}</apex:facet>
+                            <apex:inputField value="{!qd.obj.JP_DetailsID__c}" style="width:30px;"/>
+                        </apex:column>
+                        -->
+                        <!-- 順 -->
+                        <apex:column styleClass="shortColumn">
+                            <apex:facet name="header" >{!$ObjectType.JP_QuotationDetail__c.fields.JP_Sort__c.label}</apex:facet>
+                            <!-- ALLIEDTELESIS-416 20191224 Terrasky mod [html-disabled="true" 追加] -->
+                            <apex:inputField value="{!qd.obj.JP_Sort__c}" style="width:20px;" onchange="checkSortVal(this);" html-disabled="true" />
+                        </apex:column>
+                        <!-- No. -->
+                        <!-- ALLIEDTELESIS-416 20191224 Terrasky mod 
+                        <apex:column styleClass="shortColumn">
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_DetailsNo__c.label}</apex:facet>
+                            <apex:inputField value="{!qd.obj.JP_DetailsNo__c}" style="width:20px;" id="detailsNo" />
+                        </apex:column>
+                        -->
+                        <!-- 商品コード -->
+                        <apex:column id="innerTableColumn" >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_ProductCatalogCode__c.label}</apex:facet>
+                            <table>
+                                <tr id="productCodeTr">
+                                    <!-- 20151217 terrasky update -->
+                                    <td><apex:inputField value="{!qd.obj.JP_ProductCatalogCode__c}" onchange="setProductInfo({!qd.rowNo});" id="productCatalogCode" style="width:70px;"/></td>
+                                    <!-- <td><apex:inputField value="{!qd.obj.JP_ProductCatalogCode__c}" id="productCatalogCode" style="width:70px;"/></td> -->
+                                    <!-- 20151217 terrasky update -->
+                                    <td>
+                                        <apex:commandLink id="ssss" value=""  onclick="pageMode('update',jQuery(this));" reRender="DisPriceList" oncomplete="updateSearchAction();jQuery('#comp1').dialog('open');" >
+                                            <apex:image url="/s.gif"  styleClass="lookupIcon" onmouseout="this.className='lookupIcon';" onmouseover="this.className='lookupIconOn';" />
+                                            <apex:param name="index" assignTo="{!index}" value="{!qd.rowNo + ((nowPageNum - 1) * pageSize)}" />
+                                        </apex:commandLink>
+                                    </td>
+                                </tr>
+                            </table>
+                        </apex:column>
+                        <!-- 商品名 -->
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_ProductName__c.label}</apex:facet>
+                            <apex:inputField value="{!qd.obj.JP_ProductName__c}" style="width:200px;" id="productName"/>
+                        </apex:column>
+                        <!-- 明細区分 -->
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_QuotationDetailType__c.label}</apex:facet>
+                            <apex:inputField value="{!qd.obj.JP_QuotationDetailType__c}" style="width:70px;" id="quotationDetail"/>
+                        </apex:column>
+<!-- ALLIEDTELESIS-462 20210125 Terrasky add start -->
+                        <!-- 完了予定日 -->
+<!-- 見積明細の完了予定日は保留                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_CompletionScheduled__c.label}</apex:facet>
+                            <apex:inputField value="{!qd.obj.JP_CompletionScheduled__c}" style="width:70px;" id="completionScheduled"/>
+                        </apex:column>  -->
+<!-- ALLIEDTELESIS-462 20210125 Terrasky add end -->
+                        <!-- 標準価格 -->
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_StandardPrice__c.label}</apex:facet>
+                            <!-- 20151217 terrasky update -->
+                            <apex:inputField value="{!qd.obj.JP_StandardPrice__c}" style="width:90px;" id="StandardPrice" onchange="autoCalcAmounts();" />
+                            <!-- 20151217 terrasky update -->
+                        </apex:column>
+                        <!-- 数量 -->
+                        <apex:column id="quantityColumn" >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_Quantity__c.label}</apex:facet>
+                            <!-- 20151217 terrasky update -->
+                            <apex:inputField value="{!qd.obj.JP_Quantity__c}" style="width:50px;" id="quantity" onchange="autoCalcAmounts()" />
+                            <!-- <apex:inputField value="{!qd.obj.JP_Quantity__c}" style="width:50px;" id="quantity" /> -->
+                            <!-- 20151217 terrasky update -->
+                        </apex:column>
+                        <!-- 単位 -->
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_Unit__c.label}</apex:facet>
+                            <!-- 20151217 terrasky update -->
+                            <apex:inputField value="{!qd.obj.JP_Unit__c}" style="width:40px;" id="Unit" onchange="autoCalcAmounts();" />
+                            <!-- 20151217 terrasky update -->
+                        </apex:column>
+                        <!-- 仕切率 -->
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_WholeSaleRate__c.label}</apex:facet>
+                            <!-- 20151217 terrasky update -->
+                            <apex:inputField value="{!qd.obj.JP_WholeSaleRate__c}" style="width:40px;" id="WholeSaleRate" onchange="autoCalcAmounts();" />
+                            <!-- 20151217 terrasky update -->
+                        </apex:column>
+                        <!-- 特別仕切率 -->
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_SpecialWholeSaleTRate__c.label}</apex:facet>
+                            <!-- 20151217 terrasky update -->
+                            <apex:inputField value="{!qd.obj.JP_SpecialWholeSaleTRate__c}" style="width:60px;" id="SpecialWholeSaleTRate_sp" onchange="autoCalcAmounts();"/>
+                            <!-- 20151217 terrasky update -->
+                        </apex:column>
+                        <!-- 単価 -->
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_UnitPrice__c.label}</apex:facet>
+                            <!-- 20151217 terrasky update -->
+                            <apex:inputField value="{!qd.obj.JP_UnitPrice__c}" style="width:55px;" id="UnitPrice" onchange="autoCalcAmounts();" />
+                            <!-- 20151217 terrasky update -->
+                        </apex:column>
+                        <!-- 特別仕切単価 -->
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_SpecialUnitPrice__c.label}</apex:facet>
+                            <!-- 20151217 terrasky update -->
+                            <apex:inputField value="{!qd.obj.JP_SpecialUnitPrice__c}" style="width:70px;" id="SpeciaUnitPrice_sp" onchange="autoCalcAmounts();" />
+                            <!-- 20151217 terrasky update -->
+                        </apex:column>
+                        <!-- 下限仕切単価 -->
+                        <apex:column styleClass="priceField" >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_LoweLimitPrice__c.label}</apex:facet>
+                            <!-- 20151217 terrasky update -->
+                            <apex:inputField value="{!qd.obj.JP_LoweLimitPrice__c}" style="width:70px;" id="LoweLimitPrice" onchange="autoCalcAmounts();" />
+                            <!-- 20151217 terrasky update -->
+                        </apex:column>
+                        <!-- MOQ -->
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_MOQ__c.label}</apex:facet>
+                            <apex:inputField value="{!qd.obj.JP_MOQ__c}" style="width:70px;" id="MOQ" onchange="autoCalcAmounts();"  />
+                        </apex:column> 
+                        <!-- 承認GID -->
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_AppGroupID__c.label}</apex:facet>
+                            <apex:inputField value="{!qd.obj.JP_AppGroupID__c}" style="width:40px;" id="AppGroupID" />
+                        </apex:column> 
+                        
+                        <!-- 値引限度額 -->
+                        <apex:column styleClass="priceField" >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_DiscountLimitPrice__c.label}</apex:facet>
+                            <!-- 20151217 terrasky update -->
+                            <apex:inputField value="{!qd.obj.JP_DiscountLimitPrice__c}" style="width:70px;" id="DiscountLimitPrice" onchange="autoCalcAmounts();" />
+                            <!-- 20151217 terrasky update -->
+                        </apex:column>
+                        <!-- 仕切5％減 -->
+                        <apex:column styleClass="priceField" >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_5PercentDiscount__c.label}</apex:facet>
+                            <!-- 20151217 terrasky update -->
+                            <apex:inputField value="{!qd.obj.JP_5PercentDiscount__c}" style="width:70px;" id="PercentDiscount" onchange="autoCalcAmounts();" />
+                            <!-- 20151217 terrasky update -->
+                        </apex:column>
+                        <!-- 値引限度額超 -->
+                        <apex:column styleClass="priceField" >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_OverLimitDiscount__c.label}</apex:facet>
+                            <div style="text-align:center; vertical-align:middle; width:100%">
+                                <apex:outputText id="OverLimitDiscount" value="{!IF(qd.obj.JP_OverLimitDiscount__c, $Label.JP_OverLimitDiscountLabel, '')}" />
+                            </div>
+                        </apex:column>
+                        <!-- 仕切単価×数量 -->
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_WholeSalePriceMulQuantity__c.label}</apex:facet>
+                            <!-- 20151217 terrasky update -->
+                            <apex:inputField value="{!qd.obj.JP_WholeSalePriceMulQuantity__c}" style="width:80px;" id="WholeSalePriceMulQuantity" onchange="autoCalcAmounts();" />
+                            <!-- 20151217 terrasky update -->
+                        </apex:column>
+                        <!-- 特別仕切単価×数量 -->
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_SpecialUnitPriceMulQuantity__c.label}</apex:facet>
+                            <!-- 20151217 terrasky update -->
+                            <apex:inputField value="{!qd.obj.JP_SpecialUnitPriceMulQuantity__c}" style="width:110px;" id="SpecialUnitPriceMulQuantity" onchange="autoCalcAmounts();" />
+                            <!-- 20151217 terrasky update -->
+                        </apex:column>
+                        <!-- 差額（通常-特価） -->
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_StandardMinusSpecial__c.label}</apex:facet>
+                            <!-- 20151217 terrasky update -->
+                            <apex:inputField value="{!qd.obj.JP_StandardMinusSpecial__c}" style="width:85px;" id="StandardMinusSpecial" onchange="autoCalcAmounts();" />
+                            <!-- 20151217 terrasky update -->
+                        </apex:column>
+                        <!-- 確定金額 -->
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_DeterminedAmount__c.label}</apex:facet>
+                            <!-- 20151217 terrasky update -->
+                            <apex:inputField value="{!qd.obj.JP_DeterminedAmount__c}" style="width:70px;" id="DeterminedAmount" onchange="autoCalcAmounts();" />
+                            <!-- 20151217 terrasky update -->
+                        </apex:column>
+                        <!-- 見積備考 -->
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_QuotationDescription__c.label}</apex:facet>
+                            <apex:inputField value="{!qd.obj.JP_QuotationDescription__c}" style="width:140px;" id="QuotationDescription" />
+                        </apex:column>
+                        <!-- 商品マスタ備考 -->
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_QuotationRemarks__c.label}</apex:facet>
+                            <apex:inputField value="{!qd.obj.JP_QuotationRemarks__c}" style="width:140px;" id="QuotationRemarks" />
+                        </apex:column>
+                        <!-- 販売状態 -->
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_SalesStatus__c.label}</apex:facet>
+                            <apex:inputField value="{!qd.obj.JP_SalesStatus__c}" style="width:140px;" id="SalesStatus" />
+                        </apex:column>
+                        <!-- リリース予定 -->
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_ReleaseScheduled__c.label}</apex:facet>
+                            <apex:inputField value="{!qd.obj.JP_ReleaseScheduled__c}" style="width:60px;" id="ReleaseScheduled" />
+                        </apex:column>
+                        <!-- 販売終了予定 -->
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_SalesEndScheduled__c.label}</apex:facet>
+                            <apex:inputField value="{!qd.obj.JP_SalesEndScheduled__c}" style="width:140px;" id="SalesEndScheduled" />
+                        </apex:column>
+                        <!-- 代理店専用製品コード -->
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_DistributorProCode__c.label}</apex:facet>
+                            <apex:inputField value="{!qd.obj.JP_DistributorProCode__c}" style="width:110px;" id="DistributorProCode" />
+                        </apex:column>
+                        <!-- 価格年月 -->
+                        <apex:column >
+                            <apex:facet name="header">{!$ObjectType.JP_QuotationDetail__c.fields.JP_PriceYearMonth__c.label}</apex:facet>
+                            <apex:inputField value="{!qd.obj.JP_PriceYearMonth__c}" style="width:80px;" id="PriceYearMonth" />
+                        </apex:column>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+            </div>
+        </apex:pageBlock>
+    </apex:form>
+    <!-- 製品検索コンポーネント-->
+    
+    <div id="comp1" style="display:none;">
+        <c:ProductSearch id="compo1" parentDistributor="{!parentDistributor}" priceListType="{!priceListType}" quotationDetailList="{!qDetailOriginalList}" index="{!index}" />
+    </div>
+
+    <!-- Loading icon & Overlay -->
+    <div class="loadingBox loader" />
+    <div class="loadingBox overlay" />
+    
+</apex:page>
